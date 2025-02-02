@@ -1,0 +1,143 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\moham\\source\\repos\\SharedKernel\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\valueobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\valueobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\basedomainevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\basedomainevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\interfaces\\ihandle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\interfaces\\ihandle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\interfaces\\ireadrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\interfaces\\ireadrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\interfaces\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\interfaces\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|c:\\users\\moham\\source\\repos\\sharedkernel\\sharedkernel\\interfaces\\iaggregateroot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56C4E8FA-D2FD-47FF-A5A5-42B59FFF98E9}|SharedKernel\\SharedKernel.csproj|solutionrelative:sharedkernel\\interfaces\\iaggregateroot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ValueObject.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\ValueObject.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\ValueObject.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\ValueObject.cs",
+              "RelativeToolTip": "SharedKernel\\ValueObject.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAAwBkAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-02T11:18:06.842Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\BaseEntity.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\BaseEntity.cs",
+              "RelativeToolTip": "SharedKernel\\BaseEntity.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-02T11:16:18.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BaseDomainEvent.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\BaseDomainEvent.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\BaseDomainEvent.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\BaseDomainEvent.cs",
+              "RelativeToolTip": "SharedKernel\\BaseDomainEvent.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAABZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T19:26:42.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IReadRepository.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IReadRepository.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\Interfaces\\IReadRepository.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IReadRepository.cs",
+              "RelativeToolTip": "SharedKernel\\Interfaces\\IReadRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAABeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T19:19:00.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IHandle.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IHandle.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\Interfaces\\IHandle.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IHandle.cs",
+              "RelativeToolTip": "SharedKernel\\Interfaces\\IHandle.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T19:18:42.683Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IRepository.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IRepository.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\Interfaces\\IRepository.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IRepository.cs",
+              "RelativeToolTip": "SharedKernel\\Interfaces\\IRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T19:18:25.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IAggregateRoot.cs",
+              "DocumentMoniker": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IAggregateRoot.cs",
+              "RelativeDocumentMoniker": "SharedKernel\\Interfaces\\IAggregateRoot.cs",
+              "ToolTip": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\Interfaces\\IAggregateRoot.cs",
+              "RelativeToolTip": "SharedKernel\\Interfaces\\IAggregateRoot.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T19:17:38.822Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
