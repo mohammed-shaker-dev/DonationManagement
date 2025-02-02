@@ -166,11 +166,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\SharedKernel.csproj",
+      "projectUniqueName": "D:\\Development\\2025\\DonationManagement\\SharedKernel\\SharedKernel\\SharedKernel.csproj",
       "projectName": "SharedKernel",
-      "projectPath": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\SharedKernel.csproj",
+      "projectPath": "D:\\Development\\2025\\DonationManagement\\SharedKernel\\SharedKernel\\SharedKernel.csproj",
       "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moham\\source\\repos\\SharedKernel\\SharedKernel\\obj\\",
+      "outputPath": "D:\\Development\\2025\\DonationManagement\\SharedKernel\\SharedKernel\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
