@@ -1,13 +1,13 @@
 ﻿using Ardalis.GuardClauses;
+using Dashboard.Core.Guards;
 using SharedKernel;
-using SharedKernel.Guards;
 
 namespace Dashboard.Core.ValueObjects
 {
     public class Money : ValueObject
     {
-        public decimal Amount { get; set; }
-        public Currency Currency { get; set; }
+        public decimal Amount { get; private set; }
+        public Currency Currency { get; private set; }
         public Money(decimal amount,Currency currency)
         {
             Guard.Against.Negative(amount,nameof(amount));
