@@ -8,7 +8,7 @@ namespace Dashboard.Core.WalletAggregate
 {
     public class Transaction : BaseEntity<long>
     {
-        public Transaction(string code,
+        public Transaction(
             string fullName,
             string email,
             decimal amount,
@@ -16,7 +16,7 @@ namespace Dashboard.Core.WalletAggregate
             long userId,
             TransactionType transactionType)
         {
-            Code=Guard.Against.NullOrWhiteSpace(code,nameof(code));
+           // Code=Guard.Against.NullOrWhiteSpace(code,nameof(code));
             WalletId=Guard.Against.Negative(walletId,nameof(walletId));
             userId=Guard.Against.Negative(userId,nameof(userId));
             Email = email;

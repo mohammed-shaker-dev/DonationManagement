@@ -25,7 +25,7 @@ namespace Dashboard.Infrastructure.Data
             _context = context;
             _logger = logger;
         }
-        public async Task SeedAsync(DateTimeOffset testDate, int? retry = 0)
+        public async Task SeedAsync( )
         {
             _logger.LogInformation($"Seeding data - testDate: {testDate}");
             _logger.LogInformation($"DbContext Type: {_context.Database.ProviderName}");

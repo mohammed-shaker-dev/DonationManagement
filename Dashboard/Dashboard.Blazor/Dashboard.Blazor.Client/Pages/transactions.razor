@@ -1,0 +1,99 @@
+﻿@page "/transactions"
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+<h3>Transactions Dashboard</h3>
+
+<div class="container">
+    <EditForm Model="NewTransaction" OnValidSubmit="InsertTransaction">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <InputText id="fullName" class="form-control" @bind-Value="NewTransaction.FullName" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" class="form-control" @bind-Value="NewTransaction.Email" />
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <InputNumber id="amount" class="form-control" @bind-Value="NewTransaction.Amount" />
+        </div>
+
+        <div class="form-group">
+            <label for="wallet">Wallet</label>
+            <select id="wallet" class="form-control" @bind-Value="NewTransaction.WalletId">
+                <option value="1">SYP Wallet</option>
+                <option value="2">USD Wallet</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="transactionType">Transaction Type</label>
+            <select id="transactionType" class="form-control" @bind-Value="NewTransaction.TransactionType">
+                <option value="0">Deposit</option>
+                <option value="1">Withdrawal</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+
+    <h4>Transaction List</h4>
+    <input type="text" class="form-control" placeholder="Search transactions..." @bind="SearchTerm" @oninput="FetchTransactions" />
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Wallet</th>
+                <th>Type</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in FilteredTransactions)
+            {
+                <tr>
+                    <td>@transaction.Code</td>
+                    <td>@transaction.FullName</td>
+                    <td>@transaction.Email</td>
+                    <td>@transaction.Amount</td>
+                    <td>@(transaction.WalletId == 1 ? "SYP" : "USD")</td>
+                    <td>@transaction.TransactionType</td>
+                    <td>@transaction.CreatedDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private Transaction NewTransaction = new Transaction();
+    private string SearchTerm = "";
+    private List<Transaction> FilteredTransactions = new();
+
+    private async Task InsertTransaction()
+    {
+        await Http.PostAsJsonAsync("api/transactions", NewTransaction);
+        await FetchTransactions();
+        NewTransaction = new Transaction();
+    }
+
+    private async Task FetchTransactions()
+    {
+        var result = await Http.GetFromJsonAsync<List<Transaction>>($"api/transactions/search?searchTerm={SearchTerm}");
+        FilteredTransactions = result ?? new List<Transaction>();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchTransactions();
+    }
+}
