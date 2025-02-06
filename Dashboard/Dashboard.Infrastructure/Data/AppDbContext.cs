@@ -21,6 +21,9 @@ namespace Dashboard.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.HasSequence<long>("TransactionCodeSequence", "dbo")
+          .StartsAt(1000000001) // Ensure an 8-digit starting value
+          .IncrementsBy(1);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
