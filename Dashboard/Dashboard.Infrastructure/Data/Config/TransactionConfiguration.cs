@@ -21,7 +21,7 @@ namespace Dashboard.Infrastructure.Data.Config
            .IsRequired();
 
             builder.Property(t => t.Code)
-                .HasDefaultValueSql("FORMAT(NEXT VALUE FOR dbo.TransactionCodeSequence, '00000000')");
+                .HasDefaultValueSql("FORMAT(NEXT VALUE FOR dbo.TransactionCodeSequence, '0000000000')");
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dashboard.Core.BudgetAggregate;
+using Dashboard.Core.WalletAggregate;
 using SharedKernel;
 
 namespace Dashboard.Core.Events

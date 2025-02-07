@@ -11,16 +11,16 @@ namespace Dashboard.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionsController : ControllerBase
+    public class WalletsController : ControllerBase
     {
         private readonly IRepository<Wallet> _walletRepository;
-        public TransactionsController(IRepository<Wallet> walletRepository)
+        public WalletsController(IRepository<Wallet> walletRepository)
         {
             _walletRepository = walletRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Wallet>>> GetTransactions()
+        public async Task<ActionResult<IEnumerable<Wallet>>> GetWallets()
         {
             var wallets = await _walletRepository.ListAsync(new WalletsWithTransactionsSpec());
             return Ok(wallets);
@@ -39,7 +39,7 @@ namespace Dashboard.Api.Controllers
             var createdTransaction = new Transaction(transaction?.FullName, transaction?.Email, transaction.Amount, (long)transaction.WalletId, userId,transaction.TransactionType);
             wallet.AddNewTransaction(createdTransaction);
             await _walletRepository.UpdateAsync(wallet);
-            return CreatedAtAction(nameof(GetTransactions), new { id = transaction.Code }, transaction);
+            return CreatedAtAction(nameof(GetWallets), new { id = transaction.Code }, transaction);
         }
 
         //[HttpGet("search")]

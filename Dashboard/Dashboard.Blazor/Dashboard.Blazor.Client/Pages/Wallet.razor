@@ -26,7 +26,7 @@
 
         <div class="form-group">
             <label for="wallet">Wallet</label>
-            <select id="wallet" class="form-control" @bind-Value="NewTransaction.WalletId">
+            <select id="wallet" class="form-control" @bind="NewTransaction.WalletId">
                 <option value="1">SYP Wallet</option>
                 <option value="2">USD Wallet</option>
             </select>
@@ -34,9 +34,9 @@
 
         <div class="form-group">
             <label for="transactionType">Transaction Type</label>
-            <select id="transactionType" class="form-control" @bind-Value="NewTransaction.TransactionType">
-                <option value="0">Deposit</option>
-                <option value="1">Withdrawal</option>
+            <select id="transactionType" class="form-control" @bind="NewTransaction.TransactionType">
+                <option value="1">IN</option>
+                <option value="-1">Out</option>
             </select>
         </div>
 
@@ -75,7 +75,7 @@
 </div>
 
 @code {
-    private Transaction NewTransaction = new Transaction();
+    private TransactionDTO NewTransaction = new TransactionDTO();
     private string SearchTerm = "";
     private List<Transaction> FilteredTransactions = new();
 
@@ -83,7 +83,7 @@
     {
         await Http.PostAsJsonAsync("api/transactions", NewTransaction);
         await FetchTransactions();
-        NewTransaction = new Transaction();
+        NewTransaction = new TransactionDTO();
     }
 
     private async Task FetchTransactions()

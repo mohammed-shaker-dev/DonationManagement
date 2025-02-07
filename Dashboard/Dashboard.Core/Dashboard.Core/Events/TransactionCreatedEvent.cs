@@ -1,4 +1,5 @@
-﻿using Dashboard.Core.BudgetAggregate;
+﻿
+using Dashboard.Core.WalletAggregate;
 using SharedKernel;
 using System;
 using System.Collections.Generic;

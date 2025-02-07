@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SharedKernel\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Dashboard.Core\Dashboard.Core\Dashboard.Core.csproj" />
+  </ItemGroup>
+
 </Project>

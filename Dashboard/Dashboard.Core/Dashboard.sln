@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedKernel", "..\..\Share
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Infrastructure", "..\Dashboard.Infrastructure\Dashboard.Infrastructure.csproj", "{141313C6-2E1E-411B-BD13-AE2D60A34626}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Blazor.Client", "..\Dashboard.Blazor\Dashboard.Blazor.Client\Dashboard.Blazor.Client.csproj", "{F79996C0-FFBB-453D-A4A1-AFFA3DD74780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Blazor.Client", "..\Dashboard.Blazor\Dashboard.Blazor.Client\Dashboard.Blazor.Client.csproj", "{F79996C0-FFBB-453D-A4A1-AFFA3DD74780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Api", "..\Dashboard.Api\Dashboard.Api.csproj", "{B7626F57-8FA6-4B46-ACE2-8FB2799F7E23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Api", "..\Dashboard.Api\Dashboard.Api.csproj", "{B7626F57-8FA6-4B46-ACE2-8FB2799F7E23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
