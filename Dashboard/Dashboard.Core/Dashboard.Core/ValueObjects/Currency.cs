@@ -1,27 +1,31 @@
-﻿using SharedKernel;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
+using SharedKernel;
+
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace Dashboard.Core.ValueObjects
 {
     public class Currency : ValueObject
     {
-        public static readonly Currency USD = new("USD");
-        public static readonly Currency EUR = new("EUR");
-        public static readonly Currency SYP = new("SYP");
         public string Code { get; }
-        private Currency(string code)
+        private Currency()
+        {
+                
+        }
+        [JsonConstructor]
+        public Currency(string code)
         {
             Guard.Against.NullOrWhiteSpace(code, nameof(code));
-            code=code.ToUpper(CultureInfo.InvariantCulture);
+            Code = code.ToUpper(CultureInfo.InvariantCulture);
         }
         public static Currency FomCode(string code)
         {
             return code.ToUpper(CultureInfo.InvariantCulture) switch
             {
-                "USD"=>USD,
-                "EUR"=>EUR,
-                "SYP"=>SYP,
+                "USD" => new("USD"),
+                "EUR"=> new("EUR"),
+                "SYP"=> new("SYP"),
                 _=> throw new ArgumentException(nameof(code), nameof(code))
             };
         }

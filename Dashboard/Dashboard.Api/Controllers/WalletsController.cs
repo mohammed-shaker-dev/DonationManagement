@@ -4,6 +4,7 @@ using Dashboard.Core.WalletAggregate;
 using Dashboard.Core.WalletAggregate.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Blazor.Shared;
 using SharedKernel.Interfaces;
 
 
@@ -23,11 +24,11 @@ namespace Dashboard.Api.Controllers
         public async Task<ActionResult<IEnumerable<Wallet>>> GetWallets()
         {
             var wallets = await _walletRepository.ListAsync(new WalletsWithTransactionsSpec());
-            return Ok(wallets);
+            return Ok(wallets.Select(w=>w.ToDto()).ToList());
         }
 
         [HttpPost]
-        public async Task<ActionResult<Transaction>> InsertTransaction([FromBody] TransactionDTO transaction)
+        public async Task<ActionResult<TransactionDTO>> InsertTransaction([FromBody] TransactionRequest transaction)
         {
             var userId = 1;
             if (transaction == null)
@@ -36,7 +37,7 @@ namespace Dashboard.Api.Controllers
             }
             var wallet = await _walletRepository.GetBySpecAsync(new WalletByIdWithTransactionssSpec((long)transaction.WalletId));
            if (wallet == null) throw new NotFoundException("", "wallet not found");
-            var createdTransaction = new Transaction(transaction?.FullName, transaction?.Email, transaction.Amount, (long)transaction.WalletId, userId,transaction.TransactionType);
+            var createdTransaction = new Transaction(transaction.Code,transaction?.FullName, transaction?.Email, transaction.Amount, (long)transaction.WalletId, userId,transaction.TransactionType);
             wallet.AddNewTransaction(createdTransaction);
             await _walletRepository.UpdateAsync(wallet);
             return CreatedAtAction(nameof(GetWallets), new { id = transaction.Code }, transaction);

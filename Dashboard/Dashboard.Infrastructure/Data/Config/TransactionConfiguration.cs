@@ -17,11 +17,8 @@ namespace Dashboard.Infrastructure.Data.Config
             builder.HasKey(p => p.Id);
             builder.Property(p=>p.Id).ValueGeneratedOnAdd();
             builder.Property(p => p.Code)
-           .HasMaxLength(10)
            .IsRequired();
-
-            builder.Property(t => t.Code)
-                .HasDefaultValueSql("FORMAT(NEXT VALUE FOR dbo.TransactionCodeSequence, '0000000000')");
+       
         }
     }
 }

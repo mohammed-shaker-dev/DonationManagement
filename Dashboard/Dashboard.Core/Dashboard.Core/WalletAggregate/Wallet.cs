@@ -1,4 +1,5 @@
 ﻿using Ardalis.GuardClauses;
+using Dashboard.Core.DTOs;
 using Dashboard.Core.Events;
 using Dashboard.Core.ValueObjects;
 using SharedKernel;
@@ -8,6 +9,10 @@ namespace Dashboard.Core.WalletAggregate
 {
     public class Wallet: BaseEntity<long>,IAggregateRoot
     {
+        private Wallet()
+        {
+            
+        }
         public Wallet(string name, Currency currency)
         {
             Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
@@ -31,10 +36,25 @@ namespace Dashboard.Core.WalletAggregate
         }
         public Money GetAmmount()
         {
-            var inAmount = _transactions.Where(t=>t.TransactionType==SharedKernel.Enums.TransactionType.IN).Sum(t => t.Amount);
-            var outAmount = _transactions.Where(t=>t.TransactionType==SharedKernel.Enums.TransactionType.OUT).Sum(t => t.Amount);
+            decimal inAmount = 0;
+            decimal outAmount = 0;
+            if (_transactions.Any(t => t.TransactionType == SharedKernel.Enums.TransactionType.IN))
+                inAmount = _transactions.Where(t => t.TransactionType == SharedKernel.Enums.TransactionType.IN).Sum(t => t.Amount);
+            if (_transactions.Any(t => t.TransactionType == SharedKernel.Enums.TransactionType.OUT))
+                outAmount = _transactions.Where(t=>t.TransactionType==SharedKernel.Enums.TransactionType.OUT).Sum(t => t.Amount);
             return new Money(inAmount-outAmount,Currency);
         }
-
+        
+        public WalletDTO ToDto()
+        {
+            return new WalletDTO
+            {
+                Id=Id,
+                Name = Name,
+                Currency = Currency,
+                Transactions = Transactions.Select(t => t.ToDto()).ToList(),
+                TotalAmount = GetAmmount()
+            };
+        }
     }
 }

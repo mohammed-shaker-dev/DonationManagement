@@ -1,0 +1,28 @@
+using Dashboard.BlazorApp;
+using Dashboard.BlazorApp.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using SharedKernel;
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+
+var baseUrlConfig = new BaseUrlConfiguration();
+builder.Configuration.Bind(BaseUrlConfiguration.CONFIG_NAME, baseUrlConfig);
+builder.Services.AddScoped(sp => baseUrlConfig);
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrlConfig.ApiBase) });
+builder.Services.AddScoped<HttpService>();
+builder.Services.AddScoped<WalletService>();
+
+builder.Services.AddOidcAuthentication(options =>
+{
+    // Configure your authentication provider options here.
+    // For more information, see https://aka.ms/blazor-standalone-auth
+    builder.Configuration.Bind("Local", options.ProviderOptions);
+});
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddAuthorizationCore();
+await builder.Build().RunAsync();

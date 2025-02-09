@@ -20,7 +20,9 @@ namespace Dashboard.Infrastructure.Data.Config
             builder.OwnsOne(p => p.Currency, p =>
             {
                 p.Property(pp => pp.Code).HasColumnName("Currency");
-            });
+            }); 
+            builder.Metadata.FindNavigation(nameof(Wallet.Currency))
+                .SetPropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(p=>p.Name).HasMaxLength(ColumnConstants.DEFAULT_NAME_LENGTH);
       
         }

@@ -1,0 +1,140 @@
+﻿@page "/Wallets"
+@page "/Wallets/{walletName}"
+@using Dashboard.BlazorApp.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using SharedKernel.Blazor.Shared
+@using SharedKernel.Enums
+@inject WalletService _walletService
+<h3>Transactions Dashboard</h3>
+
+<div class="container">
+    <button class="btn btn-success mb-3" @onclick="ShowPopup">Add Transaction</button>
+
+    @if (IsPopupVisible)
+    {
+        <div class="modal show d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add New Transaction</h5>
+                        <button type="button" class="btn-close" @onclick="HidePopup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <EditForm Model="NewTransaction" OnValidSubmit="InsertTransaction">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <div class="form-group">
+                                <label for="code">Code</label>
+                                <InputText id="code" class="form-control" @bind-Value="NewTransaction.Code" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <InputText id="fullName" class="form-control" @bind-Value="NewTransaction.FullName" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <InputText id="email" class="form-control" @bind-Value="NewTransaction.Email" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <InputNumber id="amount" class="form-control" @bind-Value="NewTransaction.Amount" />
+                            </div>
+
+          
+                            <div class="form-group">
+                                <label for="transactionType">Transaction Type</label>
+                                <select id="transactionType" class="form-control" @bind="NewTransactionType">
+                                    <option value="1">Deposit</option>
+                                    <option value="-1">Withdrawal</option>
+                                </select>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <h4>Transaction List</h4>
+    <input type="text" class="form-control" placeholder="Search transactions..." @bind="SearchTerm" @oninput="FetchWallet" />
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Wallet</th>
+                <th>Type</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in FilteredTransactions)
+            {
+                <tr>
+                    <td>@transaction.Code</td>
+                    <td>@transaction.FullName</td>
+                    <td>@transaction.Email</td>
+                    <td>@transaction.Amount</td>
+                    <td>@(transaction.WalletId == 1 ? "SYP" : "USD")</td>
+                    <td>@transaction.TransactionType</td>
+                    <td>@transaction.CreatedDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+ 
+
+@code {
+    [Parameter]
+    public string walletName { get; set; }
+    private WalletDTO wallet = new();
+    private TransactionRequest NewTransaction = new TransactionRequest();
+    private string SearchTerm = "";
+    private List<TransactionDTO> FilteredTransactions = new();
+    private bool IsPopupVisible = false;
+    private int NewTransactionType { get; set; }
+    private async Task InsertTransaction()
+    {
+        NewTransaction.TransactionType = (TransactionType)NewTransactionType;
+        NewTransaction.WalletId = wallet.Id;
+        var result= await _walletService.CreateAsync(NewTransaction);
+        if (result != null)
+        {
+            HidePopup();
+            await FetchWallet();
+            NewTransaction = new TransactionRequest();
+        }
+  
+    }
+
+    private async Task FetchWallet()
+    {
+        var result = await _walletService.GetDataFromApiAsync();
+        wallet = result?.FirstOrDefault(w => w.Name == (walletName??"SYP") );
+        FilteredTransactions = wallet?.Transactions?.OrderByDescending(c => c.CreatedDate)?.ToList()??new();
+
+    }
+    private void ShowPopup()
+    {
+        IsPopupVisible = true;
+    }
+
+    private void HidePopup()
+    {
+        IsPopupVisible = false;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchWallet();
+    }
+}

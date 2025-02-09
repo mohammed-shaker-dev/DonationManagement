@@ -12,9 +12,7 @@ namespace Dashboard.Infrastructure.Data
 {
     public class AppDbContextSeed
     {
-        private Wallet USWallet => new Wallet("US", Core.ValueObjects.Currency.USD);
-        private Wallet SYPWallet => new Wallet("SYP", Core.ValueObjects.Currency.SYP);
-        private User user => new User("admin", "admin@admin.com", "L@tt@kiaP@ssw0rd");
+    
 
         private readonly AppDbContext _context;
         private readonly ILogger<AppDbContextSeed> _logger;
@@ -27,8 +25,10 @@ namespace Dashboard.Infrastructure.Data
         }
         public async Task SeedAsync( )
         {
- 
-            _logger.LogInformation($"DbContext Type: {_context.Database.ProviderName}");
+          Wallet USWallet =  new Wallet("US", Core.ValueObjects.Currency.FomCode("USD"));
+          Wallet SYPWallet =  new Wallet("SYP", Core.ValueObjects.Currency.FomCode("SYP"));
+          User user = new User("admin", "admin@admin.com", "L@tt@kiaP@ssw0rd");
+        _logger.LogInformation($"DbContext Type: {_context.Database.ProviderName}");
             try
             {
                 if (_context.IsRealDatabase())
