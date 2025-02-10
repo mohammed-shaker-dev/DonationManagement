@@ -11,9 +11,10 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         return Task.FromResult(new AuthenticationState(_currentUser));
     }
 
-    public void Login(string username,string password)
+    public bool Login(string username,string password)
     {
         // Hardcoded authentication
+        bool result = false;
         if (username == "admin" && password== "L@tt@kiaP@ssw0rd")
         {
             var identity = new ClaimsIdentity(new[]
@@ -23,6 +24,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
             }, "fake-auth");
 
             _currentUser = new ClaimsPrincipal(identity);
+            result= true;
         }
         else if (username == "user")
         {
@@ -33,13 +35,16 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
             }, "fake-auth");
 
             _currentUser = new ClaimsPrincipal(identity);
+            result= true;
         }
         else
         {
             _currentUser = new ClaimsPrincipal(new ClaimsIdentity()); // Unauthenticated
+       
         }
 
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_currentUser)));
+        return result;
     }
 
     public void Logout()

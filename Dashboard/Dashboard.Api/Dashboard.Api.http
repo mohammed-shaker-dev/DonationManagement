@@ -1,6 +1,6 @@
 @Dashboard.Api_HostAddress = http://localhost:5218
 
-GET {{Dashboard.Api_HostAddress}}/weatherforecast/
+GET {{Dashboard.Api_HostAddress}}/api/wallets
 Accept: application/json
 
 ###

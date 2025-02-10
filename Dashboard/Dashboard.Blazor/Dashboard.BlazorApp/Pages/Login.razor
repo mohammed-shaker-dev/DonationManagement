@@ -1,27 +1,66 @@
 ﻿@inject CustomAuthStateProvider AuthProvider
 @inject NavigationManager Navigation
 
-<h3>Login</h3>
+@page "/authentication/login"
+@page "/login"
 
-<input @bind="username" placeholder="Enter username (admin/user)" />
-<input type="password" @bind="password" placeholder="Enter password" />
-<button @onclick="LoginUser">Login</button>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="width: 350px;">
+        <h3 class="text-center mb-3">Login</h3>
+
+        <EditForm Model="this" OnValidSubmit="LoginUser">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group mb-3">
+                <label for="username" class="form-label">Username</label>
+                <InputText id="username" class="form-control" @bind-Value="username" placeholder="Enter username" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="password" class="form-label">Password</label>
+                <InputText id="password" class="form-control" type="password" @bind-Value="password" placeholder="Enter password" required />
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger p-2" role="alert">@errorMessage</div>
+            }
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </EditForm>
+
+         
+    </div>
+</div>
 
 @if (isLoggedIn)
 {
-    <p>Welcome, @username!</p>
-    <button @onclick="Logout">Logout</button>
+    <div class="text-center mt-3">
+        <p>Welcome, <strong>@username</strong>!</p>
+        <button class="btn btn-danger" @onclick="Logout">Logout</button>
+    </div>
 }
 
 @code {
     private string username = "";
     private string password = "";
     private bool isLoggedIn = false;
+    private string errorMessage = "";
 
-    private void LoginUser()
+    private async Task LoginUser()
     {
-        AuthProvider.Login(username,password);
-        isLoggedIn = true;
+        var result =   AuthProvider.Login(username, password);
+        if (result)
+        {
+            isLoggedIn = true;
+            errorMessage = "";
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = "Invalid username or password!";
+        }
         StateHasChanged();
     }
 
@@ -29,6 +68,6 @@
     {
         AuthProvider.Logout();
         isLoggedIn = false;
-        StateHasChanged();
+        Navigation.NavigateTo("/login");
     }
 }

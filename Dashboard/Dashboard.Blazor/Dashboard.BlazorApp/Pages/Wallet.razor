@@ -41,8 +41,12 @@
 
                             <div class="form-group">
                                 <label for="amount">Amount</label>
-                                <InputNumber id="amount" class="form-control" @bind-Value="NewTransaction.Amount" />
-                            </div>
+@*                                 <InputNumber id="amount" class="form-control" @bind-Value="NewTransaction.Amount" />
+ *@
+                                <InputText id="amount" class="form-control"
+                                           @bind-Value:get="FormattedAmount"
+                                           @bind-Value:set="value => NewTransaction.Amount = ParseAmount(value)" />
+</div>
 
           
                             <div class="form-group">
@@ -83,7 +87,7 @@
                     <td>@transaction.Code</td>
                     <td>@transaction.FullName</td>
                     <td>@transaction.Email</td>
-                    <td>@transaction.Amount</td>
+                    <td>@transaction.Amount.ToString("N0")</td>
                     <td>@(transaction.WalletId == 1 ? "SYP" : "USD")</td>
                     <td>@transaction.TransactionType</td>
                     <td>@transaction.CreatedDate</td>
@@ -103,6 +107,12 @@
     private List<TransactionDTO> FilteredTransactions = new();
     private bool IsPopupVisible = false;
     private int NewTransactionType { get; set; }
+    private string FormattedAmount => NewTransaction.Amount.ToString("N0");
+
+    private decimal ParseAmount(string value)
+    {
+        return decimal.TryParse(value.Replace(",", ""), out decimal result) ? result : NewTransaction.Amount;
+    }
     private async Task InsertTransaction()
     {
         NewTransaction.TransactionType = (TransactionType)NewTransactionType;
