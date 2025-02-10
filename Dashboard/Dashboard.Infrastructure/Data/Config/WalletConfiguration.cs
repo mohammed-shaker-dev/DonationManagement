@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace Dashboard.Infrastructure.Data.Config
             builder.ToTable("Wallets").HasKey(x=>x.Id);
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
+            builder.HasMany(w => w.Transactions).WithOne().HasForeignKey(t => t.WalletId);
             builder.OwnsOne(p => p.Currency, p =>
             {
                 p.Property(pp => pp.Code).HasColumnName("Currency");

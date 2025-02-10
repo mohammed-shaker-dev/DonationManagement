@@ -13,7 +13,8 @@ namespace Dashboard.Core.DTOs
         public string Name { get;set; }
         public Currency Currency { get; set; }
 
-        public  List<TransactionDTO> Transactions = new List<TransactionDTO>();
+        public List<TransactionDTO> Transactions { get; set; } = new List<TransactionDTO>();
+
         public Money TotalAmount { get; set; }
     }
 }

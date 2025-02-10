@@ -21,12 +21,17 @@ namespace Dashboard.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Wallet>>> GetWallets()
+        public async Task<ActionResult<IEnumerable<WalletDTO>>> GetWallets()
         {
             var wallets = await _walletRepository.ListAsync(new WalletsWithTransactionsSpec());
             return Ok(wallets.Select(w=>w.ToDto()).ToList());
         }
-
+        [HttpGet("by-name")]
+        public async Task<ActionResult<IEnumerable<WalletDTO>>> GetWalletByName([FromQuery] string walletName)
+        {
+            var wallets = await _walletRepository.ListAsync(new WalletByNameWithTransactionssSpec(walletName));
+            return Ok(wallets.Select(w => w.ToDto()).ToList());
+        }
         [HttpPost]
         public async Task<ActionResult<TransactionDTO>> InsertTransaction([FromBody] TransactionRequest transaction)
         {

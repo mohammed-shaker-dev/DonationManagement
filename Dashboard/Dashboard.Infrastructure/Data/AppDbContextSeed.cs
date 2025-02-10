@@ -25,7 +25,7 @@ namespace Dashboard.Infrastructure.Data
         }
         public async Task SeedAsync( )
         {
-          Wallet USWallet =  new Wallet("US", Core.ValueObjects.Currency.FomCode("USD"));
+          Wallet USWallet =  new Wallet("USD", Core.ValueObjects.Currency.FomCode("USD"));
           Wallet SYPWallet =  new Wallet("SYP", Core.ValueObjects.Currency.FomCode("SYP"));
           User user = new User("admin", "admin@admin.com", "L@tt@kiaP@ssw0rd");
         _logger.LogInformation($"DbContext Type: {_context.Database.ProviderName}");

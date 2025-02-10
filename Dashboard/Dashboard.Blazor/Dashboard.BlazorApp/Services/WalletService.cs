@@ -8,56 +8,11 @@ namespace Dashboard.BlazorApp.Services
 {
     public class WalletService
     {
-        private readonly HttpClient _httpClient;
-
+ 
         private readonly HttpService _httpService;
         private readonly ILogger<WalletService> _logger;
 
-        //public WalletService(HttpClient httpClient, ILogger<WalletService> logger)
-        //{
-        //    _httpClient = httpClient;
-        //    _logger = logger;
-        //}
-        //public async Task<List<WalletDTO>> GetDataFromApiAsync()
-        //{
-        //    try
-        //    {
-        //        var response = await _httpClient.GetFromJsonAsync< List<WalletDTO>>("wallets");
-
-        //        if (response != null)
-        //        {
-        //            return response;
-        //        }
-        //        return null;
-        //    }
-        //    catch (HttpRequestException ex)
-        //    {
-        //        Console.WriteLine($"HTTP Request failed: {ex.Message}");
-        //        Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-        //        return null;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"General error: {ex.Message}");
-        //        return null;
-        //    }
-        //}
-        //    // Method to make a POST request to the server-side API
-        //    public async Task<bool> PostDataToApiAsync(MyData data)
-        //    {
-        //        try
-        //        {
-        //            var response = await _httpClient.PostAsJsonAsync("api/myendpoint", data);
-        //            return response.IsSuccessStatusCode;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            // Handle errors
-        //            Console.WriteLine($"Error: {ex.Message}");
-        //            return false;
-        //        }
-        //    }
-        //}
+ 
         public WalletService(HttpService httpService, ILogger<WalletService> logger)
         {
             _httpService = httpService;
@@ -81,7 +36,25 @@ namespace Dashboard.BlazorApp.Services
                 return null;
             }
         }
-        public async Task<List<WalletDTO>> GetDataFromApiAsync()
+        public async Task<List<WalletDTO>> GetWalletByNameAsync(string walletName)
+        {
+            try
+            {
+                return (await _httpService.HttpGetAsync<List<WalletDTO>>($"wallets/by-name?walletName={walletName}"));
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General error: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<List<WalletDTO>> GetAllAsync()
         {
             try
             {
@@ -99,7 +72,7 @@ namespace Dashboard.BlazorApp.Services
                 return null;
             }
         }
-            public async Task<List<Wallet>> ListPagedAsync(int pageSize)
+        public async Task<List<Wallet>> ListPagedAsync(int pageSize)
         {
             try
             {

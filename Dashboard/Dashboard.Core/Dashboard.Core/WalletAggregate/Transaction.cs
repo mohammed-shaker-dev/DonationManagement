@@ -37,7 +37,7 @@ namespace Dashboard.Core.WalletAggregate
         public string? FullName { get; private set; }
         public string? Email { get; private set; }
         public decimal Amount  { get; private set; }
-        public long? WalletId { get; private set; }
+        public long  WalletId { get; private set; }
         public long UserId { get; private set; }
         public TransactionType TransactionType { get; private set; }
         public void UpdateAmount(decimal amount )

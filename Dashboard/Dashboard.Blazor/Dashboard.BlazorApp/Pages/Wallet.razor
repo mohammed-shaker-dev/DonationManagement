@@ -5,10 +5,19 @@
 @using SharedKernel.Blazor.Shared
 @using SharedKernel.Enums
 @inject WalletService _walletService
-<h3>Transactions Dashboard</h3>
+
+@if (wallet!=null && wallet?.Id != 0)
+{
+    <h3>Total Amount : @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>
+}
+else
+{
+    <h3> Calculating.....</h3>
+}
+
 
 <div class="container">
-    <button class="btn btn-success mb-3" @onclick="ShowPopup">Add Transaction</button>
+    <button class="btn btn-success mb-3 mt-5" @onclick="ShowPopup">Add Transaction</button>
 
     @if (IsPopupVisible)
     {
@@ -58,7 +67,7 @@
                             </div>
 
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary mt-5">Submit</button>
                         </EditForm>
                     </div>
                 </div>
@@ -67,7 +76,10 @@
     }
 
     <h4>Transaction List</h4>
-    <input type="text" class="form-control" placeholder="Search transactions..." @bind="SearchTerm" @oninput="FetchWallet" />
+    <input type="text" class="form-control"
+           placeholder="Search transactions..."
+           @bind-value="SearchTerm"
+           @bind-value:event="oninput" />
     <table class="table table-striped mt-3">
         <thead>
             <tr>
@@ -81,18 +93,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var transaction in FilteredTransactions)
+            @if (FilteredTransactions?.Count() > 0)
             {
-                <tr>
-                    <td>@transaction.Code</td>
-                    <td>@transaction.FullName</td>
-                    <td>@transaction.Email</td>
-                    <td>@transaction.Amount.ToString("N0")</td>
-                    <td>@(transaction.WalletId == 1 ? "SYP" : "USD")</td>
-                    <td>@transaction.TransactionType</td>
-                    <td>@transaction.CreatedDate</td>
-                </tr>
+                @foreach (var transaction in FilteredTransactions)
+                {
+                    <tr>
+                        <td>@transaction.Code</td>
+                        <td>@transaction.FullName</td>
+                        <td>@transaction.Email</td>
+                        <td>@transaction.Amount.ToString("N0")</td>
+                        <td>@(wallet.Currency.Code)</td>
+                        <td>@(transaction.TransactionType == TransactionType.IN ? "Deposit" : "Withdrawal")</td>
+                        <td>@transaction.CreatedDate</td>
+                    </tr>
+                }
             }
+            
         </tbody>
     </table>
 </div>
@@ -103,12 +119,22 @@
     public string walletName { get; set; }
     private WalletDTO wallet = new();
     private TransactionRequest NewTransaction = new TransactionRequest();
-    private string SearchTerm = "";
+
     private List<TransactionDTO> FilteredTransactions = new();
     private bool IsPopupVisible = false;
     private int NewTransactionType { get; set; }
     private string FormattedAmount => NewTransaction.Amount.ToString("N0");
+    private string _searchTerm = "";
 
+    private string SearchTerm
+    {
+        get => _searchTerm;
+        set
+        {
+            _searchTerm = value;
+            Search(); // Call filter method
+        }
+    }
     private decimal ParseAmount(string value)
     {
         return decimal.TryParse(value.Replace(",", ""), out decimal result) ? result : NewTransaction.Amount;
@@ -129,9 +155,19 @@
 
     private async Task FetchWallet()
     {
-        var result = await _walletService.GetDataFromApiAsync();
+        var result = await _walletService.GetWalletByNameAsync(walletName??"SYP");
         wallet = result?.FirstOrDefault(w => w.Name == (walletName??"SYP") );
         FilteredTransactions = wallet?.Transactions?.OrderByDescending(c => c.CreatedDate)?.ToList()??new();
+
+    }
+    private async Task Search()
+    {
+        FilteredTransactions = (wallet?.Transactions ?? new List<TransactionDTO>())
+        .Where(t => string.IsNullOrEmpty(SearchTerm)
+            || (t.Code?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) == true)
+            || (t.FullName?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) == true))
+        .OrderByDescending(c => c.CreatedDate)
+        .ToList();
 
     }
     private void ShowPopup()
@@ -143,8 +179,9 @@
     {
         IsPopupVisible = false;
     }
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        // Fetch wallet data when parameter changes
         await FetchWallet();
     }
 }
