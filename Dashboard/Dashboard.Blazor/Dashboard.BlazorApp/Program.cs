@@ -23,7 +23,8 @@ builder.Services.AddOidcAuthentication(options =>
     // For more information, see https://aka.ms/blazor-standalone-auth
     builder.Configuration.Bind("Local", options.ProviderOptions);
 });
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddAuthorizationCore();
+
 await builder.Build().RunAsync();

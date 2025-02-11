@@ -4,8 +4,9 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using SharedKernel.Blazor.Shared
 @using SharedKernel.Enums
+@using Microsoft.AspNetCore.Authorization
 @inject WalletService _walletService
-
+@* @attribute [Authorize] *@
 @if (wallet!=null && wallet?.Id != 0)
 {
     <h3>Total Amount : @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>

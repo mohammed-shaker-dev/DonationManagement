@@ -50,7 +50,7 @@
 
     private async Task LoginUser()
     {
-        var result =   AuthProvider.Login(username, password);
+        var result =   await AuthProvider.LoginAsync(username, password);
         if (result)
         {
             isLoggedIn = true;
@@ -64,9 +64,9 @@
         StateHasChanged();
     }
 
-    private void Logout()
+    private async Task Logout()
     {
-        AuthProvider.Logout();
+        await AuthProvider.Logout();
         isLoggedIn = false;
         Navigation.NavigateTo("/login");
     }

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
+@inject CustomAuthStateProvider AuthProvider
 
 <AuthorizeView>
     <Authorized>
@@ -12,8 +13,9 @@
 </AuthorizeView>
 
 @code{
-    public void BeginLogOut()
+    public async Task BeginLogOut()
     {
-        Navigation.NavigateToLogout("authentication/logout");
+        await AuthProvider.Logout();
+        Navigation.NavigateToLogin("/login");
     }
 }

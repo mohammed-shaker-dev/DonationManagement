@@ -15,3 +15,10 @@
         </article>
     </main>
 </div>
+<script>
+    window.localStorage = window.localStorage || {
+        getItem: function () { return null; },
+        setItem: function () { },
+        removeItem: function () { }
+    };
+</script>
