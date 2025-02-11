@@ -1,0 +1,34 @@
+﻿@page "/donation-search"
+@using Donation.Web.Services
+@inject DonationService DonationService
+
+<h3>Search for Your Donation</h3>
+
+<EditForm Model="@searchModel" OnValidSubmit="@SearchDonation">
+    <InputText @bind-Value="searchModel.Code" placeholder="Enter your donation code" />
+    <button type="submit">Search</button>
+</EditForm>
+
+@if (donation != null)
+{
+    <div>
+        <h4>Donation Details</h4>
+        <p>Amount: @donation.Amount</p>
+        <p>Date: @donation.Date.ToShortDateString()</p>
+    </div>
+}
+
+@code {
+    private DonationSearchModel searchModel = new();
+    private Donation donation;
+
+    private void SearchDonation()
+    {
+        donation = DonationService.GetDonationByCode(searchModel.Code);
+    }
+
+    public class DonationSearchModel
+    {
+        public string Code { get; set; }
+    }
+}

@@ -42,7 +42,7 @@ namespace Dashboard.Api.Controllers
             }
             var wallet = await _walletRepository.GetBySpecAsync(new WalletByIdWithTransactionssSpec((long)transaction.WalletId));
            if (wallet == null) throw new NotFoundException("", "wallet not found");
-            var createdTransaction = new Transaction(transaction.Code,transaction?.FullName, transaction?.Email, transaction.Amount, (long)transaction.WalletId, userId,transaction.TransactionType);
+            var createdTransaction = new Transaction(transaction.Code,transaction.Comment,transaction?.FullName, transaction?.Email, transaction.Amount, (long)transaction.WalletId, userId,transaction.TransactionType);
             wallet.AddNewTransaction(createdTransaction);
             await _walletRepository.UpdateAsync(wallet);
             return CreatedAtAction(nameof(GetWallets), new { id = transaction.Code }, transaction);

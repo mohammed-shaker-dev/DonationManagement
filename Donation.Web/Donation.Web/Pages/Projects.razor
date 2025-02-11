@@ -1,0 +1,21 @@
+﻿@page "/projects"
+@inject ProjectService ProjectService
+
+<h3>Our Projects</h3>
+
+@foreach (var project in ProjectService.GetProjects())
+{
+    <div class="project-card">
+        <img src="@project.ImageUrl" alt="@project.Name" />
+        <h4>@project.Name</h4>
+        <p>@project.Description</p>
+        <p><strong>Cost: </strong>@project.Cost.ToString("C")</p>
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Fetch projects from the service
+    }
+}

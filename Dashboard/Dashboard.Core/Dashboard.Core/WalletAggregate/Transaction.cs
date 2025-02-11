@@ -15,6 +15,7 @@ namespace Dashboard.Core.WalletAggregate
         }
         public Transaction(
             string code,
+            string comment,
             string fullName,
             string email,
             decimal amount,
@@ -26,6 +27,7 @@ namespace Dashboard.Core.WalletAggregate
             WalletId=Guard.Against.Negative(walletId,nameof(walletId));
             userId=Guard.Against.Negative(userId,nameof(userId));
             Email = email;
+            Comment = comment;
             TransactionType=transactionType;
             Amount = amount;
             FullName=fullName;
@@ -35,6 +37,7 @@ namespace Dashboard.Core.WalletAggregate
         public string? LastUpdatedBy { get; private set; }
         public string Code { get; private set; }
         public string? FullName { get; private set; }
+        public string? Comment { get; private set; }
         public string? Email { get; private set; }
         public decimal Amount  { get; private set; }
         public long  WalletId { get; private set; }
@@ -54,6 +57,7 @@ namespace Dashboard.Core.WalletAggregate
                 FullName =FullName,
                 Amount = Amount,
                 Code = Code,
+                Comment = Comment,
                 Email = Email,
                 LastUpdatedBy = LastUpdatedBy,
                 TransactionType = TransactionType,

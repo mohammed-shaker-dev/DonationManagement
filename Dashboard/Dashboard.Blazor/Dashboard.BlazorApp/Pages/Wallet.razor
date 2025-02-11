@@ -6,7 +6,7 @@
 @using SharedKernel.Enums
 @using Microsoft.AspNetCore.Authorization
 @inject WalletService _walletService
-@* @attribute [Authorize] *@
+ @attribute [Authorize]
 @if (wallet!=null && wallet?.Id != 0)
 {
     <h3>Total Amount : @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>
@@ -37,6 +37,10 @@ else
                             <div class="form-group">
                                 <label for="code">Code</label>
                                 <InputText id="code" class="form-control" @bind-Value="NewTransaction.Code" />
+                            </div>          
+                            <div class="form-group">
+                                <label for="code">Comment</label>
+                                <InputText id="code" class="form-control" @bind-Value="NewTransaction.Comment" />
                             </div>
 
                             <div class="form-group">
@@ -90,6 +94,7 @@ else
                 <th>Amount</th>
                 <th>Wallet</th>
                 <th>Type</th>
+                <th>Comment</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -105,6 +110,7 @@ else
                         <td>@transaction.Amount.ToString("N0")</td>
                         <td>@(wallet.Currency.Code)</td>
                         <td>@(transaction.TransactionType == TransactionType.IN ? "Deposit" : "Withdrawal")</td>
+                        <td>@(transaction.Comment)</td>
                         <td>@transaction.CreatedDate</td>
                     </tr>
                 }

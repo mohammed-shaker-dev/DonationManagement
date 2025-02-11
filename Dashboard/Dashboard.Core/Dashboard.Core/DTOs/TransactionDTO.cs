@@ -15,6 +15,7 @@ namespace Dashboard.Core.DTOs
         public string Code { get;  set; }
         public string FullName { get;  set; }
         public string Email { get;  set; }
+        public string Comment { get; set; }
         public decimal Amount { get;  set; }
         public long WalletId { get;  set; }
         public long UserId { get;  set; }
