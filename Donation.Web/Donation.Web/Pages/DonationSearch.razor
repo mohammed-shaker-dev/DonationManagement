@@ -1,4 +1,5 @@
 ﻿@page "/donation-search"
+@using Dashboard.Core.DTOs
 @using Donation.Web.Services
 @inject DonationService DonationService
 
@@ -9,22 +10,24 @@
     <button type="submit">Search</button>
 </EditForm>
 
-@if (donation != null)
+@if (trx != null)
 {
     <div>
         <h4>Donation Details</h4>
-        <p>Amount: @donation.Amount</p>
-        <p>Date: @donation.Date.ToShortDateString()</p>
+        <p>Amount: @trx.Amount</p>
+        <p>Date: @trx.CreatedDate.ToShortDateString()</p>
     </div>
 }
 
 @code {
     private DonationSearchModel searchModel = new();
-    private Donation donation;
+    private TransactionDTO trx;
+    private WalletDTO wallet;
 
-    private void SearchDonation()
+    private async Task SearchDonation()
     {
-        donation = DonationService.GetDonationByCode(searchModel.Code);
+        wallet =await  DonationService.GetTransactionByCode(searchModel.Code);
+        trx = wallet.Transactions.FirstOrDefault();
     }
 
     public class DonationSearchModel

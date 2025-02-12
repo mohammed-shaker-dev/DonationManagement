@@ -31,6 +31,12 @@ namespace Dashboard.Api.Controllers
         {
             var wallets = await _walletRepository.ListAsync(new WalletByNameWithTransactionssSpec(walletName));
             return Ok(wallets.Select(w => w.ToDto()).ToList());
+        }    
+        [HttpGet("trx-code")]
+        public async Task<ActionResult<WalletDTO>> GetTransactionByCode([FromQuery] string code)
+        {
+            var wallet = await _walletRepository.ListAsync(new TransactionByCodeSpec(code));
+            return Ok(wallet.FirstOrDefault(w=>w.Transactions.Any()).ToDto());
         }
         [HttpPost]
         public async Task<ActionResult<TransactionDTO>> InsertTransaction([FromBody] TransactionRequest transaction)

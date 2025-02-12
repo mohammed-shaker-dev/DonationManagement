@@ -15,6 +15,25 @@ namespace Donation.Web.Services
             _logger = logger;
             _cache = new MemoryCache(new MemoryCacheOptions()); // Create in-memory cache
         }
+        public async Task<WalletDTO> GetTransactionByCode(string code)
+        {
+            try
+            {
+                var wallet = await _httpService.HttpGetAsync<WalletDTO>($"wallets/trx-code?code={code}");
+                return (wallet);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General error: {ex.Message}");
+                return null;
+            }
+        }
         public async Task<List<WalletDTO>> GetWalletByNameAsync(string walletName)
         {
             string cacheKey = $"wallet_{walletName}";
