@@ -37,7 +37,7 @@ if (app.Environment.IsDevelopment())
 }
 await app.SeedDatabaseAsync();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
