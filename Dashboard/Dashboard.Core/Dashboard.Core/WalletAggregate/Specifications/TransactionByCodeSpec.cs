@@ -13,8 +13,9 @@ namespace Dashboard.Core.WalletAggregate.Specifications
         public TransactionByCodeSpec(string code)
         {
             Query
-              .Include(w => w.Transactions.Where(t => t.Code.ToLower() == code));
-        
+                .Where(w => w.Transactions.Any(t => t.Code.ToLower() == code.ToLower()))  
+                .Include(w => w.Transactions.Where(t => t.Code.ToLower() == code.ToLower()));  
+
         }
     }
 }

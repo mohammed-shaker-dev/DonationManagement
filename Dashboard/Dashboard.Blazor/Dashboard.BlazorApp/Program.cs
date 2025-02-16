@@ -17,7 +17,7 @@ builder.Services.AddScoped(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
     var client = new HttpClient { BaseAddress = new Uri(baseUrlConfig.ApiBase) };
-    client.DefaultRequestHeaders.Add("X-Api-Key", baseUrlConfig.apiKey);
+    client.DefaultRequestHeaders.Add("x-api-key", baseUrlConfig.apiKey);
     return client;
 });
 builder.Services.AddScoped<HttpService>();

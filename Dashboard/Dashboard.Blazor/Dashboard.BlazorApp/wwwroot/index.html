@@ -32,6 +32,16 @@
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        function downloadFile(filename, streamRef) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([streamRef], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
 </body>
 
 </html>

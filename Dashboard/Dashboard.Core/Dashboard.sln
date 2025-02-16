@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Core", "Dashboard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.BlazorApp", "..\Dashboard.Blazor\Dashboard.BlazorApp\Dashboard.BlazorApp.csproj", "{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Donation.Web", "..\..\Donation.Web\Donation.Web\Donation.Web.csproj", "{A629C364-F9CE-46DC-8336-9A02A3F6699B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Donation.Web", "..\..\Donation.Web\Donation.Web\Donation.Web.csproj", "{A629C364-F9CE-46DC-8336-9A02A3F6699B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

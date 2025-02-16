@@ -47,7 +47,6 @@ namespace Dashboard.Core.WalletAggregate
         
         public WalletDTO ToDto()
         {
-            var tt  = Transactions.Select(t => t.ToDto()).ToList();
             return new WalletDTO
             {
                 Id=Id,

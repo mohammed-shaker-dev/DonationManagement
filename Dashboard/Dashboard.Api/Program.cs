@@ -36,10 +36,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 await app.SeedDatabaseAsync();
-app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseMiddleware<ApiKeyMiddleware>();
+app.UseHttpsRedirection();
+
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllowAll");
+
 app.Run();

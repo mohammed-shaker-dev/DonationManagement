@@ -35,8 +35,18 @@ namespace Dashboard.Api.Controllers
         [HttpGet("trx-code")]
         public async Task<ActionResult<WalletDTO>> GetTransactionByCode([FromQuery] string code)
         {
-            var wallet = await _walletRepository.ListAsync(new TransactionByCodeSpec(code));
-            return Ok(wallet.FirstOrDefault(w=>w.Transactions.Any()).ToDto());
+            var wallets = await _walletRepository.ListAsync(new TransactionByCodeSpec(code));
+            var walletDto = wallets?.FirstOrDefault(w => w?.Transactions?.Any() == true);
+            if (walletDto == null)
+                return NotFound();
+            return Ok(walletDto?.ToDto());
+        }
+        [HttpGet("from-to")]
+        public async Task<IActionResult> GetTransactions([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
+        {
+            var spec = new TransactionsBetweenDateRangeSpec(fromDate, toDate);
+            var wallets = await _walletRepository.ListAsync(spec);
+            return Ok(wallets.Select(w=>w.ToDto()));
         }
         [HttpPost]
         public async Task<ActionResult<TransactionDTO>> InsertTransaction([FromBody] TransactionRequest transaction)

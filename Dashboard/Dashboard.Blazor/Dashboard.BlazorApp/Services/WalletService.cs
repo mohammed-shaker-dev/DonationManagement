@@ -54,6 +54,24 @@ namespace Dashboard.BlazorApp.Services
                 return null;
             }
         }
+        public async Task<List<WalletDTO>> GetTransactionsBetweenDateRange(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                return (await _httpService.HttpGetAsync<List<WalletDTO>>($"wallets/from-to?fromDate={fromDate}&toDate={toDate}"));
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General error: {ex.Message}");
+                return null;
+            }
+        }
         public async Task<List<WalletDTO>> GetAllAsync()
         {
             try
