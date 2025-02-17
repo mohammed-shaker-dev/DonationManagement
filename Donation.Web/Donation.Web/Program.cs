@@ -7,7 +7,7 @@ using SharedKernel;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.Configuration.AddJsonFile("appsettings.json");
+//builder.Configuration.AddJsonFile("appsettings.json");
 //builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true);
 var baseUrlConfig = new BaseUrlConfiguration();
 builder.Configuration.Bind(BaseUrlConfiguration.CONFIG_NAME, baseUrlConfig);
