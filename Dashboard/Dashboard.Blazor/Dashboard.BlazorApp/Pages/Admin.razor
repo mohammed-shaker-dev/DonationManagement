@@ -7,7 +7,7 @@
 @using ClosedXML.Excel;
 @inject WalletService _walletService
 @inject IJSRuntime _jSRuntime
-
+@attribute [Authorize(Roles = "Administrator")]
 
 <h3>Admin Page</h3>
 

@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Dashboard.Core.SyncedAggregates;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
@@ -10,10 +11,11 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     private readonly IJSRuntime _jsRuntime;
     private ClaimsPrincipal _currentUser = new(new ClaimsIdentity()); // Default: Not authenticated
     private const string AuthStorageKey = "authUser";
-
-    public CustomAuthStateProvider(IJSRuntime jsRuntime)
+    private readonly IConfiguration _configuration;
+    public CustomAuthStateProvider(IJSRuntime jsRuntime, IConfiguration configuration)
     {
         _jsRuntime = jsRuntime;
+        _configuration = configuration;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -35,47 +37,37 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
         return new AuthenticationState(_currentUser);
     }
-    public async Task<bool> LoginAsync(string username,string password)
+    public async Task<bool> LoginAsync(string username, string password)
     {
-        // Hardcoded authentication
-        bool result = false;
-        ClaimsIdentity identity = new ClaimsIdentity();
+        // Get users from appsettings.json
+        var users = _configuration.GetSection("Authentication:Users").Get<List<User>>();
 
-        if (username == "admin" && password== "L@tt@kiaP@ssw0rd")
+        // Find the user
+        var user = users.FirstOrDefault(u => u.Username == username && u.Password == password);
+
+        if (user != null)
         {
-              identity = new ClaimsIdentity(new[]
+            var identity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, "admin"),
-                new Claim(ClaimTypes.Role, "Administrator")
-            }, "fake-auth");
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)
+             }, "fake-auth");
 
             _currentUser = new ClaimsPrincipal(identity);
-            result= true;
-        }
-        else if (username == "user")
-        {
-              identity = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, "user"),
-                new Claim(ClaimTypes.Role, "User")
-            }, "fake-auth");
 
-            _currentUser = new ClaimsPrincipal(identity);
-            result= true;
-        } 
-        _currentUser = new ClaimsPrincipal(identity);
- 
-
-        if (result)
-        {
+            // Save to localStorage
             var jsonClaims = SerializeClaims(identity);
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", AuthStorageKey, jsonClaims);
+
+            // Notify authentication state change
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_currentUser)));
+
+            return true;
         }
 
-        return result;
-    
+        return false;
     }
+ 
     public static string SerializeClaims(ClaimsIdentity user)
     {
         var claimsList = user.Claims.Select(c => new ClaimDto { Type = c.Type, Value = c.Value }).ToList();
@@ -100,5 +92,11 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     {
         public string Type { get; set; }
         public string Value { get; set; }
+    }
+    public class User
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
     }
 }
