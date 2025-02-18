@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+appsettings.Production.json
+/Dashboard/Dashboard.Api/appsettings.Production.json
+/Donation.Web/Donation.Web/wwwroot/appsettings.Production.json
+/Dashboard/Dashboard.Blazor/Dashboard.BlazorApp/wwwroot/appsettings.Production.json
