@@ -1,5 +1,184 @@
 ﻿@page "/"
+ @using Dashboard.Core.DTOs
+@using Donation.Web.Services
+<section class="main-section">
+    <div class="floating-start-box">
+        <div class="circle-img c1">
+            <img src="./images/thumbs/11.jpg" />
+        </div>
 
-<h3>Welcome to Our Donation Campaign</h3>
-<p>Help us make a difference by contributing to our projects.</p>
-<p>Learn more about our mission on the <a href="/about-us">About Us</a> page.</p>
+        <div class="circle-img c2">
+            <img src="./images/thumbs/22.jpg" />
+        </div>
+    </div>
+
+    <div class="centerized-box">
+        <span class="hashtag">#اللاذقية_نحن_أهلها</span>
+        <h1>
+            <span class="r"><span class="text-primary">اللاذقية </span> <span class="text-secondary"> نحن أهلها </span></span>
+            <span class="r"> راجع سجلاتك بسهولة</span>
+        </h1>
+
+        <div class="action-container">
+            <a class="btn" href="#form-section">ابدأ البحث</a>
+        </div>
+
+        <p>
+            هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا
+            النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من
+            النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.
+        </p>
+    </div>
+
+    <!-- SHAKKER - DO NOT CHANGE THESE IMAGES BELOW: -->
+    <div class="floating-back-box">
+        <div class="circle-img c1">
+            <img src="./images/blr1.jpg" />
+        </div>
+
+        <div class="circle-img c2">
+            <img src="./images/blr2.jpg" />
+        </div>
+
+        <div class="circle-img c3">
+            <img src="./images/blr3.jpg" />
+        </div>
+    </div>
+    <!-- SHAKKER - DO NOT CHANGE THESE IMAGES ABOVE : -->
+
+    <div class="floating-end-box">
+        <div class="circle-img c1">
+            <img src="./images/thumbs/33.jpg" />
+        </div>
+
+        <div class="circle-img c2">
+            <img src="./images/thumbs/44.jpg" />
+        </div>
+
+    @*     <div class="circle-img c3">
+            <img src="./images/thumbs/33.jpg" />
+        </div> *@
+    </div>
+</section>
+
+<section class="steps-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="step-item">
+                    <span>١. احفظ الكود بعد التبرع في مكان آمن</span>
+                    <img src="./images/step1.png" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-item">
+                    <span>٢. ادخل الكود في أرشيف البحث</span>
+                    <img src="./images/step2.png" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-item">
+                    <span>٣. راجع تفاصيل وسجلات تبرعاتك</span>
+                    <img src="./images/step3.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="content">
+            <p>
+                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا
+                النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد
+                من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.
+            </p>
+            <p>
+                إذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة
+                عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد
+                النص العربى مفيد لمصممي المواقع على وجه الخصوص، حيث يحتاج العميل فى
+                كثير من الأحيان أن يطلع على صورة حقيقية لتصميم الموقع.
+            </p>
+        </div>
+        <img src="./images/logo-w.svg" class="logo" />
+    </div>
+</section>
+
+<section id="search" class="form-section">
+    <div class="container">
+        <div class="row" style="align-items: center">
+            <div class="col-md-5">
+                <img src="./images/logo.svg" class="w-100" />
+            </div>
+
+            <div class="col-md-1"></div>
+
+            <div class="col-md-6">
+                <form action="" class="search-form">
+                    <label>ادخل الكود:</label>
+                    <input type="text"
+                           name="code"
+                           placeholder="كود التبرع"
+                           class="input-mata"
+                           required />
+                    <button type="submit" class="btn btn-mata">بحث</button>
+                </form>
+                @if (showTransactionInfo)
+                {
+                    <section id="transaction-info" class="search-form">
+                        <div class="container">
+                            <h2>معلومات المعاملة</h2>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>رقم المعاملة</th>
+                                        <th>المبلغ</th>
+                                        <th>العملة</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in transactions)
+                                    {
+                                        <tr>
+                                            <td>@transaction.Id</td>
+                                            <td>@transaction.Amount</td>
+                                            <td>@transaction.Currency</td>
+                                            <td>@transaction.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                }
+                <div   class="send-form">
+                    <h2>شارك معنا وتبرع</h2>
+                    <div class="row">
+                        <p>للتبرع، يرجى الضغط على الزر أدناه ومتابعة التعليمات.</p>
+                    </div>
+                    <div class="text-end">
+                        <a href="/donate" class="btn btn-mata">تبرع</a>
+                    </div>
+       
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@code {
+    private bool showTransactionInfo = true   ;
+    private List<TransactionDTO> transactions = new List<TransactionDTO>
+    {
+        new TransactionDTO { Code = "1", Amount = 100,Currency="USD", CreatedDate = DateTime.Now,Comment="t comment " },
+        new TransactionDTO { Code = "2", Amount = 200,Currency="SYP", CreatedDate = DateTime.Now.AddDays(-1) ,Comment="t comment 2 " }
+    };
+
+    private void ToggleTransactionInfo()
+    {
+        showTransactionInfo = !showTransactionInfo;
+    }
+
+ 
+}

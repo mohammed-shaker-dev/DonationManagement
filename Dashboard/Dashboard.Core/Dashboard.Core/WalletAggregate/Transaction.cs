@@ -49,7 +49,7 @@ namespace Dashboard.Core.WalletAggregate
             var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
             Events.Add(transactionUpdatedEvent);
         }
-        public TransactionDTO ToDto()
+        public TransactionDTO ToDto(string currency)
         {
             return new TransactionDTO
             {
@@ -64,7 +64,8 @@ namespace Dashboard.Core.WalletAggregate
                 UpdatedDate = UpdatedDate,
                 UserId = UserId,
                 WalletId = WalletId,
-                CreatedDate = CreatedDate
+                CreatedDate = CreatedDate,
+                Currency= currency
             };
         }
     }

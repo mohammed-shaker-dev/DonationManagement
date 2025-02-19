@@ -52,7 +52,7 @@ namespace Dashboard.Core.WalletAggregate
                 Id=Id,
                 Name = Name,
                 Currency = Currency,
-                Transactions = Transactions.Select(t => t.ToDto()).ToList(),
+                Transactions = Transactions.Select(t => t.ToDto(Currency.Code)).ToList(),
                 TotalAmount = GetAmmount()
             };
         }
