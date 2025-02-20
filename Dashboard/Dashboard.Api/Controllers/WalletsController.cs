@@ -64,6 +64,34 @@ namespace Dashboard.Api.Controllers
             return CreatedAtAction(nameof(GetWallets), new { id = transaction.Code }, transaction);
         }
 
+        [HttpPut("{transactionId}")]
+        public async Task<IActionResult> UpdateTransaction(long transactionId, [FromBody] TransactionRequest transaction)
+        {
+            if (transaction == null)
+            {
+                return BadRequest("Invalid transaction data.");
+            }
+
+            var wallet = await _walletRepository.GetBySpecAsync(new WalletByIdWithTransactionssSpec((long)transaction.WalletId));
+            if (wallet == null) throw new NotFoundException("", "wallet not found");
+
+            wallet.UpdateTransaction(transactionId, transaction.Amount, transaction.Code, transaction?.Comment, transaction?.FullName);
+            await _walletRepository.UpdateAsync(wallet);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{transactionId}")]
+        public async Task<IActionResult> DeleteTransaction(long transactionId, [FromQuery] long walletId)
+        {
+            var wallet = await _walletRepository.GetBySpecAsync(new WalletByIdWithTransactionssSpec(walletId));
+            if (wallet == null) throw new NotFoundException("", "wallet not found");
+
+            wallet.DeleteTransaction(transactionId);
+            await _walletRepository.UpdateAsync(wallet);
+
+            return NoContent();
+        }
         //[HttpGet("search")]
         //public ActionResult<IEnumerable<Transaction>> SearchTransactions([FromQuery] string searchTerm)
         //{

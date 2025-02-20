@@ -34,6 +34,23 @@ namespace Dashboard.Core.WalletAggregate
             var transactionCreated = new TransactionCreatedEvent(transaction);
             Events.Add(transactionCreated);
         }
+        public void UpdateTransaction(long transactionId, decimal amount, string code, string comment, string fullName)
+        {
+            var transaction = _transactions.FirstOrDefault(t => t.Id == transactionId);
+            Guard.Against.Null(transaction, nameof(transaction));
+            transaction.Update(amount, code, comment, fullName);
+            var transactionUpdated = new TransactionUpdatedEvent(transaction);
+            Events.Add(transactionUpdated);
+        }
+
+        public void DeleteTransaction(long transactionId)
+        {
+            var transaction = _transactions.FirstOrDefault(t => t.Id == transactionId);
+            Guard.Against.Null(transaction, nameof(transaction));
+            _transactions.Remove(transaction);
+            var transactionDeleted = new TransactionDeletedEvent(transaction);
+            Events.Add(transactionDeleted);
+        }
         public Money GetAmmount()
         {
             decimal inAmount = 0;

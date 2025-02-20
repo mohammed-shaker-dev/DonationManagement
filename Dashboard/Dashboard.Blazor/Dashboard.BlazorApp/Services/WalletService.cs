@@ -108,5 +108,44 @@ namespace Dashboard.BlazorApp.Services
                 return null;
             }
         }
+        public async Task<bool> UpdateTransactionAsync(long transactionId, TransactionRequest transaction)
+        {
+            try
+            {
+                await _httpService.HttpPutAsync<TransactionDTO>($"wallets/{transactionId}", transaction);
+                return true;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteTransactionAsync(long transactionId)
+        {
+            try
+            {
+                await _httpService.HttpDeleteAsync<TransactionDTO>($"wallets/{transactionId}", transactionId);
+                return true;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General error: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

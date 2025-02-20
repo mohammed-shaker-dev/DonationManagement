@@ -23,7 +23,7 @@ namespace Dashboard.Core.WalletAggregate
             long userId,
             TransactionType transactionType)
         {
-             Code=Guard.Against.NullOrWhiteSpace(code,nameof(code));
+            Code=Guard.Against.NullOrWhiteSpace(code,nameof(code));
             WalletId=Guard.Against.Negative(walletId,nameof(walletId));
             userId=Guard.Against.Negative(userId,nameof(userId));
             Email = email;
@@ -43,11 +43,38 @@ namespace Dashboard.Core.WalletAggregate
         public long  WalletId { get; private set; }
         public long UserId { get; private set; }
         public TransactionType TransactionType { get; private set; }
+
+        public void Update(decimal amount, string code, string comment,string fullName)
+        {
+            UpdateAmount(amount);
+            UpdateCode(code);
+            UpdateComment(comment);
+            var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
+            Events.Add(transactionUpdatedEvent);
+        }
         public void UpdateAmount(decimal amount )
         {
             Amount = amount;
-            var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
-            Events.Add(transactionUpdatedEvent);
+            //var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
+            //Events.Add(transactionUpdatedEvent);
+        }    
+        public void UpdateCode(string code )
+        {
+            Code = Guard.Against.NullOrWhiteSpace(code, nameof(code));
+            //var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
+            //Events.Add(transactionUpdatedEvent);
+        }  
+        public void UpdateComment(string comment )
+        {
+            Comment = comment;
+            //var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
+            //Events.Add(transactionUpdatedEvent);
+        }     
+        public void UpdateFullName(string fullName )
+        {
+            FullName = fullName;
+            //var transactionUpdatedEvent = new TransactionUpdatedEvent(this);
+            //Events.Add(transactionUpdatedEvent);
         }
         public TransactionDTO ToDto(string currency)
         {

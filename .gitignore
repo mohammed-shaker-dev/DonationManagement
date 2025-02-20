@@ -486,3 +486,5 @@ appsettings.Production.json
 /Dashboard/Dashboard.Api/appsettings.Production.json
 /Donation.Web/Donation.Web/wwwroot/appsettings.Production.json
 /Dashboard/Dashboard.Blazor/Dashboard.BlazorApp/wwwroot/appsettings.Production.json
+/SharedKernel/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfo.cs
+/SharedKernel/SharedKernel/obj/Debug/net8.0/SharedKernel.GeneratedMSBuildEditorConfig.editorconfig

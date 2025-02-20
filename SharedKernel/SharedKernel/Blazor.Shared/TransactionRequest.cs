@@ -9,7 +9,7 @@ namespace SharedKernel.Blazor.Shared
 {
     public class TransactionRequest
     {
-    
+        public long? Id { get; set; }
         public string? LastUpdatedBy { get; set; }
         public string Code { get; set; }
         public string? FullName { get; set; }
