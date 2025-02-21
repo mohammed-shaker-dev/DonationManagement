@@ -4,6 +4,7 @@ using Dashboard.Core.WalletAggregate;
 using Dashboard.Core.WalletAggregate.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Blazor.Shared;
 using SharedKernel.Interfaces;
 
@@ -32,6 +33,8 @@ namespace Dashboard.Api.Controllers
             var wallets = await _walletRepository.ListAsync(new WalletByNameWithTransactionssSpec(walletName));
             return Ok(wallets.Select(w => w.ToDto()).ToList());
         }    
+
+        [EnableRateLimiting("fixed")]
         [HttpGet("trx-code")]
         public async Task<ActionResult<WalletDTO>> GetTransactionByCode([FromQuery] string code)
         {

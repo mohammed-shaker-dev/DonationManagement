@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
+using System.Net;
 
 namespace Donation.Web.Services
 {
@@ -13,13 +14,17 @@ namespace Donation.Web.Services
             _httpClient = httpClient;
             _apiUrl = _httpClient.BaseAddress.ToString();
         }
-
         public async Task<T> HttpGetAsync<T>(string uri)
             where T : class
         {
             try
             {
                 var result = await _httpClient.GetAsync(uri);
+                if (result.StatusCode == (HttpStatusCode)429) // Too Many Requests
+                {
+                    // Handle rate limit exceeded
+                    throw new HttpRequestException("Rate limit exceeded. Please try again later.");
+                }
                 if (!result.IsSuccessStatusCode)
                 {
                     return null;
@@ -29,14 +34,13 @@ namespace Donation.Web.Services
             }
             catch (HttpRequestException ex)
             {
-
+                // Log or handle the exception as needed
                 return null;
             }
             catch (Exception)
             {
                 return null;
             }
-         
         }
 
         public async Task<string> HttpGetAsync(string uri)

@@ -3,6 +3,8 @@ using Dashboard.Infrastructure.Data;
 using Dashboard.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,18 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 25;
+        opt.QueueLimit = 5;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,6 +53,8 @@ await app.SeedDatabaseAsync();
 app.UseCors("AllowAll");
 app.UseMiddleware<ApiKeyMiddleware>();
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
