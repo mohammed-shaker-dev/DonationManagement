@@ -50,16 +50,15 @@ namespace Dashboard.BlazorApp.Services
             return await result.Content.ReadAsStringAsync();
         }
 
-        public async Task<T> HttpDeleteAsync<T>(string uri, object id)
-            where T : class
+        public async Task<bool> HttpDeleteAsync (string uri ) 
         {
-            var result = await _httpClient.DeleteAsync($"{_apiUrl}{uri}/{id}");
+            var result = await _httpClient.DeleteAsync($"{_apiUrl}{uri}");
             if (!result.IsSuccessStatusCode)
             {
-                return null;
+                return false;
             }
 
-            return await FromHttpResponseMessageAsync<T>(result);
+            return true;
         }
 
         public async Task<T> HttpPostAsync<T>(string uri, object dataToSend)

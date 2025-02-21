@@ -1,6 +1,7 @@
 ﻿@page "/"
- @using Dashboard.Core.DTOs
+@using Dashboard.Core.DTOs
 @using Donation.Web.Services
+@inject DonationService DonationService
 <section class="main-section">
     <div class="floating-start-box">
         <div class="circle-img c1">
@@ -113,17 +114,17 @@
             </div>
 
             <div class="col-md-1"></div>
-
             <div class="col-md-6">
-                <form action="" class="search-form">
+                <EditForm Model="@searchModel" OnValidSubmit="@SearchDonation" class="search-form">
                     <label>ادخل الكود:</label>
-                    <input type="text"
+                    <InputText @bind-Value="searchModel.Code" 
+                            type="text"
                            name="code"
                            placeholder="كود التبرع"
                            class="input-mata"
                            required />
                     <button type="submit" class="btn btn-mata">بحث</button>
-                </form>
+                </EditForm>
                 @if (showTransactionInfo)
                 {
                     <section id="transaction-info" class="search-form">
@@ -139,15 +140,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var transaction in transactions)
-                                    {
+                                @*     @foreach (var transaction in transactions)
+                                    { *@
                                         <tr>
-                                            <td>@transaction.Id</td>
-                                            <td>@transaction.Amount</td>
-                                            <td>@transaction.Currency</td>
-                                            <td>@transaction.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                            <td>@trx.Id</td>
+                                            <td>@trx.Amount</td>
+                                            <td>@trx.Currency</td>
+                                            <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
                                         </tr>
-                                    }
+                                  @*   } *@
                                 </tbody>
                             </table>
                         </div>
@@ -168,17 +169,40 @@
     </div>
 </section>
 @code {
-    private bool showTransactionInfo = true   ;
+    private bool showTransactionInfo = false;
+    private DonationSearchModel searchModel = new();
+    private TransactionDTO trx;
+    private WalletDTO wallet;
+
+    private async Task SearchDonation()
+    {
+        wallet = await DonationService.GetTransactionByCode(searchModel.Code);
+        trx = wallet?.Transactions?.FirstOrDefault();
+        if (trx != null)
+        {
+            ToggleTransactionInfo();
+        }
+    }
+
+    public class DonationSearchModel
+    {
+        public string Code { get; set; }
+    }
+    private void ToggleTransactionInfo()
+    {
+        showTransactionInfo = !showTransactionInfo;
+
+    }
+
+}
+@code {
+
     private List<TransactionDTO> transactions = new List<TransactionDTO>
     {
         new TransactionDTO { Code = "1", Amount = 100,Currency="USD", CreatedDate = DateTime.Now,Comment="t comment " },
         new TransactionDTO { Code = "2", Amount = 200,Currency="SYP", CreatedDate = DateTime.Now.AddDays(-1) ,Comment="t comment 2 " }
     };
 
-    private void ToggleTransactionInfo()
-    {
-        showTransactionInfo = !showTransactionInfo;
-    }
 
  
 }

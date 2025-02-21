@@ -7,7 +7,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject WalletService _walletService
 @inject IJSRuntime jsRuntime
- @attribute [Authorize]
+@attribute [Authorize]
 @if (wallet!=null && wallet?.Id != 0)
 {
     <h3>Total Amount : @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>
@@ -57,17 +57,20 @@ else
                             <div class="form-group">
                                 <label for="amount">Amount</label>
                                 <InputText id="amount" class="form-control"
-                                           @bind-Value:get="FormattedAmount"
-                                           @bind-Value:set="value => NewTransaction.Amount = ParseAmount(value)" />
+                                @bind-Value:get="FormattedAmount"
+                                @bind-Value:set="value => NewTransaction.Amount = ParseAmount(value)" />
                             </div>
+                            @if (!IsEditMode)
+                            {
+                                <div class="form-group">
+                                    <label for="transactionType">Transaction Type</label>
+                                    <select id="transactionType" class="form-control" @bind="NewTransactionType">
+                                        <option value="1">Deposit</option>
+                                        <option value="-1">Withdrawal</option>
+                                    </select>
+                                </div>
+                            }
 
-                            <div class="form-group">
-                                <label for="transactionType">Transaction Type</label>
-                                <select id="transactionType" class="form-control" @bind="NewTransactionType">
-                                    <option value="1">Deposit</option>
-                                    <option value="-1">Withdrawal</option>
-                                </select>
-                            </div>
 
                             <button type="submit" class="btn btn-primary mt-5">Submit</button>
                         </EditForm>
@@ -78,9 +81,9 @@ else
     }
     <h4>Transaction List</h4>
     <input type="text" class="form-control"
-           placeholder="Search transactions..."
-           @bind-value="SearchTerm"
-           @bind-value:event="oninput" />
+    placeholder="Search transactions..."
+    @bind-value="SearchTerm"
+    @bind-value:event="oninput" />
     <table class="table table-striped mt-3">
         <thead>
             <tr>
@@ -115,11 +118,11 @@ else
                     </tr>
                 }
             }
-            
+
         </tbody>
     </table>
 </div>
- 
+
 
 @code {
     [Parameter]
@@ -181,14 +184,14 @@ else
             };
         NewTransactionType = (int)transaction.TransactionType;
         IsEditMode = true;
-        ShowPopup();
+        IsPopupVisible = true;
     }
 
     private async Task ConfirmDeleteTransaction(long transactionId)
     {
         if (await jsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this transaction?"))
         {
-            await _walletService.DeleteTransactionAsync(transactionId);
+            await _walletService.DeleteTransactionAsync(transactionId,wallet.Id);
             await FetchWallet();
         }
     }
@@ -203,7 +206,7 @@ else
             await FetchWallet();
             NewTransaction = new TransactionRequest();
         }
-  
+
     }
 
     private async Task FetchWallet()
@@ -211,7 +214,8 @@ else
         var result = await _walletService.GetWalletByNameAsync(walletName??"SYP");
         wallet = result?.FirstOrDefault(w => w.Name == (walletName??"SYP") );
         FilteredTransactions = wallet?.Transactions?.OrderByDescending(c => c.CreatedDate)?.ToList()??new();
-
+        IsEditMode = false;
+        NewTransaction = new();
     }
     private async Task Search()
     {
@@ -225,6 +229,8 @@ else
     }
     private void ShowPopup()
     {
+        NewTransaction = new();
+        IsEditMode = false;
         IsPopupVisible = true;
     }
 

@@ -128,12 +128,12 @@ namespace Dashboard.BlazorApp.Services
             }
         }
 
-        public async Task<bool> DeleteTransactionAsync(long transactionId)
+        public async Task<bool> DeleteTransactionAsync(long transactionId,long walletID)
         {
             try
             {
-                await _httpService.HttpDeleteAsync<TransactionDTO>($"wallets/{transactionId}", transactionId);
-                return true;
+               var result= await _httpService.HttpDeleteAsync($"wallets/{transactionId}?walletId={walletID}");
+                return result;
             }
             catch (HttpRequestException ex)
             {
