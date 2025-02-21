@@ -1,9 +1,21 @@
 ﻿@page "/projects"
-@inject ProjectService ProjectService
+@* @inject ProjectService ProjectService *@
 
-<h3>Our Projects</h3>
+<section class="main-section">
+    <div class="centerized-box">
+        <h1>
+            <span class="r"><span class="text-primary">المشاريع </span> <span class="text-secondary"> قادمة قريباً </span></span>
+        </h1>
+        <p>
+            سيتم عرض المشاريع في وقت لاحق حال الانتهاء من تنفيذها.
+        </p>
+        <p>
+            كامل الشكر و التقدير لجهودكم المبذولة في سبيل بناء بلدنا .
+        </p>
+    </div>
+</section>
 
-@foreach (var project in ProjectService.GetProjects())
+@* @foreach (var project in ProjectService.GetProjects())
 {
     <div class="project-card">
         <img src="@project.ImageUrl" alt="@project.Name" />
@@ -12,7 +24,7 @@
         <p><strong>Cost: </strong>@project.Cost.ToString("C")</p>
     </div>
 }
-
+ *@
 @code {
     protected override void OnInitialized()
     {
