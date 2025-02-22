@@ -1,80 +1,119 @@
-﻿<nav class="min-navbar navbar navbar-expand-lg bg-light">
+﻿@inject IJSRuntime JSRuntime
+
+<nav class="min-navbar navbar navbar-expand-lg bg-light">
     <div class="container">
-        <!-- Left-aligned Links -->
-        <div class="d-flex">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#search">ابدأ البحث الآن</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about"> من نحن</a>
-                </li>
-@*                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       href="#"
-                       id="navbarDropdown"
-                       role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        من نحن
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">عنصر أول</a></li>
-                        <li><a class="dropdown-item" href="#">عنصر ثانٍ</a></li>
-                    </ul>
-                </li> *@
-            </ul>
-        </div>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <!-- Centered Logo -->
-        <div class="mx-auto">
-            <a class="navbar-brand" href="#">
-                <img src="./images/logo.svg" alt="Logo" height="100" />
-            </a>
-        </div>
+        <a class="navbar-brand d-lg-none" href="#">
+            <img src="./images/logo.svg" alt="Logo" height="80" />
+        </a>
 
-        <!-- Right-aligned Dropdown -->
-        <div class="d-flex">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/projects"> تصفح المشاريع</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       href="#"
-                       id="navbarDropdown"
-                       role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        تواصل واتساب
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">0999 999 999</a></li>
-                        <li><a class="dropdown-item" href="#">0999 999 999</a></li>
-                    </ul>
-                </li>
-           
-@*                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       href="#"
-                       id="navbarDropdown"
-                       role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        الحقوق والسياسات
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">عنصر أول</a></li>
-                        <li><a class="dropdown-item" href="#">عنصر ثانٍ</a></li>
-                    </ul>
-                </li> *@
-            </ul>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-flex">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">ابدأ البحث الآن</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">     من نحن</a>
+                    </li>
+                
+     @*                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            من نحن
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">عنصر أول</a></li>
+                            <li><a class="dropdown-item" href="#">عنصر ثانٍ</a></li>
+                        </ul>
+                    </li> *@
+                </ul>
+            </div>
+
+            <div class="mx-auto d-none d-lg-block">
+                <a class="navbar-brand" href="#">
+                    <img src="./images/logo.svg" alt="Logo" height="100" />
+                </a>
+            </div>
+
+            <div class="d-flex">
+                <ul class="navbar-nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/projects"> تصفح المشاريع</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://wa.me/00963959296148" target="_blank">
+                            <img src="./images/thumbs/whatsapp_icon.svg" alt="WhatsApp" height="20" />
+                            تواصل واتساب
+                        </a>
+                    </li>
+         @*            <li class="nav-item">
+                        <a class="nav-link" href="#search">ابدأ البحث الآن</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about"> من نحن</a>
+                    </li> *@
+@*                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            تواصل واتساب
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">0999 999 999</a></li>
+                            <li><a class="dropdown-item" href="#">0999 999 999</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            الحقوق والسياسات
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">عنصر أول</a></li>
+                            <li><a class="dropdown-item" href="#">عنصر ثانٍ</a></li>
+                        </ul>
+                    </li> *@
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
-@code {
+
+
  
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("import", "./scripts/bootstrap.bundle.min.js");
+        }
+    }
 }

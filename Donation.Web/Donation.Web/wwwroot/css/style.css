@@ -38,6 +38,13 @@ body .input-mata {
   top: 0;
   left: 0;
 }
+.min-navbar .navbar-toggler {
+  margin-left: auto;
+}
+.min-navbar .navbar-collapse {
+  flex-grow: 0;
+  width: 100%;
+}
 
 .main-section {
   position: relative;
@@ -70,8 +77,8 @@ body .input-mata {
   font-size: 18px;
 }
 .main-section .circle-img {
-  width: 200px;
-  height: 200px;
+  width: 10vw;
+  height: 10vw;
   position: absolute;
 }
 .main-section .circle-img img {
@@ -170,6 +177,11 @@ body .input-mata {
   left: 60%;
   animation: float5 8s ease-in-out infinite;
 }
+@media (max-width: 768px) {
+  .main-section .circle-img {
+    display: none;
+  }
+}
 
 .steps-section {
   background: #f7f4d5;
@@ -179,6 +191,9 @@ body .input-mata {
 }
 .steps-section img {
   height: 24px;
+  width: 24px;
+  -o-object-fit: contain;
+     object-fit: contain;
   margin: 0 10px;
   vertical-align: middle;
 }
@@ -191,6 +206,22 @@ body .input-mata {
   background: #f7f4d5;
   display: inline-block;
   padding: 0 10%;
+}
+@media (max-width: 991px) {
+  .steps-section {
+    padding: 30px;
+  }
+  .steps-section .step-item {
+    padding: 0 5%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+  }
+  .steps-section .step-item span {
+    display: inline-block;
+    min-width: 90%;
+  }
 }
 .steps-section::after {
   content: "";
@@ -218,7 +249,6 @@ body .input-mata {
 }
 .about-section .content {
   max-width: 700px;
-  min-height: 550px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -230,12 +260,16 @@ body .input-mata {
   text-align: justify;
 }
 .about-section .logo {
-  position: absolute;
-  top: 0;
-  bottom: 0;
   margin: auto;
-  height: 110%;
-  left: -20%;
+  width: 100%;
+  max-width: 400px;
+  display: block;
+}
+@media (max-width: 768px) {
+  .about-section .logo {
+    max-width: 200px;
+    margin-bottom: 40px;
+  }
 }
 
 .form-section {
@@ -269,6 +303,18 @@ body .input-mata {
 .form-section .send-form h2 {
   margin-bottom: 22px;
   font-size: 22px;
+}
+.form-section .logo {
+  margin: auto;
+  width: 100%;
+  max-width: 400px;
+  display: block;
+}
+@media (max-width: 768px) {
+  .form-section .logo {
+    max-width: 200px;
+    margin-bottom: 40px;
+  }
 }
 
 @keyframes float1 {
@@ -309,5 +355,58 @@ body .input-mata {
   }
   50% {
     transform: translate(20px, -10px);
+  }
+}
+@media (max-width: 991px) {
+  .min-navbar .navbar-collapse {
+    padding: 20px;
+  }
+}
+@media (max-width: 768px) {
+  .min-navbar .navbar-collapse {
+    flex-grow: 1;
+  }
+  .main-section .centerized-box {
+    padding-top: 150px;
+  }
+  .main-section .centerized-box h1 {
+    font-size: 40px;
+    padding: 30px 0;
+  }
+  .main-section .centerized-box .action-container {
+    margin-bottom: 50px;
+  }
+  .main-section .circle-img {
+    width: 150px;
+    height: 150px;
+  }
+  .main-section .floating-start-box,
+  .main-section .floating-end-box {
+    width: 100%;
+  }
+  .about-section {
+    padding: 30px;
+  }
+  .about-section .content {
+    gap: 30px;
+  }
+  .about-section .content p {
+    font-size: 18px;
+  }
+  .form-section {
+    padding: 30px 0;
+  }
+  .form-section .search-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .form-section .search-form label {
+    font-size: 18px;
+  }
+  .form-section .search-form input {
+    font-size: 18px;
+  }
+  .form-section .send-form h2 {
+    font-size: 18px;
   }
 }
