@@ -1,5 +1,4 @@
-﻿@inject IJSRuntime JSRuntime
-
+﻿ 
 <nav class="min-navbar navbar navbar-expand-lg bg-light">
     <div class="container">
         <button class="navbar-toggler"
@@ -58,7 +57,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="https://wa.me/00963959296148" target="_blank">
+                        <a class="nav-link" href="https://wa.me/+963959296148" target="_blank">
                             <img src="./images/thumbs/whatsapp_icon.svg" alt="WhatsApp" height="20" />
                             تواصل واتساب
                         </a>
@@ -108,12 +107,3 @@
 
 
  
-@code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("import", "./scripts/bootstrap.bundle.min.js");
-        }
-    }
-}
