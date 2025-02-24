@@ -4,6 +4,7 @@ using Dashboard.Core.WalletAggregate;
 using MediatR;
 using System.Reflection;
 using SharedKernel;
+using Dashboard.Core.ProjectAggregate;
 
 namespace Dashboard.Infrastructure.Data
 {
@@ -17,7 +18,8 @@ namespace Dashboard.Infrastructure.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

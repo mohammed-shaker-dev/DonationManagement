@@ -1,0 +1,74 @@
+﻿@page "/projects"
+@inject ProjectService ProjectService
+
+<section class="main-section">
+    <div class="centerized-box">
+        <h1>
+            <span class="r"><span class="text-primary">المشاريع </span> <span class="text-secondary"> الحالية </span></span>
+        </h1>
+        <div class="action-container">
+            <a class="btn btn-mata" href="/create-project">إضافة مشروع جديد</a>
+        </div>
+        @if (projects != null)
+        {
+            @foreach (var project in projects)
+            {
+                <div class="project-card">
+                    <h4>@project.Name</h4>
+                    <p>@project.Description</p>
+                    <p>@project.AdditionalText</p>
+                    <div>
+                        @foreach (var image in project.Images)
+                        {
+                            <img src="@image" alt="@project.Name" class="project-image" />
+                        }
+                    </div>
+                    <div>
+                        @foreach (var video in project.Videos)
+                        {
+                            <video controls>
+                                <source src="@video" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        }
+                    </div>
+                    <h5>Expenses</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Value</th>
+                                <th>Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in project.Expenses)
+                            {
+                                <tr>
+                                    <td>@expense.Name</td>
+                                    <td>@expense.Date.ToString("yyyy-MM-dd")</td>
+                                    <td>@expense.Value.ToString("C")</td>
+                                    <td>@expense.Code</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="action-container">
+                        <a class="btn btn-mata" href="/edit-project/@project.Id">تعديل</a>
+                        <a class="btn btn-mata" href="/delete-project/@project.Id">حذف</a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+@code {
+    private List<Project> projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await ProjectService.GetProjectsAsync();
+    }
+}

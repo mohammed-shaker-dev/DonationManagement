@@ -1,0 +1,84 @@
+﻿@page "/edit-project/{id:long}"
+@using Dashboard.BlazorApp.Services
+@inject ProjectService ProjectService
+@inject NavigationManager NavigationManager
+
+<h3>تعديل المشروع</h3>
+
+<EditForm Model="@project" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">اسم المشروع</label>
+        <InputText id="name" class="form-control" @bind-Value="project.Name" />
+    </div>
+    <div class="form-group">
+        <label for="description">الوصف</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="project.Description" />
+    </div>
+    <div class="form-group">
+        <label for="additionalText">نص إضافي</label>
+        <InputTextArea id="additionalText" class="form-control" @bind-Value="project.AdditionalText" />
+    </div>
+    <div class="form-group">
+        <label for="images">الصور</label>
+        <InputText id="images" class="form-control" @bind-Value="image" />
+        <button type="button" class="btn btn-secondary" @onclick="AddImage">إضافة صورة</button>
+        <ul>
+            @foreach (var img in project.Images)
+            {
+                <li>@img</li>
+            }
+        </ul>
+    </div>
+    <div class="form-group">
+        <label for="videos">الفيديوهات</label>
+        <InputText id="videos" class="form-control" @bind-Value="video" />
+        <button type="button" class="btn btn-secondary" @onclick="AddVideo">إضافة فيديو</button>
+        <ul>
+            @foreach (var vid in project.Videos)
+            {
+                <li>@vid</li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ</button>
+</EditForm>
+
+@code {
+    [Parameter] public long Id { get; set; }
+    private Project project = new Project { Images = new List<string>(), Videos = new List<string>() };
+    private string image;
+    private string video;
+
+    protected override async Task OnInitializedAsync()
+    {
+        project = await ProjectService.GetProjectByIdAsync(Id);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await ProjectService.UpdateProjectAsync(project);
+        NavigationManager.NavigateTo("/projects");
+    }
+
+    private void AddImage()
+    {
+        if (!string.IsNullOrEmpty(image))
+        {
+            project.Images.Add(image);
+            image = string.Empty;
+        }
+    }
+
+    private void AddVideo()
+    {
+        if (!string.IsNullOrEmpty(video))
+        {
+            project.Videos.Add(video);
+            video = string.Empty;
+        }
+    }
+}

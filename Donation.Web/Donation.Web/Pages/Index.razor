@@ -84,35 +84,7 @@
     </div>
 
 </section>
-<section class="form-section">
-    <div class="container">
-        <h2>معلومات المحافظ</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>اسم المحفظة</th>
-                    <th>المبلغ الإجمالي</th>
-                    <th>المبلغ المودع</th>
-                    <th>المبلغ المسحوب</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var wallet in wallets)
-                {
-                    if (wallet.DepositAmount.Amount > 0)
-                    {
-                        <tr>
-                            <td>@wallet.Name</td>
-                            <td>@wallet.TotalAmount @wallet.Currency.Code</td>
-                            <td>@wallet.DepositAmount @wallet.Currency.Code</td>
-                            <td>@wallet.WithdrawalAmount @wallet.Currency.Code</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</section>
+
 
 <section class="steps-section">
     <div class="container">
@@ -196,20 +168,46 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @*     @foreach (var transaction in transactions)
-                                    { *@
                                     <tr>
-                                        <td>@trx.Id</td>
-                                        <td>@trx.Amount</td>
+                                        <td>@trx.Code</td>
+                                        <td>@trx.Amount.ToString("N0")</td>
                                         <td>@trx.Currency</td>
                                         <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
                                     </tr>
-                                    @*   } *@
                                 </tbody>
                             </table>
                         </div>
                     </section>
                 }
+   <section class="form-section">
+     <div class="container">
+        <h2>معلومات المحافظ</h2>
+         <table class="table">
+            <thead>
+                <tr>
+                    <th>اسم المحفظة</th>
+                    <th>المبلغ الإجمالي</th>
+                    <th>المبلغ المودع</th>
+                    <th>المبلغ المسحوب</th>
+                </tr>
+            </thead>
+            <tbody>
+                 @foreach (var wallet in wallets)
+                 {
+                     if (wallet.DepositAmount.Amount > 0)
+                     {
+                 <tr>
+                     <td>@wallet.Name</td>
+                     <td>@wallet.TotalAmount.Amount.ToString("N0") </td>
+                     <td>@wallet.DepositAmount.Amount.ToString("N0")  </td>
+                     <td>@wallet.WithdrawalAmount.Amount.ToString("N0")  </td>
+                 </tr>
+                     }
+                 }
+            </tbody>
+          </table>
+       </div>
+    </section>
                 <div   class="send-form">
                     <h2>....شارك معنا للمساهمة</h2>
                     <div class="row">
