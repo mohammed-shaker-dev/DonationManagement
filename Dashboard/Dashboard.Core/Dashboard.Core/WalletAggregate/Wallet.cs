@@ -53,15 +53,25 @@ namespace Dashboard.Core.WalletAggregate
         }
         public Money GetAmmount()
         {
+            var amount = GetDepositAmount().Amount - GetWithdrawalAmount().Amount;  
+            return new Money(amount, Currency);
+        }
+        public Money GetDepositAmount()
+        {
             decimal inAmount = 0;
-            decimal outAmount = 0;
             if (_transactions.Any(t => t.TransactionType == SharedKernel.Enums.TransactionType.IN))
                 inAmount = _transactions.Where(t => t.TransactionType == SharedKernel.Enums.TransactionType.IN).Sum(t => t.Amount);
+          
+            return new Money(inAmount, Currency);
+        }  
+        public Money GetWithdrawalAmount()
+        {
+            decimal outAmount = 0;
+
             if (_transactions.Any(t => t.TransactionType == SharedKernel.Enums.TransactionType.OUT))
-                outAmount = _transactions.Where(t=>t.TransactionType==SharedKernel.Enums.TransactionType.OUT).Sum(t => t.Amount);
-            return new Money(inAmount-outAmount,Currency);
+                outAmount = _transactions.Where(t => t.TransactionType == SharedKernel.Enums.TransactionType.OUT).Sum(t => t.Amount);
+            return new Money(outAmount, Currency);
         }
-        
         public WalletDTO ToDto()
         {
             return new WalletDTO
@@ -70,7 +80,9 @@ namespace Dashboard.Core.WalletAggregate
                 Name = Name,
                 Currency = Currency,
                 Transactions = Transactions.Select(t => t.ToDto(Currency.Code)).ToList(),
-                TotalAmount = GetAmmount()
+                TotalAmount = GetAmmount(),
+                DepositAmount = GetDepositAmount(),
+                WithdrawalAmount = GetWithdrawalAmount()
             };
         }
     }

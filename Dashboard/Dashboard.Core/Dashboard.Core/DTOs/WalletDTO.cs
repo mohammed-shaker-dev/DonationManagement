@@ -16,5 +16,7 @@ namespace Dashboard.Core.DTOs
         public List<TransactionDTO> Transactions { get; set; } = new List<TransactionDTO>();
 
         public Money TotalAmount { get; set; }
+        public Money DepositAmount { get; set; }
+        public Money WithdrawalAmount { get; set; }
     }
 }
