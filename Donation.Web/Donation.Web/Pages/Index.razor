@@ -25,7 +25,7 @@
         <div class="action-container">
             <a class="btn btn-mata" href="/projects">تصفح المشاريع</a>
         </div>
-@*         <div class="action-container">
+        @*         <div class="action-container">
             <a class="btn" href="#form-section">ابدأ البحث</a>
         </div> *@
 
@@ -79,17 +79,39 @@
             <div class="col-4">
                 <img src="./images/thumbs/44.jpg" class="w-100 rounded-xl" />
             </div>
-        
+
         </div>
     </div>
 
-
-
-
-
-
-
-     
+</section>
+<section class="form-section">
+    <div class="container">
+        <h2>معلومات المحافظ</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>اسم المحفظة</th>
+                    <th>المبلغ الإجمالي</th>
+                    <th>المبلغ المودع</th>
+                    <th>المبلغ المسحوب</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var wallet in wallets)
+                {
+                    if (wallet.DepositAmount.Amount > 0)
+                    {
+                        <tr>
+                            <td>@wallet.Name</td>
+                            <td>@wallet.TotalAmount @wallet.Currency.Code</td>
+                            <td>@wallet.DepositAmount @wallet.Currency.Code</td>
+                            <td>@wallet.WithdrawalAmount @wallet.Currency.Code</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </section>
 
 <section class="steps-section">
@@ -117,28 +139,28 @@
     </div>
 </section>
 <section id="about" class="about-section">
-      <div class="container">
+    <div class="container">
         <div class="row">
-          <div class="col-md-6 order-2 order-md-1">
-          <div class="content">
-            <p>
+            <div class="col-md-6 order-2 order-md-1">
+                <div class="content">
+                    <p>
                         مبادرة اللاذقية، نحن أهلها
 
                         جاءت هذه المبادرة من إيماننا العميق بأن مدينة اللاذقية هي لنا، بعد أن تحررت من عصابات الإجرام. وانطلاقًا من هذا الإيمان وما يترتب عليه من مسؤوليات، قررنا إطلاق هذه المبادرة للنهوض بمدينتنا الجميلة، وإعادة إعمارها، لنستعيد ملامحها الحضارية التي سُلبت منها.
-            </p>
-            <p>
+                    </p>
+                    <p>
                         تهدف المبادرة إلى توحيد الجهود بين أهالي المدينة الكرام لتنفيذ مشاريع خدمية تعود بالنفع على جميع سكانها، وتسهم في تحسين جودة الحياة واستعادة رونق اللاذقية.
                     </p>
-          </div>
-        </div>
+                </div>
+            </div>
 
-        <div class="col-md-6 order-1 order-md-2">
-          <img src="./images/logo-w.svg" class="logo" />
+            <div class="col-md-6 order-1 order-md-2">
+                <img src="./images/logo-w.svg" class="logo" />
+            </div>
         </div>
-      </div>
-      </div>
-    </section>
- 
+    </div>
+</section>
+
 
 <section id="search" class="form-section">
     <div class="container">
@@ -152,11 +174,11 @@
                 <EditForm Model="@searchModel" OnValidSubmit="@SearchDonation" class="search-form">
                     <label>ادخل الكود:</label>
                     <InputText @bind-Value="searchModel.Code" 
-                            type="text"
-                           name="code"
-                           placeholder="كود التبرع"
-                           class="input-mata"
-                           required />
+                    type="text"
+                    name="code"
+                    placeholder="كود التبرع"
+                    class="input-mata"
+                    required />
                     <button type="submit" class="btn btn-mata">بحث</button>
                 </EditForm>
                 @if (showTransactionInfo)
@@ -174,15 +196,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @*     @foreach (var transaction in transactions)
+                                    @*     @foreach (var transaction in transactions)
                                     { *@
-                                        <tr>
-                                            <td>@trx.Code</td>
-                                           <td>@trx.Amount.ToString("N0")</td>
-                                            <td>@trx.Currency</td>
-                                            <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                        </tr>
-                                  @*   } *@
+                                    <tr>
+                                        <td>@trx.Id</td>
+                                        <td>@trx.Amount</td>
+                                        <td>@trx.Currency</td>
+                                        <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                    </tr>
+                                    @*   } *@
                                 </tbody>
                             </table>
                         </div>
@@ -195,12 +217,12 @@
                         <h2>حساب الحملة :</h2>
                         <h2>7282272101243872</h2>
                         <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقا عن طريق منصتنا</p>
-                        
+
                     </div>
-                  @*   <div class="text-end">
+                    @*   <div class="text-end">
                         <a href="/donate" class="btn btn-mata">تبرع</a>
                     </div> *@
-       
+
                 </div>
             </div>
         </div>
@@ -211,7 +233,12 @@
     private DonationSearchModel searchModel = new();
     private TransactionDTO trx;
     private WalletDTO wallet;
-
+    private List<WalletDTO> wallets = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        wallets =await DonationService.GetAllAsync();
+    }
     private async Task SearchDonation()
     {
         wallet = await DonationService.GetTransactionByCode(searchModel.Code);
@@ -228,19 +255,12 @@
     }
     private void ToggleTransactionInfo()
     {
-        showTransactionInfo = !showTransactionInfo;
+        if (trx != null)
+            showTransactionInfo = true;
+        else
+            showTransactionInfo = !showTransactionInfo;
 
     }
-
+   
 }
-@code {
-
-    private List<TransactionDTO> transactions = new List<TransactionDTO>
-    {
-        new TransactionDTO { Code = "1", Amount = 100,Currency="USD", CreatedDate = DateTime.Now,Comment="t comment " },
-        new TransactionDTO { Code = "2", Amount = 200,Currency="SYP", CreatedDate = DateTime.Now.AddDays(-1) ,Comment="t comment 2 " }
-    };
-
-
  
-}
