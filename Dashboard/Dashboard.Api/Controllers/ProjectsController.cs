@@ -47,7 +47,6 @@ namespace Dashboard.Api.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<ActionResult> Create([FromForm] ProjectRequestModel projectRequest)
         {
             var project = new Project(projectRequest.Name, projectRequest.Description, projectRequest.AdditionalText);

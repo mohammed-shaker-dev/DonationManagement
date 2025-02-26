@@ -1,4 +1,5 @@
 using Ardalis.GuardClauses;
+using Dashboard.Core.DTOs;
 using Dashboard.Core.ValueObjects;
 using SharedKernel;
 using SharedKernel.Interfaces;
@@ -37,11 +38,11 @@ namespace Dashboard.Core.ProjectAggregate
             _expenses.Add(expense);
         }
 
-        public void UpdateExpense(long expenseId, string name, DateTime date, decimal value, string code)
+        public void UpdateExpense(long expenseId, string name, DateTime date, Money amount, string code)
         {
             var expense = _expenses.FirstOrDefault(e => e.Id == expenseId);
             Guard.Against.Null(expense, nameof(expense));
-            expense.Update(name, date, value, code);
+            expense.Update(name, date, amount, code);
         }
 
         public void DeleteExpense(long expenseId)
