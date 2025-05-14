@@ -179,9 +179,13 @@
                         </div>
                     </section>
                 }
+
+                @if (wallets != null && wallets.Count>0){
+
+               
    <section class="form-section">
      <div class="container">
-        <h2>معلومات المحافظ</h2>
+        <h2>معلومات الحملة</h2>
          <table class="table">
             <thead>
                 <tr>
@@ -192,9 +196,9 @@
                 </tr>
             </thead>
             <tbody>
-                 @foreach (var wallet in wallets)
+              @foreach (var wallet in wallets ?? new List<WalletDTO>())
                  {
-                     if (wallet.DepositAmount.Amount > 0)
+                     if (wallet?.DepositAmount?.Amount > 0)
                      {
                  <tr>
                      <td>@wallet.Name</td>
@@ -207,16 +211,24 @@
             </tbody>
           </table>
        </div>
-    </section>
+         </section>
+                }
+  
                 <div   class="send-form">
                     <h2>....شارك معنا للمساهمة</h2>
                     <div class="row">
-                        <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك التجاري .</p>
-                        <h2>حساب الحملة :</h2>
-                        <h2>7282272101243872</h2>
+                        <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي .</p>
+                        <h2>  حساب الحملة للتحويل لدى المصرف المركزي</h2>
+                        <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
+                        <h2>  رقم الحساب : 200020600000</h2>
+                        <hr/>
+                        <h2>  وللإيداع النقدي لدى البنك المركزي</h2>
+                        <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
+                        <h2>  رقم الحساب : 7826761204128816</h2>
+
                         <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقا عن طريق منصتنا</p>
 
-                    </div>
+                    </div>            
                     @*   <div class="text-end">
                         <a href="/donate" class="btn btn-mata">تبرع</a>
                     </div> *@
@@ -226,6 +238,7 @@
         </div>
     </div>
 </section>
+              
 @code {
     private bool showTransactionInfo = false;
     private DonationSearchModel searchModel = new();
@@ -235,7 +248,16 @@
     
     protected override async Task OnInitializedAsync()
     {
-        wallets =await DonationService.GetAllAsync();
+        try
+        {
+            wallets = await DonationService.GetAllAsync() ?? new List<WalletDTO>();
+        }
+        catch (Exception ex)
+        {
+            // Log exception 
+            wallets = new List<WalletDTO>();
+        }
+        showTransactionInfo = false; // Ensure the transaction info is hidden on page refresh  
     }
     private async Task SearchDonation()
     {

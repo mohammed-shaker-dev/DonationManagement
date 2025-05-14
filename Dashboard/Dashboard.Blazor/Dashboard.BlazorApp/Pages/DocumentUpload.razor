@@ -1,0 +1,223 @@
+﻿```razor
+@using Microsoft.AspNetCore.Components.Forms
+@using Dashboard.BlazorApp.Services
+@inject FileUploadService FileUploadService
+@inject IJSRuntime JSRuntime
+
+<div class="document-upload-container">
+    <div class="upload-zone @(dragging ? "dragging" : "")"
+         @ondragenter="HandleDragEnter"
+         @ondragleave="HandleDragLeave"
+    @ondragover:preventDefault
+         @ondrop="HandleDrop">
+
+        <InputFile OnChange="HandleFileSelection" multiple="@IsMultiple"
+                   accept=".pdf,.doc,.docx,.xls,.xlsx"
+                   class="file-input" id="@inputId" />
+
+        <label for="@inputId">
+            @if (uploading)
+            {
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>جاري الرفع... @uploadProgress%</p>
+                </div>
+            }
+            else
+            {
+                <div class="upload-placeholder">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    <p>اسحب المستندات هنا أو انقر للاختيار</p>
+                    <small>(.pdf, .doc, .docx, .xls, .xlsx - الحجم الأقصى 50 ميجابايت)</small>
+                </div>
+            }
+        </label>
+    </div>
+
+    @if (UploadedDocuments != null && UploadedDocuments.Any())
+    {
+        <div class="document-list mt-3">
+            <h6>المستندات المرفقة</h6>
+            <div class="list-group">
+                @foreach (var doc in UploadedDocuments)
+                {
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi @GetFileIcon(doc.Url)"></i>
+                            <span class="ms-2">@doc.FileName</span>
+                        </div>
+                        <div>
+                            <a href="@doc.Url" target="_blank" class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemoveDocument(doc)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .document-upload-container {
+        margin-bottom: 1rem;
+    }
+
+    .upload-zone {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .upload-zone:hover, .upload-zone.dragging {
+            border-color: var(--bs-primary);
+            background-color: rgba(67, 147, 111, 0.05);
+        }
+
+    .upload-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #666;
+    }
+
+        .upload-placeholder i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--bs-primary);
+        }
+
+    .file-input {
+        display: none;
+    }
+</style>
+
+@code {
+    [Parameter] public List<DocumentInfo> UploadedDocuments { get; set; } = new List<DocumentInfo>();
+    [Parameter] public EventCallback<List<DocumentInfo>> UploadedDocumentsChanged { get; set; }
+    [Parameter] public bool IsMultiple { get; set; } = true;
+
+    private bool dragging = false;
+    private bool uploading = false;
+    private int uploadProgress = 0;
+    private string inputId = $"document-upload-{Guid.NewGuid()}";
+
+    public class DocumentInfo
+    {
+        public string Url { get; set; }
+        public string FileName { get; set; }
+    }
+
+    private void HandleDragEnter()
+    {
+        dragging = true;
+    }
+
+    private void HandleDragLeave()
+    {
+        dragging = false;
+    }
+
+    private async Task HandleDrop(DragEventArgs e)
+    {
+        dragging = false;
+        // Note: We're still using the InputFile for handling the actual file
+        // This is a UI enhancement, the files will be processed by HandleFileSelection
+    }
+
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            uploading = true;
+
+            var files = e.GetMultipleFiles(10); // Max 10 files at once
+            var documents = new List<DocumentInfo>();
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    // Check file size
+                    if (file.Size > 50 * 1024 * 1024) // 50MB
+                    {
+                        await JSRuntime.InvokeVoidAsync("alert", $"الملف {file.Name} أكبر من الحجم المسموح به (50 ميجابايت)");
+                        continue;
+                    }
+
+                    // Upload file
+                    var result = await FileUploadService.UploadDocumentAsync(file);
+
+                    if (!string.IsNullOrEmpty(result.Url))
+                    {
+                        var docInfo = new DocumentInfo { Url = result.Url, FileName = result.FileName };
+
+                        if (IsMultiple)
+                        {
+                            documents.Add(docInfo);
+                        }
+                        else
+                        {
+                            // If single mode, replace any existing documents
+                            UploadedDocuments.Clear();
+                            UploadedDocuments.Add(docInfo);
+                            await UploadedDocumentsChanged.InvokeAsync(UploadedDocuments);
+                            uploading = false;
+                            return;
+                        }
+                    }
+
+                    uploadProgress = (int)((documents.Count / (float)files.Count) * 100);
+                }
+                catch (Exception ex)
+                {
+                    await JSRuntime.InvokeVoidAsync("alert", $"حدث خطأ أثناء رفع الملف {file.Name}: {ex.Message}");
+                }
+            }
+
+            // Add uploaded documents to the list
+            if (documents.Any())
+            {
+                UploadedDocuments.AddRange(documents);
+                await UploadedDocumentsChanged.InvokeAsync(UploadedDocuments);
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"حدث خطأ: {ex.Message}");
+        }
+        finally
+        {
+            uploading = false;
+            uploadProgress = 0;
+        }
+    }
+
+    private async Task RemoveDocument(DocumentInfo doc)
+    {
+        UploadedDocuments.Remove(doc);
+        await UploadedDocumentsChanged.InvokeAsync(UploadedDocuments);
+    }
+
+    private string GetFileIcon(string url)
+    {
+        var extension = Path.GetExtension(url).ToLowerInvariant();
+
+        return extension switch
+        {
+            ".pdf" => "bi-file-earmark-pdf",
+            ".doc" or ".docx" => "bi-file-earmark-word",
+            ".xls" or ".xlsx" => "bi-file-earmark-excel",
+            _ => "bi-file-earmark"
+        };
+    }
+}
+```

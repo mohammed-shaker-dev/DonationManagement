@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,11 @@ if (app.Environment.IsDevelopment())
 }
 await app.SeedDatabaseAsync();
 app.UseCors("AllowAll");
+// Add this to Program.cs
+app.UseStaticFiles(); // Default wwwroot static files
+
+// Add additional path for uploads
+app.UseStaticFiles();
 app.UseMiddleware<ApiKeyMiddleware>();
 app.UseHttpsRedirection();
 

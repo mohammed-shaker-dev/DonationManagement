@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Dashboard.Infrastructure\Dashboard.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -1,78 +1,280 @@
-﻿@page "/create-project"
+﻿
+@page "/create-project"
 @using Dashboard.BlazorApp.Services
+@using Dashboard.Core.ProjectAggregate
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
 @inject ProjectService ProjectService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@attribute [Authorize(Roles = "Administrator")]
 
-<h3>إضافة مشروع جديد</h3>
+<section class="main-section">
+    <div class="centerized-box">
+        <h1>
+            <span class="r"><span class="text-primary">إضافة </span> <span class="text-secondary">مشروع جديد</span></span>
+        </h1>
 
-<EditForm Model="@project" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <EditForm Model="@projectRequest" OnValidSubmit="@HandleValidSubmit" class="project-form">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-4">
+                <label for="startedDate" class="form-label">تاريخ البدء</label>
+                <InputDate id="startedDate" class="form-control" @bind-Value="projectRequest.StartedDate" />
+            </div>
 
-    <div class="form-group">
-        <label for="name">اسم المشروع</label>
-        <InputText id="name" class="form-control" @bind-Value="project.Name" />
-    </div>
-    <div class="form-group">
-        <label for="description">الوصف</label>
-        <InputTextArea id="description" class="form-control" @bind-Value="project.Description" />
-    </div>
-    <div class="form-group">
-        <label for="additionalText">نص إضافي</label>
-        <InputTextArea id="additionalText" class="form-control" @bind-Value="project.AdditionalText" />
-    </div>
-    <div class="form-group">
-        <label for="images">الصور</label>
-        <InputText id="images" class="form-control" @bind-Value="image" />
-        <button type="button" class="btn btn-secondary" @onclick="AddImage">إضافة صورة</button>
-        <ul>
-            @foreach (var img in project.Images)
-            {
-                <li>@img</li>
-            }
-        </ul>
-    </div>
-    <div class="form-group">
-        <label for="videos">الفيديوهات</label>
-        <InputText id="videos" class="form-control" @bind-Value="video" />
-        <button type="button" class="btn btn-secondary" @onclick="AddVideo">إضافة فيديو</button>
-        <ul>
-            @foreach (var vid in project.Videos)
-            {
-                <li>@vid</li>
-            }
-        </ul>
-    </div>
+            <div class="mb-4">
+                <label for="completedDate" class="form-label">تاريخ الإنجاز</label>
+                <InputDate id="completedDate" class="form-control" @bind-Value="projectRequest.CompletedDate" />
+            </div>
+            <div class="mb-4">
+                <label for="name" class="form-label">اسم المشروع</label>
+                <InputText id="name" class="form-control" @bind-Value="projectRequest.Name" />
+            </div>
 
-    <button type="submit" class="btn btn-primary">حفظ</button>
-</EditForm>
+            <div class="mb-4">
+                <label for="description" class="form-label">الوصف</label>
+                <InputTextArea id="description" class="form-control" @bind-Value="projectRequest.Description" rows="4" />
+            </div>
+
+            <div class="mb-4">
+                <label for="additionalText" class="form-label">نص إضافي</label>
+                <InputTextArea id="additionalText" class="form-control" @bind-Value="projectRequest.AdditionalText" rows="3" />
+            </div>
+
+            <div class="mb-4">
+                <label for="walletName" class="form-label">المحفظة</label>
+                <InputSelect id="walletName" class="form-control" @bind-Value="projectRequest.WalletName">
+                    <option value="SYP">SYP Wallet</option>
+                    <option value="USD">USD Wallet</option>
+                </InputSelect>
+            </div>
+
+            <div class="mb-4">
+                <h4>صور المشروع</h4>
+                <ImageUpload UploadedUrls="@projectRequest.Images"
+                             UploadedUrlsChanged="@(async (urls) => { projectRequest.Images = urls; StateHasChanged(); })"
+                             Multiple="true" />
+                <h4>الصور</h4>
+                <div class="d-flex mb-2">
+                    <InputText class="form-control me-2" @bind-Value="newImage" placeholder="أدخل رابط الصورة" />
+                    <button type="button" class="btn btn-secondary" @onclick="AddImage">إضافة</button>
+                </div>
+
+               @*  @if (projectRequest.Images.Any())
+                {
+                        <div class="row mt-3">
+                        @foreach (var image in projectRequest.Images)
+                        {
+                                    <div class="col-md-4 mb-3 position-relative">
+                                        <img src="@image" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                                                @onclick="() => RemoveImage(image)">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                        }
+                        </div>
+                } *@
+            </div>
+
+            <div class="mb-4">
+                <h4>الفيديوهات</h4>
+                <div class="d-flex mb-2">
+                    <InputText class="form-control me-2" @bind-Value="newVideo" placeholder="أدخل رابط الفيديو" />
+                    <button type="button" class="btn btn-secondary" @onclick="AddVideo">إضافة</button>
+                </div>
+
+                @if (projectRequest.Videos.Any())
+                {
+                        <div class="list-group mt-3">
+                        @foreach (var video in projectRequest.Videos)
+                        {
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-truncate" style="max-width: 80%;">@video</span>
+                                        <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemoveVideo(video)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                        }
+                        </div>
+                }
+            </div>
+
+            <div class="mb-4">
+                <h4>المصاريف</h4>
+                <button type="button" class="btn btn-secondary mb-3" @onclick="AddNewExpense">إضافة مصروف جديد</button>
+
+                @if (projectRequest.Expenses.Any())
+                {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>القيمة</th>
+                                        <th>التاريخ</th>
+                                        <th>الكود</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @for (int i = 0; i < projectRequest.Expenses.Count; i++)
+                                {
+                                    var index = i;
+                                            <tr>
+                                                <td>
+                                                    <InputText class="form-control" @bind-Value="projectRequest.Expenses[index].Name" />
+                                                </td>
+                                                <td>
+                                                    <InputNumber class="form-control" @bind-Value="projectRequest.Expenses[index].Value" />
+                                                </td>
+                                                <td>
+                                                    <InputDate class="form-control" @bind-Value="projectRequest.Expenses[index].Date" />
+                                                </td>
+                                                <td>
+                                                    <InputText class="form-control" @bind-Value="projectRequest.Expenses[index].Code" />
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger" 
+                                                            @onclick="() => RemoveExpense(index)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="1">الإجمالي:</th>
+                                        <th>@projectRequest.Expenses.Sum(e => e.Value).ToString("N0")</th>
+                                        <th colspan="3"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" @onclick="GoToProjects">إلغاء</button>
+                <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                    @if (isSubmitting)
+                    {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    }
+                    حفظ
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</section>
+
+<style>
+    .project-form {
+        background-color: #f9f9f9;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+</style>
 
 @code {
-    private Project project = new Project { Images = new List<string>(), Videos = new List<string>() };
-    private string image;
-    private string video;
+    private CreateProjectRequest projectRequest = new CreateProjectRequest
+        {
+            Name = "",
+            Description = "",
+            AdditionalText = "",
+            Images = new List<string>(),
+            Videos = new List<string>(),
+            Expenses = new List<CreateExpenseRequest>(),
+            WalletName = "SYP" // Default value
+        };
+    private List<DocumentUpload.DocumentInfo> documents = new List<DocumentUpload.DocumentInfo>();
 
+    private string newImage = string.Empty;
+    private string newVideo = string.Empty;
+    private bool isSubmitting = false;
     private async Task HandleValidSubmit()
     {
-        await ProjectService.CreateProjectAsync(project);
-        NavigationManager.NavigateTo("/projects");
+        isSubmitting = true;
+
+        try
+        {
+    
+            var result = await ProjectService.CreateProjectAsync(projectRequest);
+
+            if (result)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "تم إنشاء المشروع بنجاح!");
+                NavigationManager.NavigateTo("/projects");
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "حدث خطأ أثناء إنشاء المشروع");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"خطأ: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
     }
 
     private void AddImage()
     {
-        if (!string.IsNullOrEmpty(image))
+        if (!string.IsNullOrWhiteSpace(newImage))
         {
-            project.Images.Add(image);
-            image = string.Empty;
+            projectRequest.Images.Add(newImage);
+            newImage = string.Empty;
         }
+    }
+
+    private void RemoveImage(string image)
+    {
+        projectRequest.Images.Remove(image);
     }
 
     private void AddVideo()
     {
-        if (!string.IsNullOrEmpty(video))
+        if (!string.IsNullOrWhiteSpace(newVideo))
         {
-            project.Videos.Add(video);
-            video = string.Empty;
+            projectRequest.Videos.Add(newVideo);
+            newVideo = string.Empty;
         }
     }
+
+    private void RemoveVideo(string video)
+    {
+        projectRequest.Videos.Remove(video);
+    }
+
+    private void AddNewExpense()
+    {
+        projectRequest.Expenses.Add(new CreateExpenseRequest
+            {
+                Name = "",
+                Date = DateTime.Now,
+                Value = 0,
+                Code = $"EXP-{DateTime.Now.ToString("yyyyMMdd")}-{(projectRequest.Expenses.Count + 1).ToString("D3")}",
+                CreateTransaction = true,
+                WalletName = projectRequest.WalletName
+            });
+    }
+
+    private void RemoveExpense(int index)
+    {
+        if (index >= 0 && index < projectRequest.Expenses.Count)
+        {
+            projectRequest.Expenses.RemoveAt(index);
+        }
+    }
+    private void GoToProjects()
+    {
+        NavigationManager.NavigateTo("/projects");
+    }
 }
+ 

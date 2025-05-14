@@ -3,41 +3,103 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SharedKernel.Blazor.Shared;
 
 namespace Dashboard.BlazorApp.Services
 {
     public class ProjectService
     {
         private readonly HttpClient _httpClient;
+        private readonly HttpService _httpService;
 
-        public ProjectService(HttpClient httpClient)
+        public ProjectService(HttpClient httpClient, HttpService httpService)
         {
             _httpClient = httpClient;
+            _httpService = httpService;
         }
 
-        public async Task<List<Project>> GetProjectsAsync()
+        public async Task<List<ProjectDTO>> GetProjectsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Project>>("api/projects");
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<ProjectDTO>>("projects");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return new List<ProjectDTO>();
+            }
         }
 
-        public async Task<Project> GetProjectByIdAsync(long id)
+        public async Task<ProjectDTO> GetProjectByIdAsync(long id)
         {
-            return await _httpClient.GetFromJsonAsync<Project>($"api/projects/{id}");
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<ProjectDTO>($"projects/{id}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return null;
+            }
         }
 
-        public async Task CreateProjectAsync(Project project)
+        public async Task<bool> CreateProjectAsync(CreateProjectRequest project)
         {
-            await _httpClient.PostAsJsonAsync("api/projects", project);
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("projects", project);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task UpdateProjectAsync(Project project)
+        public async Task<bool> UpdateProjectAsync(long id, UpdateProjectRequest project)
         {
-            await _httpClient.PutAsJsonAsync($"api/projects/{project.Id}", project);
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"projects/{id}", project);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task DeleteProjectAsync(long id)
+        public async Task<bool> DeleteProjectAsync(long id)
         {
-            await _httpClient.DeleteAsync($"api/projects/{id}");
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"projects/{id}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> AddExpenseAsync(long projectId, CreateExpenseRequest expense)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"projects/{projectId}/expenses", expense);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return false;
+            }
         }
     }
+
+ 
 }

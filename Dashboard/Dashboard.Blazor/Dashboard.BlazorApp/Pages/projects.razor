@@ -1,5 +1,12 @@
-﻿@page "/projects"
+﻿
+@page "/projects"
+@using Dashboard.Core.ProjectAggregate
+@using Dashboard.BlazorApp.Services
+@using Microsoft.AspNetCore.Authorization 
 @inject ProjectService ProjectService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
 
 <section class="main-section">
     <div class="centerized-box">
@@ -9,66 +16,138 @@
         <div class="action-container">
             <a class="btn btn-mata" href="/create-project">إضافة مشروع جديد</a>
         </div>
-        @if (projects != null)
+
+        @if (loading)
         {
-            @foreach (var project in projects)
-            {
-                <div class="project-card">
-                    <h4>@project.Name</h4>
-                    <p>@project.Description</p>
-                    <p>@project.AdditionalText</p>
-                    <div>
-                        @foreach (var image in project.Images)
-                        {
-                            <img src="@image" alt="@project.Name" class="project-image" />
-                        }
+                <div class="text-center mt-4">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
-                    <div>
-                        @foreach (var video in project.Videos)
-                        {
-                            <video controls>
-                                <source src="@video" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        }
-                    </div>
-                    <h5>Expenses</h5>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th>Value</th>
-                                <th>Code</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var expense in project.Expenses)
-                            {
-                                <tr>
-                                    <td>@expense.Name</td>
-                                    <td>@expense.Date.ToString("yyyy-MM-dd")</td>
-                                    <td>@expense.Value.ToString("C")</td>
-                                    <td>@expense.Code</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <div class="action-container">
-                        <a class="btn btn-mata" href="/edit-project/@project.Id">تعديل</a>
-                        <a class="btn btn-mata" href="/delete-project/@project.Id">حذف</a>
-                    </div>
+                    <p>جاري تحميل المشاريع...</p>
                 </div>
-            }
+        }
+        else if (projects == null || !projects.Any())
+        {
+                <div class="alert alert-info mt-4">
+                    لا توجد مشاريع حالية. قم بإضافة مشروع جديد.
+                </div>
+        }
+        else
+        {
+                <div class="row">
+                @foreach (var project in projects)
+                {
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="project-card card h-100">
+                            @if (project.Images != null && project.Images.Any())
+                            {
+                                            <img src="@project.Images.First()" class="card-img-top project-thumbnail" alt="@project.Name" />
+                            }
+                            else
+                            {
+                                            <div class="card-img-top project-thumbnail bg-light d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                            }
+                                    <div class="card-body">
+                                        <h5 class="card-title">@project.Name</h5>
+                                        <p class="card-text text-truncate">@project.Description</p>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge @GetStatusBadgeClass(project.Status)">@project.Status</span>
+                                            <span class="text-muted small">@FormatDate(project.CreatedDate)</span>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong>الميزانية:</strong>
+                                            <span>@project.TotalBudget.ToString("N0") ل.س</span>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <a href="/project-details/@project.Id" class="btn btn-sm btn-primary">تفاصيل</a>
+                                            <div>
+                                                <a href="/edit-project/@project.Id" class="btn btn-sm btn-secondary me-1">تعديل</a>
+                                                <button @onclick="() => DeleteProject(project.Id)" class="btn btn-sm btn-danger">حذف</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                }
+                </div>
         }
     </div>
 </section>
 
+<style>
+    .project-thumbnail {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .project-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+</style>
+
 @code {
-    private List<Project> projects;
+    private List<ProjectDTO> projects;
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        projects = await ProjectService.GetProjectsAsync();
+        loading = true;
+        try
+        {
+            projects = await ProjectService.GetProjectsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading projects: {ex.Message}");
+            // Could show error message to user
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task DeleteProject(long projectId)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "هل أنت متأكد من رغبتك في حذف هذا المشروع؟"))
+        {
+            var result = await ProjectService.DeleteProjectAsync(projectId);
+            if (result)
+            {
+                // Remove from the local list
+                projects = projects.Where(p => p.Id != projectId).ToList();
+                StateHasChanged();
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "حدث خطأ أثناء حذف المشروع");
+            }
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Planned" => "bg-info",
+            "InProgress" => "bg-primary",
+            "Completed" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string FormatDate(DateTime date)
+    {
+        return date.ToString("yyyy-MM-dd");
     }
 }

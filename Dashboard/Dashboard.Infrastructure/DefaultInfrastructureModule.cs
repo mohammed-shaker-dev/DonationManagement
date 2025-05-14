@@ -1,5 +1,8 @@
-﻿using Dashboard.Core.Interfaces;
+﻿using Dashboard.Core.Events;
+using Dashboard.Core.Interfaces;
 using Dashboard.Infrastructure.Data;
+using Dashboard.Infrastructure.EventHandlers;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Interfaces;
 using System;
@@ -31,6 +34,10 @@ namespace Dashboard.Infrastructure
             services.AddScoped(typeof(EfRepository<>));
             services.AddScoped(typeof(IEmailSender), typeof(EmailSender));
             services.AddScoped<AppDbContextSeed>();
+            services.AddScoped<INotificationHandler<TransactionCreatedEvent>, TransactionCreatedEventHandler>();
+            services.AddScoped<INotificationHandler<TransactionUpdatedEvent>, TransactionUpdatedEventHandler>();
+            services.AddScoped<INotificationHandler<TransactionDeletedEvent>, TransactionDeletedEventHandler>();
+
 
         }
         private static void RegisterDevelopmentOnlyDependencies(IServiceCollection services)

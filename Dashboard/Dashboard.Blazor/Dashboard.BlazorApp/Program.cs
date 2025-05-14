@@ -22,7 +22,8 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.AddScoped<HttpService>();
 builder.Services.AddScoped<WalletService>();
-
+builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<FileUploadService>();
 builder.Services.AddOidcAuthentication(options =>
 {
     // Configure your authentication provider options here.

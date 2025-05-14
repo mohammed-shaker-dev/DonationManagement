@@ -22,6 +22,8 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.AddScoped<HttpService>();
 builder.Services.AddScoped<DonationService>();
+builder.Services.AddScoped<ProjectServicePublic>();
+ 
 builder.Services.AddMemoryCache();
 
 await builder.Build().RunAsync();
