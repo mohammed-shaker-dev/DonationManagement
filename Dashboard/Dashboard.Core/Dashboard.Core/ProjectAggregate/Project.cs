@@ -43,7 +43,7 @@ namespace Dashboard.Core.ProjectAggregate
         private readonly List<string> _videos;
         public IEnumerable<string> Videos => _videos.AsReadOnly();
 
-        public decimal TotalBudget => _expenses.Sum(e => e.Value);
+        public decimal TotalBudget => _expenses.Sum(e => e.Amount.Amount);
         // Add method to update dates
         public void UpdateDates(DateTime? startedDate, DateTime? completedDate)
         {
@@ -133,7 +133,7 @@ namespace Dashboard.Core.ProjectAggregate
                     Id = e.Id,
                     Name = e.Name,
                     Date = e.Date,
-                    Value = e.Value,
+                    Value = e.Amount.Amount,
                     Code = e.Code
                 }).ToList()
             };

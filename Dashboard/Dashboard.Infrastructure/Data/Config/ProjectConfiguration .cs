@@ -70,9 +70,19 @@ namespace Dashboard.Infrastructure.Data.Config
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(e => e.Value)
-                .HasColumnType("decimal(18,2)")
-                .IsRequired();
+            // Configure Money as an owned entity
+            builder.OwnsOne(e => e.Amount, a =>
+            {
+                a.Property(p => p.Amount)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+
+                // Configure the nested Currency owned entity
+                a.OwnsOne(m => m.Currency, c =>
+                {
+                    c.Property(p => p.Code).HasColumnName("CurrencyCode");
+                });
+            });
 
             builder.Property(e => e.Date)
                 .IsRequired();

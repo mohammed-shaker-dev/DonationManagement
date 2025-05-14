@@ -8,6 +8,14 @@ namespace Dashboard.Core.ValueObjects
     {
         public decimal Amount { get; private set; }
         public Currency Currency { get; private set; }
+        private Money() { }
+
+        public Money(decimal amount )
+        {
+            Guard.Against.Negative(amount, nameof(amount));
+            Amount = amount;
+            Currency = new Currency("SYP");
+        }
         public Money(decimal amount,Currency currency)
         {
             Guard.Against.Negative(amount,nameof(amount));

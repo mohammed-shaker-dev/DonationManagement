@@ -2,6 +2,7 @@
 using Dashboard.Core.DTOs;
 using Dashboard.Core.ProjectAggregate;
 using Dashboard.Core.ProjectAggregate.Specifications;
+using Dashboard.Core.ValueObjects;
 using Dashboard.Core.WalletAggregate;
 using Dashboard.Core.WalletAggregate.Specifications;
 using Microsoft.AspNetCore.Authorization;
@@ -106,7 +107,7 @@ namespace Dashboard.Api.Controllers
                     var expense = new Expense(
                         expenseRequest.Name,
                         expenseRequest.Date,
-                        expenseRequest.Value,
+                        new Money(expenseRequest.Value,new Currency(wallet.Currency.Code)),
                         expenseRequest.Code);
 
                     project.AddExpense(expense);
@@ -280,7 +281,7 @@ namespace Dashboard.Api.Controllers
             var expense = new Expense(
                 request.Name,
                 request.Date,
-                request.Value,
+               new Money(request.Value, new Currency(request.WalletName)),  
                 request.Code);
 
             project.AddExpense(expense);
