@@ -1,4 +1,6 @@
-﻿using Dashboard.Core.ProjectAggregate;
+﻿using Dashboard.Api.Helpers;
+using Dashboard.Core.DTOs;
+using Dashboard.Core.ProjectAggregate;
 using Dashboard.Core.ProjectAggregate.Specifications;
 using Dashboard.Core.WalletAggregate;
 using Dashboard.Core.WalletAggregate.Specifications;
@@ -7,7 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Blazor.Shared;
 using SharedKernel.Enums;
 using SharedKernel.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Dashboard.Api.Controllers
@@ -138,6 +143,7 @@ namespace Dashboard.Api.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = project.Id }, project.ToDto());
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(long id, [FromBody] UpdateProjectRequest request)
