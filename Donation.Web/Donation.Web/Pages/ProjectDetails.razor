@@ -126,41 +126,73 @@
                 <div class="mb-5">
                     <h3 class="h4 mb-3">فيديوهات المشروع</h3>
                     <div class="row">
-                        @foreach (var video in project.Videos)
+                        @if (project.Videos.Count == 1)
                         {
-                            @if (!string.IsNullOrEmpty(video))
-                            {
-                                <div class="col-md-6 mb-3">
-                                    <div class="card">
-                                        <div class="card-body p-2">
-                                            @if (IsYoutubeUrl(video))
-                                            {
-                                                <div class="ratio ratio-16x9">
-                                                    <iframe src="@GetYoutubeEmbedUrl(video)"
-                                                            title="YouTube video player"
-                                                            frameborder="0"
-                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                            allowfullscreen></iframe>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class="text-center p-4">
-                                                    <a href="@video" target="_blank" class="btn btn-primary">
-                                                        <i class="bi bi-play-circle me-2"></i>
-                                                        مشاهدة الفيديو
-                                                    </a>
-                                                </div>
-                                            }
-                                        </div>
+                            <!-- Special case for single video - centered and larger -->
+                            <div class="col-md-8 mx-auto mb-3">
+                                <div class="card single-video-card">
+                                    <div class="card-body p-2">
+                                        @if (IsYoutubeUrl(project.Videos.First()))
+                                        {
+                                            <div class="ratio ratio-16x9 single-video-container">
+                                                <iframe src="@GetYoutubeEmbedUrl(project.Videos.First())"
+                                                        title="YouTube video player"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="text-center p-4">
+                                                <a href="@project.Videos.First()" target="_blank" class="btn btn-primary btn-lg">
+                                                    <i class="bi bi-play-circle me-2"></i>
+                                                    مشاهدة الفيديو
+                                                </a>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Multiple videos layout - grid -->
+                            @foreach (var video in project.Videos)
+                            {
+                                @if (!string.IsNullOrEmpty(video))
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body p-2">
+                                                @if (IsYoutubeUrl(video))
+                                                {
+                                                    <div class="ratio ratio-16x9">
+                                                        <iframe src="@GetYoutubeEmbedUrl(video)"
+                                                                title="YouTube video player"
+                                                                frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="text-center p-4">
+                                                        <a href="@video" target="_blank" class="btn btn-primary">
+                                                            <i class="bi bi-play-circle me-2"></i>
+                                                            مشاهدة الفيديو
+                                                        </a>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             }
                         }
                     </div>
                 </div>
             }
-
             <!-- Images Section -->
             @if (project.Images != null && project.Images.Any())
             {
@@ -211,6 +243,32 @@
 }
 
 <style>
+    /* Single video styles */
+    .single-video-card {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .single-video-container {
+        min-height: 400px; /* Make single videos larger */
+    }
+
+    @@media (max-width: 768px) {
+        .single-video-container
+
+    {
+        min-height: 300px;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .single-video-container
+
+    {
+        min-height: 250px;
+    }
+
+    }
     .project-details-section {
         padding-top: 100px;
     }

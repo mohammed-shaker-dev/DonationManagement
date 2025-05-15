@@ -9,64 +9,181 @@
 @inject IJSRuntime _jSRuntime
 @attribute [Authorize(Roles = "Administrator")]
 
-<h3>Admin Page</h3>
+<section class="main-section">
+    <div class="centerized-box">
+        <h1>
+            <span class="r"><span class="text-primary">لوحة </span> <span class="text-secondary">المدير</span></span>
+        </h1>
 
-<EditForm Model="@dateRange" OnValidSubmit="@GenerateExcel">
-    <div class="form-group">
-        <label for="fromDate">From Date</label>
-        <InputDate @bind-Value="dateRange.FromDate" class="form-control" />
+        <p>من هنا يمكنك توليد تقارير Excel للمعاملات ضمن نطاق زمني محدد</p>
+
+        <div class="admin-form">
+            <EditForm Model="@dateRange" OnValidSubmit="@GenerateExcel">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group mb-3">
+                            <label for="fromDate">من تاريخ</label>
+                            <InputDate @bind-Value="dateRange.FromDate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group mb-3">
+                            <label for="toDate">إلى تاريخ</label>
+                            <InputDate @bind-Value="dateRange.ToDate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-mata w-100 mb-3">توليد التقرير</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+
+        @if (isGenerating)
+        {
+            <div class="alert alert-info text-center mt-4">
+                جاري توليد ملف Excel، يرجى الانتظار...
+            </div>
+        }
+
+        @if (generatedFiles.Count > 0)
+        {
+            <div class="generated-files mt-4">
+                <h4>الملفات التي تم توليدها:</h4>
+                <ul class="list-group">
+                    @foreach (var file in generatedFiles)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @file
+                            <span class="badge bg-success rounded-pill">تم التوليد بنجاح</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
-    <div class="form-group">
-        <label for="toDate">To Date</label>
-        <InputDate @bind-Value="dateRange.ToDate" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Generate Excel</button>
-</EditForm>
+</section>
+
+<style>
+    .admin-form {
+        background: #f0f0f0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 30px;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+        height: auto;
+    }
+
+    .generated-files {
+        background: #f0f0f0;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .list-group-item {
+        direction: rtl;
+        text-align: right;
+    }
+</style>
 
 @code {
-    private DateRange dateRange = new();
+    private DateRange dateRange = new()
+        {
+            FromDate = DateTime.Now.AddMonths(-1),
+            ToDate = DateTime.Now
+        };
+    private List<string> generatedFiles = new();
+    private bool isGenerating = false;
 
     private async Task GenerateExcel()
     {
-        // Call the API to retrieve data
-        var Wallets = await _walletService.GetTransactionsBetweenDateRange(dateRange.FromDate,dateRange.ToDate);
+        generatedFiles.Clear();
+        isGenerating = true;
 
-        // Generate Excel file
-        foreach (var wallet in Wallets)
+        try
         {
-            var excelFile = GenerateExcelFile(wallet.Transactions,wallet.Name);
-            await DownloadFile(excelFile, $"Transactions Report {wallet.Name} {DateTime.Now.Date}.xlsx");
+            // Call the API to retrieve data
+            var Wallets = await _walletService.GetTransactionsBetweenDateRange(dateRange.FromDate, dateRange.ToDate);
+
+            // Generate Excel file for each wallet
+            foreach (var wallet in Wallets)
+            {
+                if (wallet.Transactions?.Count > 0)
+                {
+                    var fileName = $"تقرير معاملات {wallet.Name} {DateTime.Now.ToString("yyyy-MM-dd")}.xlsx";
+                    var excelFile = GenerateExcelFile(wallet.Transactions, wallet.Name);
+                    await DownloadFile(excelFile, fileName);
+                    generatedFiles.Add(fileName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating Excel: {ex.Message}");
+        }
+        finally
+        {
+            isGenerating = false;
         }
     }
 
-    private byte[] GenerateExcelFile(List<TransactionDTO> data,string walletName)
-    {      
+    private byte[] GenerateExcelFile(List<TransactionDTO> data, string walletName)
+    {
         using var workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add("Donations");
+        var worksheet = workbook.Worksheets.Add("التبرعات");
 
-        // Add headers
-        worksheet.Cell(1, 1).Value = "Code";
-        worksheet.Cell(1, 2).Value = "Type";
-        worksheet.Cell(1, 3).Value = "Amount";
-        worksheet.Cell(1, 4).Value = "Wallet";
-        worksheet.Cell(1, 5).Value = "Date";
-        worksheet.Cell(1, 6).Value = "Comment";
-        worksheet.Cell(1, 7).Value = "FullName";
-        worksheet.Cell(1, 8).Value = "Email";
+        // Set RTL for the worksheet
+        worksheet.RightToLeft = true;
 
+        // Add headers with styling
+        worksheet.Cell(1, 1).Value = "الرمز";
+        worksheet.Cell(1, 2).Value = "النوع";
+        worksheet.Cell(1, 3).Value = "المبلغ";
+        worksheet.Cell(1, 4).Value = "المحفظة";
+        worksheet.Cell(1, 5).Value = "التاريخ";
+        worksheet.Cell(1, 6).Value = "التعليق";
+        worksheet.Cell(1, 7).Value = "الاسم الكامل";
+        worksheet.Cell(1, 8).Value = "البريد الإلكتروني";
+
+        // Style the header row
+        var headerRow = worksheet.Row(1);
+        headerRow.Style.Font.Bold = true;
+        headerRow.Style.Fill.BackgroundColor = XLColor.FromArgb(67, 147, 111); // var(--bs-primary)
+        headerRow.Style.Font.FontColor = XLColor.White;
 
         // Add data
         for (int i = 0; i < data.Count; i++)
         {
             worksheet.Cell(i + 2, 1).Value = data[i].Code;
-            worksheet.Cell(i + 2, 2).Value = (data[i].TransactionType == TransactionType.IN ? "Deposit" : "Withdrawal");
+            worksheet.Cell(i + 2, 2).Value = (data[i].TransactionType == TransactionType.IN ? "إيداع" : "سحب");
             worksheet.Cell(i + 2, 3).Value = data[i].Amount;
             worksheet.Cell(i + 2, 4).Value = walletName;
             worksheet.Cell(i + 2, 5).Value = data[i].CreatedDate.ToShortDateString();
             worksheet.Cell(i + 2, 6).Value = data[i].Comment;
             worksheet.Cell(i + 2, 7).Value = data[i].FullName;
             worksheet.Cell(i + 2, 8).Value = data[i].Email;
+
+            // Add alternating row colors
+            if (i % 2 == 1)
+            {
+                worksheet.Row(i + 2).Style.Fill.BackgroundColor = XLColor.FromArgb(240, 240, 240);
+            }
         }
+
+        // Auto-adjust column widths
+        worksheet.Columns().AdjustToContents();
 
         // Save to memory stream
         using var stream = new MemoryStream();
@@ -86,6 +203,4 @@
         public DateTime FromDate { get; set; } = DateTime.Now.AddMonths(-1);
         public DateTime ToDate { get; set; } = DateTime.Now;
     }
-
-  
 }

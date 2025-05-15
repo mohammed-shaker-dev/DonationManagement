@@ -8,121 +8,366 @@
 @inject WalletService _walletService
 @inject IJSRuntime jsRuntime
 @attribute [Authorize]
-@if (wallet!=null && wallet?.Id != 0)
+
+<section class="main-section">
+    <div class="centerized-box">
+        <h1>
+            <span class="r"><span class="text-primary">المحفظة </span> <span class="text-secondary">@(walletName ?? "SYP")</span></span>
+        </h1>
+
+        @if (wallet != null && wallet?.Id != 0)
+        {
+            <h3>المبلغ الإجمالي: @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>
+            <h4>المبلغ المودع: @((wallet?.DepositAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h4>
+            <h4>المبلغ المسحوب: @((wallet?.WithdrawalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h4>
+        }
+        else
+        {
+            <h3>جاري الحساب...</h3>
+        }
+
+        <div class="action-container">
+            <button class="btn btn-mata" @onclick="ShowPopup">إضافة معاملة جديدة</button>
+        </div>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="container">
+        <h4>قائمة المعاملات</h4>
+
+        <div class="search-form">
+            <label for="searchTerm">بحث:</label>
+            <input type="text" id="searchTerm" class="input-mata"
+                   placeholder="ابحث في المعاملات..."
+                   @bind-value="SearchTerm"
+                   @bind-value:event="oninput" />
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>الرمز</th>
+                        <th>الاسم الكامل</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>المبلغ</th>
+                        <th>العملة</th>
+                        <th>النوع</th>
+                        <th>التعليق</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (FilteredTransactions?.Count() > 0)
+                    {
+                        @foreach (var transaction in FilteredTransactions)
+                        {
+                            <tr>
+                                <td>@transaction.Code</td>
+                                <td>@transaction.FullName</td>
+                                <td>@transaction.Email</td>
+                                <td>@transaction.Amount.ToString("N0")</td>
+                                <td>@(wallet.Currency.Code)</td>
+                                <td>@(transaction.TransactionType == TransactionType.IN ? "إيداع" : "سحب")</td>
+                                <td>@(transaction.Comment)</td>
+                                <td>@transaction.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => EditTransaction(transaction)">تعديل</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => ConfirmDeleteTransaction(transaction.Id)">حذف</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center">لا توجد معاملات للعرض</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+@if (IsPopupVisible)
 {
-    <h3>Total Amount : @((wallet?.TotalAmount?.Amount ?? 0).ToString("N0")) @wallet?.Currency?.Code</h3>
-}
-else
-{
-    <h3> Calculating.....</h3>
-}
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@((IsEditMode ? "تعديل" : "إضافة") + " معاملة")</h5>
+                    <button type="button" class="btn-close" @onclick="HidePopup"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="NewTransaction" OnValidSubmit="InsertOrUpdateTransaction">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
 
+                        <div class="form-group mb-3">
+                            <label for="code">الرمز</label>
+                            <InputText id="code" class="form-control" @bind-Value="NewTransaction.Code" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="comment">التعليق</label>
+                            <InputText id="comment" class="form-control" @bind-Value="NewTransaction.Comment" />
+                        </div>
 
-<div class="container">
-    <button class="btn btn-success mb-3 mt-5" @onclick="ShowPopup">Add Transaction</button>
+                        <div class="form-group mb-3">
+                            <label for="fullName">الاسم الكامل</label>
+                            <InputText id="fullName" class="form-control" @bind-Value="NewTransaction.FullName" />
+                        </div>
 
-    @if (IsPopupVisible)
-    {
-        <div class="modal show d-block" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">@((IsEditMode ? "Edit" : "Add New") + " Transaction")</h5>
-                        <button type="button" class="btn-close" @onclick="HidePopup"></button>
-                    </div>
-                    <div class="modal-body">
-                        <EditForm Model="NewTransaction" OnValidSubmit="InsertOrUpdateTransaction">
-                            <DataAnnotationsValidator />
-                            <ValidationSummary />
+                        <div class="form-group mb-3">
+                            <label for="email">البريد الإلكتروني</label>
+                            <InputText id="email" class="form-control" @bind-Value="NewTransaction.Email" />
+                        </div>
 
-                            <div class="form-group">
-                                <label for="code">Code</label>
-                                <InputText id="code" class="form-control" @bind-Value="NewTransaction.Code" />
+                        <div class="form-group mb-3">
+                            <label for="amount">المبلغ</label>
+                            <InputText id="amount" class="form-control"
+                                       @bind-Value:get="FormattedAmount"
+                                       @bind-Value:set="value => NewTransaction.Amount = ParseAmount(value)" />
+                        </div>
+                        @if (!IsEditMode)
+                        {
+                            <div class="form-group mb-3">
+                                <label for="transactionType">نوع المعاملة</label>
+                                <select id="transactionType" class="form-control" @bind="NewTransactionType">
+                                    <option value="1">إيداع</option>
+                                    <option value="-1">سحب</option>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <label for="code">Comment</label>
-                                <InputText id="code" class="form-control" @bind-Value="NewTransaction.Comment" />
-                            </div>
+                        }
 
-                            <div class="form-group">
-                                <label for="fullName">Full Name</label>
-                                <InputText id="fullName" class="form-control" @bind-Value="NewTransaction.FullName" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <InputText id="email" class="form-control" @bind-Value="NewTransaction.Email" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="amount">Amount</label>
-                                <InputText id="amount" class="form-control"
-                                @bind-Value:get="FormattedAmount"
-                                @bind-Value:set="value => NewTransaction.Amount = ParseAmount(value)" />
-                            </div>
-                            @if (!IsEditMode)
-                            {
-                                <div class="form-group">
-                                    <label for="transactionType">Transaction Type</label>
-                                    <select id="transactionType" class="form-control" @bind="NewTransactionType">
-                                        <option value="1">Deposit</option>
-                                        <option value="-1">Withdrawal</option>
-                                    </select>
-                                </div>
-                            }
-
-
-                            <button type="submit" class="btn btn-primary mt-5">Submit</button>
-                        </EditForm>
-                    </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-mata mt-3">حفظ</button>
+                        </div>
+                    </EditForm>
                 </div>
             </div>
         </div>
+    </div>
+}
+
+<style>
+
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
     }
-    <h4>Transaction List</h4>
-    <input type="text" class="form-control"
-    placeholder="Search transactions..."
-    @bind-value="SearchTerm"
-    @bind-value:event="oninput" />
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Wallet</th>
-                <th>Type</th>
-                <th>Comment</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (FilteredTransactions?.Count() > 0)
-            {
-                @foreach (var transaction in FilteredTransactions)
-                {
-                    <tr>
-                        <td>@transaction.Code</td>
-                        <td>@transaction.FullName</td>
-                        <td>@transaction.Email</td>
-                        <td>@transaction.Amount.ToString("N0")</td>
-                        <td>@(wallet.Currency.Code)</td>
-                        <td>@(transaction.TransactionType == TransactionType.IN ? "Deposit" : "Withdrawal")</td>
-                        <td>@(transaction.Comment)</td>
-                        <td>@transaction.CreatedDate</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm" @onclick="() => EditTransaction(transaction)">Edit</button>
-                            <button class="btn btn-danger btn-sm" @onclick="() => ConfirmDeleteTransaction(transaction.Id)">Delete</button>
-                        </td>
-                    </tr>
-                }
-            }
 
-        </tbody>
-    </table>
-</div>
+    /* Add RTL support for the table */
+    .table {
+        direction: rtl;
+        text-align: right;
+    }
 
+    /* Add some spacing in the form section */
+    .form-section {
+        padding: 20px 0;
+    }
+
+    /* Make sure modal is in front of everything */
+    .modal {
+        z-index: 1050;
+    }
+    /* wallet.css - Add this file to your wwwroot/css folder */
+
+    .wallet-section {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .wallet-header {
+        background: var(--bs-primary);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .transaction-card {
+        background: #f0f0f0;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .transaction-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .transaction-search {
+        background: #f0f0f0;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+        .transaction-search input {
+            border-radius: 50px;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+    .transaction-form {
+        background: #f0f0f0;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+        .transaction-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .transaction-form input,
+        .transaction-form select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+    .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .transaction-table th,
+        .transaction-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        .transaction-table th {
+            background-color: var(--bs-primary);
+            color: white;
+        }
+
+        .transaction-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+    .btn-wallet {
+        background: var(--bs-primary);
+        color: white;
+        font-size: 18px;
+        padding: 8px 20px;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .btn-wallet:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+    .btn-wallet-danger {
+        background: var(--bs-secondary);
+    }
+
+    /* Modal styling */
+    .wallet-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .wallet-modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .wallet-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .wallet-modal-header h3 {
+            margin: 0;
+        }
+
+    .wallet-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* Stats widgets */
+    .wallet-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .wallet-stat-card {
+        flex: 1;
+        min-width: 200px;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+        .wallet-stat-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .wallet-stat-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--bs-primary);
+        }
+
+        .wallet-stat-card.deposit .amount {
+            color: var(--bs-primary);
+        }
+
+        .wallet-stat-card.withdrawal .amount {
+            color: var(--bs-secondary);
+        }
+
+    /* Add responsiveness */
+    @@media (max-width: 768px) {
+        .wallet-stats
+
+    {
+        flex-direction: column;
+    }
+
+    .transaction-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    }
+</style>
 
 @code {
     [Parameter]
@@ -133,7 +378,7 @@ else
     private List<TransactionDTO> FilteredTransactions = new();
     private bool IsPopupVisible = false;
     private bool IsEditMode = false;
-    private int NewTransactionType { get; set; }
+    private int NewTransactionType { get; set; } = 1; // Default to deposit
     private string FormattedAmount => NewTransaction.Amount.ToString("N0");
     private string _searchTerm = "";
 
@@ -143,13 +388,15 @@ else
         set
         {
             _searchTerm = value;
-            Search(); // Call filter method
+            Search();
         }
     }
+
     private decimal ParseAmount(string value)
     {
         return decimal.TryParse(value.Replace(",", ""), out decimal result) ? result : NewTransaction.Amount;
     }
+
     private async Task InsertOrUpdateTransaction()
     {
         NewTransaction.TransactionType = (TransactionType)NewTransactionType;
@@ -157,7 +404,7 @@ else
 
         if (IsEditMode)
         {
-            await _walletService.UpdateTransactionAsync((long)NewTransaction.Id,NewTransaction);
+            await _walletService.UpdateTransactionAsync((long)NewTransaction.Id, NewTransaction);
         }
         else
         {
@@ -168,11 +415,12 @@ else
         await FetchWallet();
         NewTransaction = new TransactionRequest();
     }
+
     private void EditTransaction(TransactionDTO transaction)
     {
         NewTransaction = new TransactionRequest
             {
-                Id  = transaction.Id,    
+                Id = transaction.Id,
                 Code = transaction.Code,
                 Comment = transaction.Comment,
                 FullName = transaction.FullName,
@@ -189,35 +437,23 @@ else
 
     private async Task ConfirmDeleteTransaction(long transactionId)
     {
-        if (await jsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this transaction?"))
+        if (await jsRuntime.InvokeAsync<bool>("confirm", "هل أنت متأكد أنك تريد حذف هذه المعاملة؟"))
         {
-            await _walletService.DeleteTransactionAsync(transactionId,wallet.Id);
+            await _walletService.DeleteTransactionAsync(transactionId, wallet.Id);
             await FetchWallet();
         }
-    }
-    private async Task InsertTransaction()
-    {
-        NewTransaction.TransactionType = (TransactionType)NewTransactionType;
-        NewTransaction.WalletId = wallet.Id;
-        var result= await _walletService.CreateAsync(NewTransaction);
-        if (result != null)
-        {
-            HidePopup();
-            await FetchWallet();
-            NewTransaction = new TransactionRequest();
-        }
-
     }
 
     private async Task FetchWallet()
     {
-        var result = await _walletService.GetWalletByNameAsync(walletName??"SYP");
-        wallet = result?.FirstOrDefault(w => w.Name == (walletName??"SYP") );
-        FilteredTransactions = wallet?.Transactions?.OrderByDescending(c => c.CreatedDate)?.ToList()??new();
+        var result = await _walletService.GetWalletByNameAsync(walletName ?? "SYP");
+        wallet = result?.FirstOrDefault(w => w.Name == (walletName ?? "SYP"));
+        FilteredTransactions = wallet?.Transactions?.OrderByDescending(c => c.CreatedDate)?.ToList() ?? new();
         IsEditMode = false;
         NewTransaction = new();
     }
-    private async Task Search()
+
+    private void Search()
     {
         FilteredTransactions = (wallet?.Transactions ?? new List<TransactionDTO>())
         .Where(t => string.IsNullOrEmpty(SearchTerm)
@@ -225,8 +461,8 @@ else
             || (t.FullName?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) == true))
         .OrderByDescending(c => c.CreatedDate)
         .ToList();
-
     }
+
     private void ShowPopup()
     {
         NewTransaction = new();
@@ -238,9 +474,9 @@ else
     {
         IsPopupVisible = false;
     }
+
     protected override async Task OnParametersSetAsync()
     {
-        // Fetch wallet data when parameter changes
         await FetchWallet();
     }
 }

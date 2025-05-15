@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using Dashboard.Core.Guards;
 using SharedKernel;
+using System.Text.Json.Serialization;
 
 namespace Dashboard.Core.ValueObjects
 {
@@ -9,13 +10,13 @@ namespace Dashboard.Core.ValueObjects
         public decimal Amount { get; private set; }
         public Currency Currency { get; private set; }
         private Money() { }
-
         public Money(decimal amount )
         {
             Guard.Against.Negative(amount, nameof(amount));
             Amount = amount;
             Currency = new Currency("SYP");
         }
+        [JsonConstructor]
         public Money(decimal amount,Currency currency)
         {
             Guard.Against.Negative(amount,nameof(amount));

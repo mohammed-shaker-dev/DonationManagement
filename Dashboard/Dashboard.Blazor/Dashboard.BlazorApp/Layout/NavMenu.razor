@@ -1,6 +1,6 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Donations Management</a>
+        <a class="navbar-brand" href="">إدارة التبرعات</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,31 +11,43 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> الرئيسية
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="wallets/SYP">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> SYP Wallet
+                <span class="bi bi-wallet-fill-nav-menu" aria-hidden="true"></span> محفظة الليرة السورية
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="wallets/USD">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>  USD Wallet
+                <span class="bi bi-wallet-fill-nav-menu" aria-hidden="true"></span> محفظة الدولار
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="projects">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> projects
+                <span class="bi bi-wallet-fill-nav-menu" aria-hidden="true"></span> المشاريع
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Admin">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Admin
+                <span class="bi bi-gear-fill-nav-menu" aria-hidden="true"></span> الإدارة
             </NavLink>
         </div>
     </nav>
 </div>
+
+<style>
+    /* Add wallet icon */
+    .bi-wallet-fill-nav-menu {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-wallet-fill' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542.637 0 .987-.254 1.194-.542.226-.314.306-.705.306-.958a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2h-13z'/%3E%3Cpath d='M16 6.5h-5.551a2.678 2.678 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5c-.963 0-1.613-.412-2.006-.958A2.679 2.679 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-6z'/%3E%3C/svg%3E");
+    }
+
+    /* Add gear icon */
+    .bi-gear-fill-nav-menu {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-gear-fill' viewBox='0 0 16 16'%3E%3Cpath d='M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z'/%3E%3C/svg%3E");
+    }
+</style>
 
 @code {
     private bool collapseNavMenu = true;
