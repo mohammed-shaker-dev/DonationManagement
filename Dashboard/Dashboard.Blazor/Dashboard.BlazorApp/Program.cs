@@ -33,5 +33,5 @@ builder.Services.AddOidcAuthentication(options =>
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddAuthorizationCore();
-
+//builder.Services.AddPWAServices();
 await builder.Build().RunAsync();

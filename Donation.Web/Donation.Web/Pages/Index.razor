@@ -1,7 +1,12 @@
 ﻿@page "/"
 @using Dashboard.Core.DTOs
+@using Donation.Web.Pages.Compnents
 @using Donation.Web.Services
 @inject DonationService DonationService
+
+<LoadingComponent IsLoading="isLoading" LoadingMessage="جاري تحميل البيانات..." />
+@if (!isLoading)
+{
 <section class="main-section">
     <div class="floating-start-box">
         <div class="circle-img c1">
@@ -238,8 +243,9 @@
         </div>
     </div>
 </section>
-              
+  }            
 @code {
+    private bool isLoading = true;
     private bool showTransactionInfo = false;
     private DonationSearchModel searchModel = new();
     private TransactionDTO trx;
@@ -257,15 +263,39 @@
             // Log exception 
             wallets = new List<WalletDTO>();
         }
-        showTransactionInfo = false; // Ensure the transaction info is hidden on page refresh  
+        finally
+        {
+            isLoading = false;
+            showTransactionInfo = false; // Ensure the transaction info is hidden on page refresh
+            StateHasChanged();
+        }
     }
     private async Task SearchDonation()
     {
-        wallet = await DonationService.GetTransactionByCode(searchModel.Code);
-        trx = wallet?.Transactions?.FirstOrDefault();
-        if (trx != null)
+        if (string.IsNullOrWhiteSpace(searchModel.Code))
+            return;
+
+        isLoading = true;
+        StateHasChanged();
+
+        try
         {
-            ToggleTransactionInfo();
+            wallet = await DonationService.GetTransactionByCode(searchModel.Code);
+            trx = wallet?.Transactions?.FirstOrDefault();
+            if (trx != null)
+            {
+                ToggleTransactionInfo();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching for donation: {ex.Message}");
+            // You could add error handling here
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
         }
     }
 
