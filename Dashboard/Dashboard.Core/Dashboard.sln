@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.Core", "Dashboard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard.BlazorApp", "..\Dashboard.Blazor\Dashboard.BlazorApp\Dashboard.BlazorApp.csproj", "{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Donation.Web", "..\..\Donation.Web\Donation.Web\Donation.Web.csproj", "{A629C364-F9CE-46DC-8336-9A02A3F6699B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Donation.Web", "..\..\Donation.Web\Donation.WebApp\Donation.Web.csproj", "{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +43,10 @@ Global
 		{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A629C364-F9CE-46DC-8336-9A02A3F6699B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A629C364-F9CE-46DC-8336-9A02A3F6699B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A629C364-F9CE-46DC-8336-9A02A3F6699B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A629C364-F9CE-46DC-8336-9A02A3F6699B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,7 +56,7 @@ Global
 		{B7626F57-8FA6-4B46-ACE2-8FB2799F7E23} = {1F23A3FE-C0D1-4DF6-A72E-AAD4DED4A0DB}
 		{0B606E55-7651-45ED-A7DF-3B1A9058AD6B} = {1F23A3FE-C0D1-4DF6-A72E-AAD4DED4A0DB}
 		{4F8D7D01-7B99-44EF-BF73-6E39B19BAACF} = {1F23A3FE-C0D1-4DF6-A72E-AAD4DED4A0DB}
-		{A629C364-F9CE-46DC-8336-9A02A3F6699B} = {1F23A3FE-C0D1-4DF6-A72E-AAD4DED4A0DB}
+		{CC1269E0-CCD1-4CD9-9898-9E0F0A9866A2} = {1F23A3FE-C0D1-4DF6-A72E-AAD4DED4A0DB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9C76823-3A10-4662-AB78-1CA2732C781F}

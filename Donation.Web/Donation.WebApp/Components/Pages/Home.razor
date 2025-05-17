@@ -1,8 +1,11 @@
 ﻿@page "/"
+  @rendermode InteractiveServer
 @using Dashboard.Core.DTOs
-@using Donation.Web.Pages.Compnents
 @using Donation.Web.Services
+@using Donation.Web.Components.Pages
+
 @inject DonationService DonationService
+ 
 
 <LoadingComponent IsLoading="isLoading" LoadingMessage="جاري تحميل البيانات..." />
 @if (!isLoading)
@@ -148,16 +151,20 @@
 
             <div class="col-md-1"></div>
             <div class="col-md-6">
-                <EditForm Model="@searchModel" OnValidSubmit="@SearchDonation" class="search-form">
-                    <label>ادخل الكود:</label>
-                    <InputText @bind-Value="searchModel.Code" 
-                    type="text"
-                    name="code"
-                    placeholder="كود التبرع"
-                    class="input-mata"
-                    required />
-                    <button type="submit" class="btn btn-mata">بحث</button>
-                </EditForm>
+                    <div class="search-form">
+                        <label>ادخل الكود:</label>
+                        <input type="text"
+                               @bind="searchModel.Code"
+                               placeholder="كود التبرع"
+                               class="input-mata"
+                               required />
+                        <button type="button" class="btn btn-mata" @onclick="SearchDonation">بحث</button>
+                    </div>
+                    @if (!string.IsNullOrEmpty(searchError))
+                    {
+                        <div class="alert alert-danger mt-2">@searchError</div>
+                    }
+
                 @if (showTransactionInfo)
                 {
                     <section id="transaction-info" class="search-form">
@@ -251,7 +258,7 @@
     private TransactionDTO trx;
     private WalletDTO wallet;
     private List<WalletDTO> wallets = new();
-    
+    private string searchError = string.Empty;
     protected override async Task OnInitializedAsync()
     {
         try
@@ -275,8 +282,10 @@
         if (string.IsNullOrWhiteSpace(searchModel.Code))
             return;
 
-        isLoading = true;
-        StateHasChanged();
+     //   isLoading = true;
+        searchError = string.Empty;
+        showTransactionInfo = false;
+       // StateHasChanged();
 
         try
         {
@@ -286,16 +295,21 @@
             {
                 ToggleTransactionInfo();
             }
+            else
+            {
+                searchError = "لم يتم العثور على معاملة بهذا الكود.";
+            }
         }
         catch (Exception ex)
         {
+         //   searchError = $"Error searching for donation: {ex.Message}";
             Console.WriteLine($"Error searching for donation: {ex.Message}");
-            // You could add error handling here
+          searchError = "حدث خطأ أثناء البحث. يرجى المحاولة لاحقاً.";
         }
         finally
         {
-            isLoading = false;
-            StateHasChanged();
+     //       isLoading = false;
+         //   StateHasChanged();
         }
     }
 

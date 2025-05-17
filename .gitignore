@@ -488,3 +488,27 @@ appsettings.Production.json
 /Dashboard/Dashboard.Blazor/Dashboard.BlazorApp/wwwroot/appsettings.Production.json
 /SharedKernel/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfo.cs
 /SharedKernel/SharedKernel/obj/Debug/net8.0/SharedKernel.GeneratedMSBuildEditorConfig.editorconfig
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+
+# misc
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

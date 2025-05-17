@@ -26,12 +26,13 @@ namespace Donation.Web.Services
             {
                 Console.WriteLine($"HTTP Request failed: {ex.Message}");
                 Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                throw new Exception(ex.Message);
                 return null;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"General error: {ex.Message}");
-                return null;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<List<WalletDTO>> GetWalletByNameAsync(string walletName)

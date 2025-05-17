@@ -27,7 +27,8 @@ namespace Donation.Web.Services
                 }
                 if (!result.IsSuccessStatusCode)
                 {
-                    return null;
+                    var errorContent = await result.Content.ReadAsStringAsync();
+                    throw new Exception($"Request failed with status code {result.StatusCode}: {errorContent}");
                 }
 
                 return await FromHttpResponseMessageAsync<T>(result);
@@ -35,10 +36,13 @@ namespace Donation.Web.Services
             catch (HttpRequestException ex)
             {
                 // Log or handle the exception as needed
+                throw new Exception(ex.Message);
                 return null;
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw new Exception(ex.Message);
                 return null;
             }
         }
