@@ -26,5 +26,6 @@ namespace Dashboard.Core.ProjectAggregate
         public DateTime Date { get; set; }
         public decimal Value { get; set; }
         public string Code { get; set; }
+        public string CurrencyCode { get; set; }
     }
 }

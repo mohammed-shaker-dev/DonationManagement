@@ -69,7 +69,7 @@
                             <h3 class="h5 mb-0">تفاصيل المصاريف</h3>
                             <span class="project-budget badge bg-primary fs-6">
                                 <i class="bi bi-currency-exchange me-1"></i>
-                                @project.TotalBudget.ToString("N0") ل.س
+                                @project.TotalBudget.ToString("N0") @Currency
                             </span>
                         </div>
                         <div class="card-body p-0">
@@ -88,14 +88,14 @@
                                             {
                                                 <tr>
                                                     <td>@expense.Name</td>
-                                                    <td>@expense.Value.ToString("N0") ل.س</td>
+                                                    <td>@expense.Value.ToString("N0") @Currency</td>
                                                 </tr>
                                             }
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th>الإجمالي</th>
-                                                <th>@project.TotalBudget.ToString("N0") ل.س</th>
+                                                <th>@project.TotalBudget.ToString("N0") @Currency</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -114,7 +114,7 @@
                         <div class="card-body text-center">
                             <h4 class="mb-3">ساهم في المشاريع القادمة</h4>
                             <p>مساهمتك تساعدنا في تنفيذ المزيد من المشاريع لخدمة مدينتنا الحبيبة</p>
-                            <a href="/#search" class="btn btn-mata w-100">ساهم الآن</a>
+                            <a href="/#contribute" class="btn btn-mata w-100">ساهم الآن</a>
                         </div>
                     </div>
                 </div>
@@ -136,10 +136,10 @@
                                         {
                                             <div class="ratio ratio-16x9 single-video-container">
                                                 <iframe src="@GetYoutubeEmbedUrl(project.Videos.First())"
-                                                        title="YouTube video player"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen></iframe>
+                                                title="YouTube video player"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen></iframe>
                                             </div>
                                         }
                                         else
@@ -169,10 +169,10 @@
                                                 {
                                                     <div class="ratio ratio-16x9">
                                                         <iframe src="@GetYoutubeEmbedUrl(video)"
-                                                                title="YouTube video player"
-                                                                frameborder="0"
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowfullscreen></iframe>
+                                                        title="YouTube video player"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
                                                     </div>
                                                 }
                                                 else
@@ -203,14 +203,16 @@
                         {
                             @if (!string.IsNullOrEmpty(image))
                             {
-                                <div class="col-md-4 col-sm-6 mb-3">
-                                    <div class="project-image-card" @onclick="() => OpenImageModal(image)">
-                                        <img src="@image" class="img-fluid" alt="صورة المشروع" />
-                                        <div class="image-overlay">
-                                            <i class="bi bi-arrows-fullscreen expand-icon"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                       <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="project-image-card" @onclick="@(() => OpenImageModal(image))" style="cursor:pointer;">
+                        <img src="@image" class="img-fluid" alt="صورة المشروع" style="pointer-events:none;" />
+                        <div class="image-overlay">
+                            <i class="bi bi-arrows-fullscreen expand-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+         
                             }
                         }
                     </div>
@@ -244,195 +246,195 @@
 
 <style>
     html, body, .main-section, .form-section, .modal, .modal-content, .container {
-        direction: rtl !important;
-        text-align: right !important;
+    direction: rtl !important;
+    text-align: right !important;
     }
     /* Single video styles */
     .single-video-card {
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     }
 
     .single-video-container {
-        min-height: 400px; /* Make single videos larger */
+    min-height: 400px; /* Make single videos larger */
     }
 
     @@media (max-width: 768px) {
-        .single-video-container
+    .single-video-container
 
     {
-        min-height: 300px;
+    min-height: 300px;
     }
 
     }
 
     @@media (max-width: 576px) {
-        .single-video-container
+    .single-video-container
 
     {
-        min-height: 250px;
+    min-height: 250px;
     }
 
     }
     .project-details-section {
-        padding-top: 100px;
+    padding-top: 100px;
     }
 
     .project-title {
-        font-size: 2.25rem;
-        color: var(--bs-primary);
+    font-size: 2.25rem;
+    color: var(--bs-primary);
     }
 
     .meta-item {
-        color: #666;
-        font-size: 0.95rem;
+    color: #666;
+    font-size: 0.95rem;
     }
 
     .project-image-card {
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        height: 200px;
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    height: 200px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
     }
 
-        .project-image-card:hover {
-            transform: scale(1.02);
-        }
+    .project-image-card:hover {
+    transform: scale(1.02);
+    }
 
-        .project-image-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .project-image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
 
     .image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     }
 
     .project-image-card:hover .image-overlay {
-        opacity: 1;
+    opacity: 1;
     }
 
     .expand-icon {
-        font-size: 2rem;
-        color: white;
-        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    font-size: 2rem;
+    color: white;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     }
 
     .project-donate-card {
-        background-color: #f7f4d5;
-        border: none;
-        border-radius: 8px;
+    background-color: #f7f4d5;
+    border: none;
+    border-radius: 8px;
     }
 
     .project-budget {
-        font-size: 1.1rem;
+    font-size: 1.1rem;
     }
 
     /* Image Modal Styles */
     .image-modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.85);
-        z-index: 1050;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     }
 
     .image-modal {
-        max-width: 90%;
-        max-height: 90%;
-        background-color: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
     }
 
     .image-modal-header {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 5px;
-        z-index: 10;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    z-index: 10;
     }
 
     .image-modal-body {
-        text-align: center;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     }
 
-        .image-modal-body img {
-            max-width: 100%;
-            max-height: 85vh;
-            object-fit: contain;
-        }
+    .image-modal-body img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    }
 
     .btn-close {
-        background-color: white;
-        opacity: 0.8;
-        border-radius: 50%;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        width: 30px;
-        height: 30px;
+    background-color: white;
+    opacity: 0.8;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    width: 30px;
+    height: 30px;
     }
 
-        .btn-close:hover {
-            opacity: 1;
-        }
+    .btn-close:hover {
+    opacity: 1;
+    }
 
     @@media (max-width: 992px) {
-        .project-title
+    .project-title
 
     {
-        font-size: 1.75rem;
+    font-size: 1.75rem;
     }
 
     }
 
     @@media (max-width: 768px) {
-        .project-title
+    .project-title
 
     {
-        font-size: 1.5rem;
+    font-size: 1.5rem;
     }
 
     .project-image-card {
-        height: 180px;
+    height: 180px;
     }
 
     }
 
     @@media (max-width: 576px) {
-        .project-image-card
+    .project-image-card
 
     {
-        height: 200px;
+    height: 200px;
     }
 
     .image-modal {
-        max-width: 95%;
-        max-height: 95%;
+    max-width: 95%;
+    max-height: 95%;
     }
 
     }
@@ -445,10 +447,19 @@
     private bool loading = true;
     private bool showImageModal = false;
     private string currentImage = "";
+    private string Currency = "";
 
     protected override async Task OnInitializedAsync()
     {
         await LoadProject();
+        @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
+        {
+            Currency = "$";
+        }
+        else
+        {
+            Currency = "ل.س";
+        }
     }
 
     private async Task LoadProject()

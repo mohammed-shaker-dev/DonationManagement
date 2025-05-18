@@ -5,75 +5,70 @@
 @inject NavigationManager NavigationManager
 <style>
     html, body, .main-section, .form-section, .modal, .modal-content, .container {
-        direction: rtl !important;
-        text-align: right !important;
+    direction: rtl !important;
+    text-align: right !important;
     }
+
     .projects-section {
-        padding-top: 120px;
+    padding-top: 120px;
     }
 
     .project-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
-        overflow: hidden;
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
+    .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
 
     .project-thumbnail {
-        height: 200px;
-        object-fit: cover;
+    height: 200px;
+    object-fit: cover;
     }
 
     .project-card .card-title {
-        font-size: 1.25rem;
-        font-weight: bold;
+    font-size: 1.25rem;
+    font-weight: bold;
     }
 
     .project-card .card-body {
-        padding: 1.5rem;
+    padding: 1.5rem;
     }
 
     .card-footer {
-        background-color: white;
-        border-top: 1px solid rgba(0,0,0,0.05);
+    background-color: white;
+    border-top: 1px solid rgba(0,0,0,0.05);
     }
 
     .project-budget {
-        font-weight: bold;
-        color: var(--bs-primary);
+    font-weight: bold;
+    color: var(--bs-primary);
     }
 
     .projects-list {
-        animation: fadeIn 0.8s ease-out;
+    animation: fadeIn 0.8s ease-out;
     }
 
     @@keyframes fadeIn {
-        from
-
-    {
-        opacity: 0;
+    from {
+    opacity: 0;
     }
 
     to {
-        opacity: 1;
+    opacity: 1;
     }
-
     }
 
     @@media (max-width: 768px) {
-        .project-thumbnail
-
-    {
-        height: 150px;
+    .project-thumbnail {
+    height: 150px;
     }
-
     }
 </style>
 <section class="main-section projects-section">
@@ -109,7 +104,58 @@
                     @foreach (var project in allProjects)
                     {
                         <div class="col-md-6 col-lg-4 mb-4">
-                            @ProjectCard(project)
+                            <div class="card project-card">
+                                <!-- Card thumbnail -->
+                                <div class="card-img-top project-thumbnail-container">
+                                    @if (project.Images != null && project.Images.Any())
+                                    {
+                                        <img src="@project.Images.First()" class="project-thumbnail w-100" alt="@project.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="project-thumbnail d-flex align-items-center justify-content-center bg-light">
+                                            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        </div>
+                                    }
+
+                                    <!-- Status badge -->
+                                    <div class="position-absolute top-0 end-0 m-3">
+                                        <span></span>
+                                    </div>
+                                </div>
+
+                                <!-- Card body -->
+                                <div class="card-body">
+                                    <h5 class="card-title">@project.Name</h5>
+                                    <p class="card-text text-truncate mb-3">@project.Description</p>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="project-budget">
+                                            @if (project.TotalBudget > 0)
+                                            {
+                                                @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
+                                                {
+                                                    @($"${project.TotalBudget.ToString("N0")}")
+                                                }
+                                                else
+                                                {
+                                                    @($"{project.TotalBudget.ToString("N0")} ل.س")
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @("تطوع")
+                                            }
+                                        </div>
+                                        <small class="text-muted">@FormatDate(project.CreatedDate)</small>
+                                    </div>
+                                </div>
+
+                                <!-- Card footer -->
+                                <div class="card-footer text-center">
+                                    <a href="/project-details/@project.Id" class="btn btn-primary w-100">عرض التفاصيل</a>
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>
@@ -117,7 +163,7 @@
         }
 
         <div class="action-container mt-5">
-            <a class="btn btn-mata" href="/#search">المساهمة في المشاريع القادمة</a>
+            <a class="btn btn-mata" href="/#contribute">المساهمة في المشاريع القادمة</a>
         </div>
     </div>
 </section>
@@ -147,86 +193,6 @@
             loading = false;
         }
     }
-
-    private RenderFragment ProjectCard(ProjectDTO project) => builder =>
-    {
-        builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", "card project-card");
-
-        // Card thumbnail
-        builder.OpenElement(2, "div");
-        builder.AddAttribute(3, "class", "card-img-top project-thumbnail-container");
-
-        if (project.Images != null && project.Images.Any())
-        {
-            builder.OpenElement(4, "img");
-            builder.AddAttribute(5, "src", project.Images.First());
-            builder.AddAttribute(6, "class", "project-thumbnail w-100");
-            builder.AddAttribute(7, "alt", project.Name);
-            builder.CloseElement();
-        }
-        else
-        {
-            builder.OpenElement(8, "div");
-            builder.AddAttribute(9, "class", "project-thumbnail d-flex align-items-center justify-content-center bg-light");
-            builder.AddMarkupContent(10, "<i class=\"bi bi-image text-muted\" style=\"font-size: 3rem;\"></i>");
-            builder.CloseElement();
-        }
-
-        // Status badge
-        builder.OpenElement(11, "div");
-        builder.AddAttribute(12, "class", "position-absolute top-0 end-0 m-3");
-        builder.OpenElement(13, "span");
-        builder.CloseElement();
-        builder.CloseElement();
-
-        builder.CloseElement(); // Close thumbnail container
-
-        // Card body
-        builder.OpenElement(16, "div");
-        builder.AddAttribute(17, "class", "card-body");
-
-        builder.OpenElement(18, "h5");
-        builder.AddAttribute(19, "class", "card-title");
-        builder.AddContent(20, project.Name);
-        builder.CloseElement();
-
-        builder.OpenElement(21, "p");
-        builder.AddAttribute(22, "class", "card-text text-truncate mb-3");
-        builder.AddContent(23, project.Description);
-        builder.CloseElement();
-
-        builder.OpenElement(24, "div");
-        builder.AddAttribute(25, "class", "d-flex justify-content-between align-items-center");
-
-        builder.OpenElement(26, "div");
-        builder.AddAttribute(27, "class", "project-budget");
-        builder.AddContent(28, $"{project.TotalBudget.ToString("N0")} ل.س");
-        builder.CloseElement();
-
-        builder.OpenElement(29, "small");
-        builder.AddAttribute(30, "class", "text-muted");
-        builder.AddContent(31, FormatDate(project.CreatedDate));
-        builder.CloseElement();
-
-        builder.CloseElement();
-
-        builder.CloseElement(); // Close card body
-
-        // Card footer
-        builder.OpenElement(32, "div");
-        builder.AddAttribute(33, "class", "card-footer text-center");
-
-        builder.OpenElement(34, "a");
-        builder.AddAttribute(35, "href", $"/project-details/{project.Id}");
-        builder.AddAttribute(36, "class", "btn btn-primary w-100");
-        builder.AddContent(37, "عرض التفاصيل");
-        builder.CloseElement();
-
-        builder.CloseElement(); // Close card footer
-
-        builder.CloseElement(); // Close card
-    };
 
     private string GetStatusBadgeClass(string status)
     {

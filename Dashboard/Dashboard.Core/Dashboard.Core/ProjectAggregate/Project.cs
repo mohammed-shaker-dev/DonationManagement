@@ -134,7 +134,8 @@ namespace Dashboard.Core.ProjectAggregate
                     Name = e.Name,
                     Date = e.Date,
                     Value = e.Amount.Amount,
-                    Code = e.Code
+                    Code = e.Code,
+                    CurrencyCode = e.Amount.Currency.Code,
                 }).ToList()
             };
         }
