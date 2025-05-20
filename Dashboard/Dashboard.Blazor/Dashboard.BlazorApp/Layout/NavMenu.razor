@@ -24,11 +24,27 @@
                 <span class="bi bi-wallet-fill-nav-menu" aria-hidden="true"></span> محفظة الدولار
             </NavLink>
         </div>
+
+        <!-- Project dropdown menu -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="projects">
-                <span class="bi bi-wallet-fill-nav-menu" aria-hidden="true"></span> المشاريع
-            </NavLink>
+            <div class="project-dropdown">
+                <button class="nav-link dropdown-toggle" @onclick="ToggleProjectsDropdown">
+                    <span class="bi bi-folder-fill-nav-menu" aria-hidden="true"></span> المشاريع
+                </button>
+                <div class="dropdown-menu @(isProjectsDropdownOpen ? "show" : "")">
+                    <NavLink class="dropdown-item" href="projects">
+                        <i class="bi bi-list"></i> جميع المشاريع
+                    </NavLink>
+                    <NavLink class="dropdown-item" href="donation-projects">
+                        <i class="bi bi-heart"></i> مشاريع المساهمات
+                    </NavLink>
+                    <NavLink class="dropdown-item" href="organization-projects">
+                        <i class="bi bi-building"></i> مشاريع المنظمات
+                    </NavLink>
+                </div>
+            </div>
         </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Admin">
                 <span class="bi bi-gear-fill-nav-menu" aria-hidden="true"></span> الإدارة
@@ -38,6 +54,62 @@
 </div>
 
 <style>
+    /* Project dropdown styles */
+    .project-dropdown {
+        position: relative;
+    }
+
+    .dropdown-toggle {
+        cursor: pointer;
+        width: 100%;
+        text-align: right;
+        background: none;
+        border: none;
+        color: #d7d7d7;
+        display: flex;
+        align-items: center;
+        height: 3rem;
+    }
+
+        .dropdown-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+    .dropdown-menu {
+        display: none;
+        background-color: #2c2c2c;
+        border-radius: 4px;
+        padding: 0.5rem 0;
+        margin-left: 2rem;
+    }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+    .dropdown-item {
+        display: block;
+        color: #d7d7d7;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+        .dropdown-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .dropdown-item i {
+            margin-left: 0.5rem;
+        }
+
+    /* Add folder icon */
+    .bi-folder-fill-nav-menu {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-folder-fill' viewBox='0 0 16 16'%3E%3Cpath d='M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z'/%3E%3C/svg%3E");
+    }
+
     /* Add wallet icon */
     .bi-wallet-fill-nav-menu {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-wallet-fill' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542.637 0 .987-.254 1.194-.542.226-.314.306-.705.306-.958a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2h-13z'/%3E%3Cpath d='M16 6.5h-5.551a2.678 2.678 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5c-.963 0-1.613-.412-2.006-.958A2.679 2.679 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-6z'/%3E%3C/svg%3E");
@@ -51,11 +123,17 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool isProjectsDropdownOpen = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleProjectsDropdown()
+    {
+        isProjectsDropdownOpen = !isProjectsDropdownOpen;
     }
 }

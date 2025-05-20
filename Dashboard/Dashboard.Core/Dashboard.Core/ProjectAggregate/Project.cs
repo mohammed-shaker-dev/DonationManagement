@@ -6,6 +6,7 @@ using SharedKernel;
 using SharedKernel.Interfaces;
 using Dashboard.Core.WalletAggregate;
 using System.Text.Json.Serialization;
+using SharedKernel.Enums;
 
 namespace Dashboard.Core.ProjectAggregate
 {
@@ -13,22 +14,25 @@ namespace Dashboard.Core.ProjectAggregate
     {
         private Project() { }
 
-        public Project(string name, string description, string additionalText,DateTime createdDate, DateTime completedDate)
+        public Project(string name, string description, string additionalText, DateTime createdDate, DateTime completedDate, ProjectType projectType = ProjectType.Donation)
         {
             Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
             Description = description;
             AdditionalText = additionalText;
-            CreatedDate =createdDate;
-            CompletedDate =completedDate;
+            CreatedDate = createdDate;
+            CompletedDate = completedDate;
+            ProjectType = projectType;
             _images = new List<string>();
             _videos = new List<string>();
         }
+
 
         public string Name { get; private set; }
         public string Description { get; private set; }
         public string AdditionalText { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public DateTime? CompletedDate { get; private set; }
+        public ProjectType ProjectType { get; private set; } = ProjectType.Donation;
         public string Status { get; private set; } = "Completed"; // Planned, InProgress, Completed
 
         [JsonIgnore]
@@ -79,7 +83,10 @@ namespace Dashboard.Core.ProjectAggregate
             Guard.Against.Null(expense, nameof(expense));
             _expenses.Remove(expense);
         }
-
+        public void UpdateProjectType(ProjectType projectType)
+        {
+            ProjectType = projectType;
+        }
         public void AddImage(string imageUrl)
         {
             Guard.Against.NullOrWhiteSpace(imageUrl, nameof(imageUrl));
@@ -127,7 +134,7 @@ namespace Dashboard.Core.ProjectAggregate
                 TotalBudget = TotalBudget,
                 Images = Images.ToList(),
                 Videos = Videos.ToList(),
-
+                ProjectType = ProjectType,
                 Expenses = Expenses.Select(e => new ExpenseDTO
                 {
                     Id = e.Id,

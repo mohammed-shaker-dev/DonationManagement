@@ -1,4 +1,5 @@
 ﻿// New file: ProjectDTO.cs
+using SharedKernel.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +18,8 @@ namespace Dashboard.Core.ProjectAggregate
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Videos { get; set; } = new List<string>();
         public List<ExpenseDTO> Expenses { get; set; } = new List<ExpenseDTO>();
+        public ProjectType ProjectType { get; set; } = ProjectType.Donation;
+
     }
 
     public class ExpenseDTO

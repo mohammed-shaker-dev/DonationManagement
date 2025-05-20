@@ -1,156 +1,193 @@
 ﻿@page "/"
   @rendermode InteractiveServer
 @using Dashboard.Core.DTOs
+@using Dashboard.Core.ProjectAggregate
 @using Donation.Web.Services
 @using Donation.Web.Components.Pages
+@using SharedKernel.Enums
 
 @inject DonationService DonationService
- 
+@inject ProjectServicePublic ProjectService
+
 
 <LoadingComponent IsLoading="isLoading" LoadingMessage="جاري تحميل البيانات..." />
 @if (!isLoading)
 {
-<section class="main-section">
-    <div class="floating-start-box">
-        <div class="circle-img c1">
-            <img src="./images/thumbs/11.jpg" />
-        </div>
-
-        <div class="circle-img c2">
-            <img src="./images/thumbs/22.jpg" />
-        </div>
-    </div>
-
-    <div class="centerized-box">
-        <span class="hashtag">#اللاذقية_نحن_أهلها</span>
-        <h1>
-            <span class="r"><span class="text-primary">اللاذقية </span> <span class="text-secondary"> نحن أهلها </span></span>
-            <span class="r"> راجع سجلاتك بسهولة</span>
-        </h1>
-        <div class="action-container">
-            <a class="btn btn-mata" href="#search">ابدأ البحث</a>
-        </div>
-        <div class="action-container">
-            <a class="btn btn-mata" href="/projects">تصفح المشاريع</a>
-        </div>
-        @*         <div class="action-container">
-            <a class="btn" href="#form-section">ابدأ البحث</a>
-        </div> *@
-
-        <p> 
-            لأن الوطن بحاجة الجميع,<br />
-            <span class="text-primary"> لأن اللاذقية  </span><span class="text-secondary"> نحن أهلها </span><br />
-            و معا سويا سنعيد إعمارها <br />
-            و نجعلها أجمل
-        </p>
-    </div>
-
-
-    <!-- SHAKKER - DO NOT CHANGE THESE IMAGES BELOW: -->
-    <div class="floating-back-box">
-        <div class="circle-img c1">
-            <img src="./images/blr1.jpg" />
-        </div>
-
-        <div class="circle-img c2">
-            <img src="./images/blr2.jpg" />
-        </div>
-
-        <div class="circle-img c3">
-            <img src="./images/blr3.jpg" />
-        </div>
-    </div>
-    <!-- SHAKKER - DO NOT CHANGE THESE IMAGES ABOVE : -->
-
-    <div class="floating-end-box">
-        <div class="circle-img c1">
-            <img src="./images/thumbs/33.jpg" />
-        </div>
-
-        <div class="circle-img c2">
-            <img src="./images/thumbs/44.jpg" />
-        </div>
-        <div class="circle-img c2">
-            <img src="./images/thumbs/55.jpg" />
-        </div>
-
-    </div>
-
-    <div class="container mb-4 d-md-none d-block">
-        <div class="row">
-            <div class="col-4">
-                <img src="./images/thumbs/11.jpg" class="w-100 rounded-xl" />
+    <section class="main-section">
+        <div class="floating-start-box">
+            <div class="circle-img c1">
+                <img src="./images/thumbs/11.jpg" />
             </div>
-            <div class="col-4">
-                <img src="./images/thumbs/33.jpg" class="w-100 rounded-xl" />
+
+            <div class="circle-img c2">
+                <img src="./images/thumbs/22.jpg" />
             </div>
-            <div class="col-4">
-                <img src="./images/thumbs/44.jpg" class="w-100 rounded-xl" />
+        </div>
+
+        <div class="centerized-box">
+            <span class="hashtag">#اللاذقية_نحن_أهلها</span>
+            <h1>
+                <span class="r"><span class="text-primary">اللاذقية </span> <span class="text-secondary"> نحن أهلها </span></span>
+                <span class="r"> راجع سجلاتك بسهولة</span>
+            </h1>
+            <div class="action-container">
+                <a class="btn btn-mata" href="#search">ابدأ البحث</a>
+            </div>
+            <div class="action-container">
+                <a class="btn btn-mata" href="/projects">تصفح المشاريع</a>
+            </div>
+
+            <p>
+                لأن الوطن بحاجة الجميع,<br />
+                <span class="text-primary"> لأن اللاذقية  </span><span class="text-secondary"> نحن أهلها </span><br />
+                و معا سويا سنعيد إعمارها <br />
+                و نجعلها أجمل
+            </p>
+        </div>
+
+
+        <!-- SHAKKER - DO NOT CHANGE THESE IMAGES BELOW: -->
+        <div class="floating-back-box">
+            <div class="circle-img c1">
+                <img src="./images/blr1.jpg" />
+            </div>
+
+            <div class="circle-img c2">
+                <img src="./images/blr2.jpg" />
+            </div>
+
+            <div class="circle-img c3">
+                <img src="./images/blr3.jpg" />
+            </div>
+        </div>
+        <!-- SHAKKER - DO NOT CHANGE THESE IMAGES ABOVE : -->
+
+        <div class="floating-end-box">
+            <div class="circle-img c1">
+                <img src="./images/thumbs/33.jpg" />
+            </div>
+
+            <div class="circle-img c2">
+                <img src="./images/thumbs/44.jpg" />
+            </div>
+            <div class="circle-img c2">
+                <img src="./images/thumbs/55.jpg" />
             </div>
 
         </div>
-    </div>
 
-</section>
+        <div class="container mb-4 d-md-none d-block">
+            <div class="row">
+                <div class="col-4">
+                    <img src="./images/thumbs/11.jpg" class="w-100 rounded-xl" />
+                </div>
+                <div class="col-4">
+                    <img src="./images/thumbs/33.jpg" class="w-100 rounded-xl" />
+                </div>
+                <div class="col-4">
+                    <img src="./images/thumbs/44.jpg" class="w-100 rounded-xl" />
+                </div>
 
+            </div>
+        </div>
 
-<section class="steps-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="step-item">
-                    <span>١. احفظ الكود بعد التبرع في مكان آمن</span>
-                    <img src="./images/step1.png" />
+    </section>
+
+    <!-- Enhanced Projects Section -->
+    <section class="projects-types-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>
+                    <span class="text-primary">مشاريع</span> <span class="text-secondary">تم تنفيذها</span>
+                </h2>
+                <p class="lead">تصفح مشاريعنا حسب النوع</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="project-type-card donation-card">
+                        <div class="project-type-header">
+                            <h3>مشاريع المساهمات</h3>
+                            <p>مشاريع تم تنفيذها من خلال مساهمات المتبرعين الكرام</p>
+                        </div>
+                        <div class="project-type-footer">
+                            <a href="/donation-projects" class="btn project-btn">تصفح المشاريع</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="project-type-card organization-card">
+                        <div class="project-type-header">
+                            <h3>مشاريع المنظمات</h3>
+                            <p>مشاريع منفذة من قبل المنظمات الخيرية والداعمة</p>
+                        </div>
+                        <div class="project-type-footer">
+                            <a href="/organization-projects" class="btn project-btn">تصفح المشاريع</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="step-item">
-                    <span>٢. ادخل الكود في أرشيف البحث</span>
-                    <img src="./images/step2.png" />
+        </div>
+    </section>
+
+    <section class="steps-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="step-item">
+                        <span>١. احفظ الكود بعد التبرع في مكان آمن</span>
+                        <img src="./images/step1.png" />
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="step-item">
-                    <span>٣. راجع تفاصيل وسجلات تبرعاتك</span>
-                    <img src="./images/step3.png" />
+                <div class="col-lg-4">
+                    <div class="step-item">
+                        <span>٢. ادخل الكود في أرشيف البحث</span>
+                        <img src="./images/step2.png" />
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="step-item">
+                        <span>٣. راجع تفاصيل وسجلات تبرعاتك</span>
+                        <img src="./images/step3.png" />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<section id="about" class="about-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 order-2 order-md-1">
-                <div class="content">
-                    <p>
-                        مبادرة اللاذقية، نحن أهلها
+    </section>
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 order-2 order-md-1">
+                    <div class="content">
+                        <p>
+                            مبادرة اللاذقية، نحن أهلها
 
-                        جاءت هذه المبادرة من إيماننا العميق بأن مدينة اللاذقية هي لنا، بعد أن تحررت من عصابات الإجرام. وانطلاقًا من هذا الإيمان وما يترتب عليه من مسؤوليات، قررنا إطلاق هذه المبادرة للنهوض بمدينتنا الجميلة، وإعادة إعمارها، لنستعيد ملامحها الحضارية التي سُلبت منها.
-                    </p>
-                    <p>
-                        تهدف المبادرة إلى توحيد الجهود بين أهالي المدينة الكرام لتنفيذ مشاريع خدمية تعود بالنفع على جميع سكانها، وتسهم في تحسين جودة الحياة واستعادة رونق اللاذقية.
-                    </p>
+                            جاءت هذه المبادرة من إيماننا العميق بأن مدينة اللاذقية هي لنا، بعد أن تحررت من عصابات الإجرام. وانطلاقًا من هذا الإيمان وما يترتب عليه من مسؤوليات، قررنا إطلاق هذه المبادرة للنهوض بمدينتنا الجميلة، وإعادة إعمارها، لنستعيد ملامحها الحضارية التي سُلبت منها.
+                        </p>
+                        <p>
+                            تهدف المبادرة إلى توحيد الجهود بين أهالي المدينة الكرام لتنفيذ مشاريع خدمية تعود بالنفع على جميع سكانها، وتسهم في تحسين جودة الحياة واستعادة رونق اللاذقية.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 order-1 order-md-2">
+                    <img src="./images/logo-w.svg" class="logo" />
                 </div>
             </div>
-
-            <div class="col-md-6 order-1 order-md-2">
-                <img src="./images/logo-w.svg" class="logo" />
-            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<section id="search" class="form-section">
-    <div class="container">
-        <div class="row" style="align-items: center">
-            <div class="col-md-5">
-                <img src="./images/logo.svg" class="logo" />
-            </div>
+    <section id="search" class="form-section">
+        <div class="container">
+            <div class="row" style="align-items: center">
+                <div class="col-md-5">
+                    <img src="./images/logo.svg" class="logo" />
+                </div>
 
-            <div class="col-md-1"></div>
-            <div class="col-md-6">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
                     <div class="search-form">
                         <label>ادخل الكود:</label>
                         <input type="text"
@@ -165,92 +202,179 @@
                         <div class="alert alert-danger mt-2">@searchError</div>
                     }
 
-                @if (showTransactionInfo)
-                {
-                    <section id="transaction-info" class="search-form">
-                        <div class="container">
-                            <h2>معلومات المعاملة</h2>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>كود المعاملة</th>
-                                        <th>المبلغ</th>
-                                        <th>العملة</th>
-                                        <th>التاريخ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>@trx.Code</td>
-                                        <td>@trx.Amount.ToString("N0")</td>
-                                        <td>@trx.Currency</td>
-                                        <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    @if (showTransactionInfo)
+                    {
+                        <section id="transaction-info" class="search-form">
+                            <div class="container">
+                                <h2>معلومات المعاملة</h2>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>كود المعاملة</th>
+                                            <th>المبلغ</th>
+                                            <th>العملة</th>
+                                            <th>التاريخ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>@trx.Code</td>
+                                            <td>@trx.Amount.ToString("N0")</td>
+                                            <td>@trx.Currency</td>
+                                            <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    }
+
+                    @if (wallets != null && wallets.Count > 0)
+                    {
+
+
+                        <section class="form-section">
+                            <div class="container">
+                                <h2>معلومات الحملة</h2>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم المحفظة</th>
+                                            <th>المبلغ المتبقي</th>
+                                            <th>المبلغ المودع</th>
+                                            <th>المبلغ المسحوب</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var wallet in wallets ?? new List<WalletDTO>())
+                                        {
+                                            if (wallet?.DepositAmount?.Amount > 0)
+                                            {
+                                                <tr>
+                                                    <td>@wallet.Name</td>
+                                                    <td>@wallet.TotalAmount.Amount.ToString("N0") </td>
+                                                    <td>@wallet.DepositAmount.Amount.ToString("N0")  </td>
+                                                    <td>@wallet.WithdrawalAmount.Amount.ToString("N0")  </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    }
+
+                    <div id="contribute" class="send-form">
+                        <h2>....شارك معنا للمساهمة</h2>
+                        <div class="row">
+                            <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي .</p>
+                            <h2>  حساب الحملة للتحويل لدى المصرف المركزي</h2>
+                            <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
+                            <h2>  رقم الحساب : 200020600000</h2>
+                            <hr />
+                            <h2>  وللإيداع النقدي لدى البنك المركزي</h2>
+                            <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
+                            <h2>  رقم الحساب : 7826761204128816</h2>
+
+                            <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقا عن طريق منصتنا</p>
+
                         </div>
-                    </section>
-                }
-
-                @if (wallets != null && wallets.Count>0){
-
-               
-   <section class="form-section">
-     <div class="container">
-        <h2>معلومات الحملة</h2>
-         <table class="table">
-            <thead>
-                <tr>
-                    <th>اسم المحفظة</th>
-                    <th>المبلغ المتبقي</th>
-                    <th>المبلغ المودع</th>
-                    <th>المبلغ المسحوب</th>
-                </tr>
-            </thead>
-            <tbody>
-              @foreach (var wallet in wallets ?? new List<WalletDTO>())
-                 {
-                     if (wallet?.DepositAmount?.Amount > 0)
-                     {
-                 <tr>
-                     <td>@wallet.Name</td>
-                     <td>@wallet.TotalAmount.Amount.ToString("N0") </td>
-                     <td>@wallet.DepositAmount.Amount.ToString("N0")  </td>
-                     <td>@wallet.WithdrawalAmount.Amount.ToString("N0")  </td>
-                 </tr>
-                     }
-                 }
-            </tbody>
-          </table>
-       </div>
-         </section>
-                }
-  
-                <div id="contribute"   class="send-form">
-                    <h2>....شارك معنا للمساهمة</h2>
-                    <div class="row">
-                        <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي .</p>
-                        <h2>  حساب الحملة للتحويل لدى المصرف المركزي</h2>
-                        <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
-                        <h2>  رقم الحساب : 200020600000</h2>
-                        <hr/>
-                        <h2>  وللإيداع النقدي لدى البنك المركزي</h2>
-                        <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
-                        <h2>  رقم الحساب : 7826761204128816</h2>
-
-                        <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقا عن طريق منصتنا</p>
-
-                    </div>            
-                    @*   <div class="text-end">
-                        <a href="/donate" class="btn btn-mata">تبرع</a>
-                    </div> *@
-
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-  }            
+    </section>
+}
+
+<!-- Add simplified custom CSS for the project types section -->
+<style>
+    /* Projects section styling */
+    .projects-types-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+
+    .project-type-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .project-type-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+    .project-type-header {
+        padding: 30px 25px;
+        flex-grow: 1;
+    }
+
+    .project-type-footer {
+        padding: 20px 25px;
+        background-color: rgba(255,255,255,0.1);
+        text-align: center;
+    }
+
+    .donation-card {
+        background: linear-gradient(135deg, #43936f 0%, #2a5c46 100%);
+        color: white;
+    }
+
+    .organization-card {
+        background: linear-gradient(135deg, #3f51b5 0%, #303f9f 100%);
+        color: white;
+    }
+
+    .project-type-card h3 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+
+    .project-type-card p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .project-btn {
+        background-color: white;
+        color: #333;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 30px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .donation-card .project-btn:hover {
+        background-color: #f8f9fa;
+        color: #43936f;
+    }
+
+    .organization-card .project-btn:hover {
+        background-color: #f8f9fa;
+        color: #3f51b5;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .projects-types-section
+
+    {
+        padding: 40px 0;
+    }
+
+    .project-type-card {
+        margin-bottom: 20px;
+    }
+
+    }
+</style>
+
 @code {
     private bool isLoading = true;
     private bool showTransactionInfo = false;
@@ -267,7 +391,7 @@
         }
         catch (Exception ex)
         {
-            // Log exception 
+            // Log exception
             wallets = new List<WalletDTO>();
         }
         finally
@@ -282,10 +406,8 @@
         if (string.IsNullOrWhiteSpace(searchModel.Code))
             return;
 
-     //   isLoading = true;
         searchError = string.Empty;
         showTransactionInfo = false;
-       // StateHasChanged();
 
         try
         {
@@ -302,14 +424,8 @@
         }
         catch (Exception ex)
         {
-         //   searchError = $"Error searching for donation: {ex.Message}";
             Console.WriteLine($"Error searching for donation: {ex.Message}");
-          searchError = "حدث خطأ أثناء البحث. يرجى المحاولة لاحقاً.";
-        }
-        finally
-        {
-     //       isLoading = false;
-         //   StateHasChanged();
+            searchError = "حدث خطأ أثناء البحث. يرجى المحاولة لاحقاً.";
         }
     }
 
@@ -317,14 +433,12 @@
     {
         public string Code { get; set; }
     }
+
     private void ToggleTransactionInfo()
     {
         if (trx != null)
             showTransactionInfo = true;
         else
             showTransactionInfo = !showTransactionInfo;
-
     }
-   
 }
- 

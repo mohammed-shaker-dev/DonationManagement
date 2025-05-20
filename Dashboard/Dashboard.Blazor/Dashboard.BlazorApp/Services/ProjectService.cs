@@ -1,4 +1,5 @@
 ﻿using Dashboard.Core.ProjectAggregate;
+using SharedKernel.Enums;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,6 +24,19 @@ namespace Dashboard.BlazorApp.Services
             try
             {
                 return await _httpClient.GetFromJsonAsync<List<ProjectDTO>>("projects");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return new List<ProjectDTO>();
+            }
+        }
+
+        public async Task<List<ProjectDTO>> GetProjectsByTypeAsync(ProjectType projectType)
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<ProjectDTO>>($"projects/type/{(int)projectType}");
             }
             catch (HttpRequestException ex)
             {
@@ -100,6 +114,4 @@ namespace Dashboard.BlazorApp.Services
             }
         }
     }
-
- 
 }

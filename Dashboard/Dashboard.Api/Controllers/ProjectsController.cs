@@ -53,6 +53,27 @@ namespace Dashboard.Api.Controllers
             }
         }
 
+        [HttpGet("type/{projectType}")]
+        public async Task<ActionResult<List<ProjectDTO>>> GetByType(ProjectType projectType)
+        {
+            try
+            {
+                var spec = new ProjectsByTypeSpec(projectType);
+                var projects = await _projectRepository.ListAsync(spec);
+
+                if (projects == null)
+                {
+                    return NotFound($"No projects found with type: {projectType}");
+                }
+
+                return Ok(projects.Select(p => p.ToDto()).ToList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving projects of type {projectType}");
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDTO>> GetById(long id)
         {
@@ -70,7 +91,13 @@ namespace Dashboard.Api.Controllers
         public async Task<ActionResult> Create([FromBody] CreateProjectRequest request)
         {
             // Create the project
-            var project = new Project(request.Name, request.Description, request.AdditionalText, request.StartedDate,request.CompletedDate);
+            var project = new Project(
+                request.Name,
+                request.Description,
+                request.AdditionalText,
+                request.StartedDate,
+                request.CompletedDate,
+                request.ProjectType); // Include ProjectType in constructor
 
             // Add images and videos if present
             if (request.Images != null)
@@ -107,7 +134,7 @@ namespace Dashboard.Api.Controllers
                     var expense = new Expense(
                         expenseRequest.Name,
                         expenseRequest.Date,
-                        new Money(expenseRequest.Value,new Currency(wallet.Currency.Code)),
+                        new Money(expenseRequest.Value, new Currency(wallet.Currency.Code)),
                         expenseRequest.Code);
 
                     project.AddExpense(expense);
@@ -133,10 +160,8 @@ namespace Dashboard.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-
-   
+                    // Handle exception
                 }
-
             }
 
             // Save the project
@@ -144,7 +169,6 @@ namespace Dashboard.Api.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = project.Id }, project.ToDto());
         }
-
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(long id, [FromBody] UpdateProjectRequest request)
@@ -156,15 +180,17 @@ namespace Dashboard.Api.Controllers
             }
 
             // Update basic properties
-            // Note: Since our domain model uses private setters for immutability,
-            // we'd need to add methods to update these properties or create a new project
-
-            // For now, we'll update what we can - images, videos and status
 
             // Update status if provided
             if (!string.IsNullOrEmpty(request.Status))
             {
                 project.UpdateStatus(request.Status);
+            }
+
+            // Update project type if different from current value
+            if (request.ProjectType != project.ProjectType)
+            {
+                project.UpdateProjectType(request.ProjectType??ProjectType.Donation);
             }
 
             // Handle images update
@@ -281,7 +307,7 @@ namespace Dashboard.Api.Controllers
             var expense = new Expense(
                 request.Name,
                 request.Date,
-               new Money(request.Value, new Currency(request.WalletName)),  
+               new Money(request.Value, new Currency(request.WalletName)),
                 request.Code);
 
             project.AddExpense(expense);
@@ -313,5 +339,4 @@ namespace Dashboard.Api.Controllers
             return Ok();
         }
     }
-
 }

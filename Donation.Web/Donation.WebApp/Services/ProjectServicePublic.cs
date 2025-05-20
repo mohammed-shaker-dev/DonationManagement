@@ -1,7 +1,7 @@
-﻿
-using Dashboard.Core.ProjectAggregate;
+﻿using Dashboard.Core.ProjectAggregate;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
+using SharedKernel.Enums;
 
 namespace Donation.Web.Services
 {
@@ -52,6 +52,23 @@ namespace Donation.Web.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error getting projects: {ex.Message}");
+                return new List<ProjectDTO>();
+            }
+        }
+
+        public async Task<List<ProjectDTO>> GetProjectsByTypeAsync(ProjectType projectType)
+        {
+            try
+            {
+                // First try to get all projects from cache
+                var allProjects = await GetProjectsAsync();
+
+                // Filter by type
+                return allProjects.Where(p => p.ProjectType == projectType).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error getting projects by type: {ex.Message}");
                 return new List<ProjectDTO>();
             }
         }

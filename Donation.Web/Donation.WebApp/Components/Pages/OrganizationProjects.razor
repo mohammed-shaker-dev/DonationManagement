@@ -1,0 +1,495 @@
+﻿@page "/organization-projects"
+@using Dashboard.Core.ProjectAggregate
+@using Donation.Web.Services
+@using SharedKernel.Enums
+@inject ProjectServicePublic ProjectService
+@inject NavigationManager NavigationManager
+
+<section class="main-section projects-page">
+    <div class="centerized-box">
+        <div class="section-header text-center">
+            <h1 class="section-title">
+                <span class="r"><span class="text-primary">مشاريع </span> <span class="text-secondary">المنظمات</span></span>
+            </h1>
+            <p class="lead section-subtitle">
+                مشاريع منفذة من قبل المنظمات الخيرية والداعمة لمدينتنا الحبيبة.
+            </p>
+            <div class="section-decoration">
+                <span></span><i class="bi bi-diamond-fill"></i><span></span>
+            </div>
+        </div>
+
+        @if (loading)
+        {
+            <div class="text-center my-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">جاري تحميل المشاريع...</p>
+            </div>
+        }
+        else if (!projects.Any())
+        {
+            <div class="alert alert-info">
+                <h4 class="alert-heading">لا توجد مشاريع منظمات حالياً</h4>
+                <p>سيتم عرض المشاريع هنا بمجرد البدء بها. تابعونا للاطلاع على آخر المستجدات.</p>
+            </div>
+        }
+        else
+        {
+            <div class="projects-list">
+                <div class="row">
+                    @foreach (var project in projects)
+                    {
+                        var Currency = "";
+                        @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
+                        {
+                            Currency = "$";
+                        }
+                        else
+                        {
+                            Currency = "ل.س";
+                        }
+                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up">
+                            <div class="project-card organization-card">
+                                <!-- Card thumbnail -->
+                                <div class="project-card-image">
+                                    @if (project.Images != null && project.Images.Any())
+                                    {
+                                        <img src="@project.Images.First()" class="project-thumbnail" alt="@project.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="project-thumbnail-placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+
+                                    <!-- Status badge -->
+                                    <div class="project-status">
+                                        <span class="badge @GetStatusBadgeClass(project.Status)">@GetStatusArabic(project.Status)</span>
+                                    </div>
+                                    <div class="project-overlay"></div>
+                                </div>
+
+                                <!-- Card body -->
+                                <div class="project-card-body">
+                                    <h5 class="project-title">@project.Name</h5>
+                                    <p class="project-description">@(project.Description?.Length > 100 ? project.Description.Substring(0, 100) + "..." : project.Description)</p>
+
+                                    <div class="project-meta">
+                                        <div class="project-budget">
+                                            <i class="bi bi-cash-coin"></i>
+                                            @if (project.TotalBudget > 0)
+                                            {
+                                                @($"{project.TotalBudget.ToString("N0")} {Currency}")
+                                            }
+                                            else
+                                            {
+                                                @("تطوع")
+                                            }
+                                        </div>
+                                        <div class="project-date">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @FormatDate(project.CreatedDate)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card footer -->
+                                <div class="project-card-footer">
+                                    <a href="/project-details/@project.Id" class="btn btn-project">
+                                        عرض التفاصيل
+                                        <i class="bi bi-arrow-left-short"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="action-container mt-5">
+            <a class="btn btn-mata" href="/#contribute">المساهمة في المشاريع القادمة</a>
+        </div>
+    </div>
+</section>
+
+<!-- Add styles for the upgraded project cards -->
+<style>
+    html, body, .main-section, .form-section, .modal, .modal-content, .container {
+        direction: rtl !important;
+        text-align: right !important;
+    }
+
+    /* Section header styling */
+    .section-header {
+        margin-bottom: 50px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .section-decoration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        width: 200px;
+    }
+
+        .section-decoration span {
+            height: 2px;
+            background: var(--bs-primary);
+            flex-grow: 1;
+        }
+
+        .section-decoration i {
+            color: var(--bs-primary);
+            font-size: 12px;
+            margin: 0 15px;
+        }
+
+    .projects-page {
+        padding-top: 120px;
+        background-color: #f8f9fa;
+    }
+
+    /* Enhanced Project Card Styling */
+    .project-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        border: none;
+    }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+    /* Special styling for organization cards */
+    .organization-card .project-title:after {
+        background-color: #3f51b5;
+    }
+
+    .organization-card .project-budget {
+        color: #3f51b5;
+    }
+
+    .organization-card .btn-project {
+        background-color: #3f51b5;
+    }
+
+        .organization-card .btn-project:hover {
+            background-color: #303f9f;
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+        }
+
+    .project-card-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .project-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .project-card:hover .project-thumbnail {
+        transform: scale(1.1);
+    }
+
+    .project-thumbnail-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+    }
+
+        .project-thumbnail-placeholder i {
+            font-size: 3rem;
+            color: #ccc;
+        }
+
+    .project-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .project-card:hover .project-overlay {
+        opacity: 0.7;
+        height: 50%;
+    }
+
+    .project-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 2;
+    }
+
+        .project-status .badge {
+            font-size: 0.8rem;
+            padding: 0.5em 0.8em;
+            border-radius: 20px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+    .project-card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .project-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+        .project-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--bs-primary);
+            transition: width 0.3s ease;
+        }
+
+    .project-card:hover .project-title:after {
+        width: 100px;
+    }
+
+    .project-description {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1.2rem;
+        line-height: 1.6;
+    }
+
+    .project-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .project-budget, .project-date {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .project-budget {
+        color: var(--bs-primary);
+        font-weight: 600;
+    }
+
+    .project-date {
+        color: #888;
+    }
+
+        .project-budget i, .project-date i {
+            margin-left: 5px;
+            font-size: 1rem;
+        }
+
+    .project-card-footer {
+        padding: 1rem 1.5rem;
+        background-color: #f9f9f9;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        text-align: center;
+    }
+
+    .btn-project {
+        color: white;
+        background-color: var(--bs-primary);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-project:hover {
+            background-color: #3a805f;
+            box-shadow: 0 5px 15px rgba(67, 147, 111, 0.3);
+            color: white;
+        }
+
+        .btn-project i {
+            transition: transform 0.3s ease;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+            font-size: 1.2em;
+        }
+
+        .btn-project:hover i {
+            transform: translateX(-5px);
+        }
+
+    /* Animation for cards */
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    [data-aos="fade-up"] {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+        [data-aos="fade-up"].aos-animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    .projects-list .col-md-6:nth-child(2) [data-aos="fade-up"] {
+        transition-delay: 0.1s;
+    }
+
+    .projects-list .col-md-6:nth-child(3) [data-aos="fade-up"] {
+        transition-delay: 0.2s;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .project-card-image
+
+    {
+        height: 160px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+    }
+
+    }
+</style>
+
+<!-- Add AOS animation script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Simulate AOS library functionality
+        const animatedElements = document.querySelectorAll('[data-aos]');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('aos-animate');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+
+@code {
+    private List<ProjectDTO> projects = new List<ProjectDTO>();
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    private async Task LoadProjects()
+    {
+        loading = true;
+        try
+        {
+            projects = await ProjectService.GetProjectsByTypeAsync(ProjectType.Organization);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading projects: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Planned" => "bg-info",
+            "InProgress" => "bg-primary",
+            "Completed" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusArabic(string status)
+    {
+        return status switch
+        {
+            "Planned" => "مخطط",
+            "InProgress" => "قيد التنفيذ",
+            "Completed" => "مكتمل",
+            _ => status
+        };
+    }
+
+    private string FormatDate(DateTime date)
+    {
+        return date.ToString("yyyy-MM-dd");
+    }
+}

@@ -1,4 +1,6 @@
-﻿namespace SharedKernel.Blazor.Shared
+﻿using SharedKernel.Enums;
+
+namespace SharedKernel.Blazor.Shared
 {
     public class CreateProjectRequest
     {
@@ -11,5 +13,7 @@
         public List<string> Videos { get; set; } = new List<string>();
         public List<CreateExpenseRequest> Expenses { get; set; } = new List<CreateExpenseRequest>();
         public string WalletName { get; set; } = "SYP";
+        public ProjectType ProjectType { get; set; } = ProjectType.Donation;
+
     }
 }
