@@ -3,83 +3,20 @@
 @using Donation.Web.Services
 @inject ProjectServicePublic ProjectService
 @inject NavigationManager NavigationManager
-<style>
-    html, body, .main-section, .form-section, .modal, .modal-content, .container {
-    direction: rtl !important;
-    text-align: right !important;
-    }
 
-    .projects-section {
-    padding-top: 120px;
-    }
-
-    .project-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    }
-
-    .project-thumbnail {
-    height: 200px;
-    object-fit: cover;
-    }
-
-    .project-card .card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    }
-
-    .project-card .card-body {
-    padding: 1.5rem;
-    }
-
-    .card-footer {
-    background-color: white;
-    border-top: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .project-budget {
-    font-weight: bold;
-    color: var(--bs-primary);
-    }
-
-    .projects-list {
-    animation: fadeIn 0.8s ease-out;
-    }
-
-    @@keyframes fadeIn {
-    from {
-    opacity: 0;
-    }
-
-    to {
-    opacity: 1;
-    }
-    }
-
-    @@media (max-width: 768px) {
-    .project-thumbnail {
-    height: 150px;
-    }
-    }
-</style>
 <section class="main-section projects-section">
     <div class="centerized-box">
-        <h1>
-            <span class="r"><span class="text-primary">المشاريع </span> <span class="text-secondary">التي نفذتها مساهماتكم</span></span>
-        </h1>
-
-        <p class="lead mb-5">
-            بفضل مساهماتكم السخية، تمكنا من تنفيذ العديد من المشاريع التي أسهمت في خدمة مدينتنا الحبيبة.
-        </p>
+        <div class="section-header text-center">
+            <h1 class="section-title">
+                <span class="r"><span class="text-primary">المشاريع </span> <span class="text-secondary">التي نفذتها مساهماتكم</span></span>
+            </h1>
+            <p class="lead section-subtitle">
+                بفضل مساهماتكم السخية، تمكنا من تنفيذ العديد من المشاريع التي أسهمت في خدمة مدينتنا الحبيبة.
+            </p>
+            <div class="section-decoration">
+                <span></span><i class="bi bi-diamond-fill"></i><span></span>
+            </div>
+        </div>
 
         @if (loading)
         {
@@ -87,50 +24,56 @@
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-3">جاري تحميل المشاريع...</p>
+                <p class="mt-3 loading-text">جاري تحميل المشاريع...</p>
             </div>
         }
         else if (!allProjects.Any())
         {
-            <div class="alert alert-info">
-                <h4 class="alert-heading">لا توجد مشاريع حالياً</h4>
+            <div class="empty-state">
+                <i class="bi bi-folder-x"></i>
+                <h4>لا توجد مشاريع حالياً</h4>
                 <p>سيتم عرض المشاريع هنا بمجرد البدء بها. تابعونا للاطلاع على آخر المستجدات.</p>
             </div>
         }
         else
         {
-            <div class="projects-list">
+            <div class="projects-grid">
                 <div class="row">
                     @foreach (var project in allProjects)
                     {
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card project-card">
-                                <!-- Card thumbnail -->
-                                <div class="card-img-top project-thumbnail-container">
+                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up">
+                            <div class="project-card">
+                                <!-- Card Image -->
+                                <div class="project-card-image">
                                     @if (project.Images != null && project.Images.Any())
                                     {
-                                        <img src="@project.Images.First()" class="project-thumbnail w-100" alt="@project.Name" />
+                                        <img src="@project.Images.First()" class="project-thumbnail" alt="@project.Name" />
                                     }
                                     else
                                     {
-                                        <div class="project-thumbnail d-flex align-items-center justify-content-center bg-light">
-                                            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        <div class="project-thumbnail-placeholder">
+                                            <i class="bi bi-image"></i>
                                         </div>
                                     }
 
-                                    <!-- Status badge -->
-                                    <div class="position-absolute top-0 end-0 m-3">
-                                        <span></span>
+                                    <!-- Status Badge -->
+                                    <div class="project-status">
+                                        <span class="badge @GetStatusBadgeClass(project.StatusText)">
+                                            <i class="@GetStatusIcon(project.StatusText)"></i>
+                                            @GetStatusText(project.StatusText)
+                                        </span>
                                     </div>
+                                    <div class="project-overlay"></div>
                                 </div>
 
-                                <!-- Card body -->
-                                <div class="card-body">
-                                    <h5 class="card-title">@project.Name</h5>
-                                    <p class="card-text text-truncate mb-3">@project.Description</p>
+                                <!-- Card Body -->
+                                <div class="project-card-body">
+                                    <h5 class="project-title">@project.Name</h5>
+                                    <p class="project-description">@(project.Description?.Length > 100 ? project.Description.Substring(0, 100) + "..." : project.Description)</p>
 
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="project-meta">
                                         <div class="project-budget">
+                                            <i class="bi bi-cash-coin"></i>
                                             @if (project.TotalBudget > 0)
                                             {
                                                 @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
@@ -147,13 +90,28 @@
                                                 @("تطوع")
                                             }
                                         </div>
-                                        <small class="text-muted">@FormatDate(project.CreatedDate)</small>
+                                        <div class="project-date">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @FormatDate(project.CreatedDate)
+                                        </div>
                                     </div>
+
+                                    @if (project.Expenses != null && project.Expenses.Any())
+                                    {
+                                        <div class="project-progress">
+                                            <div class="progress-label">
+                                                <small>@project.Expenses.Count عنصر مصروف</small>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
 
-                                <!-- Card footer -->
-                                <div class="card-footer text-center">
-                                    <a href="/project-details/@project.Id" class="btn btn-primary w-100">عرض التفاصيل</a>
+                                <!-- Card Footer -->
+                                <div class="project-card-footer">
+                                    <a href="/project-details/@project.Id" class="btn btn-project">
+                                        عرض التفاصيل
+                                        <i class="bi bi-arrow-left-short"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -168,10 +126,464 @@
     </div>
 </section>
 
+<style>
+    html, body, .main-section, .form-section, .modal, .modal-content, .container {
+    direction: rtl !important;
+    text-align: right !important;
+    }
+
+    /* Section Header */
+    .section-header {
+    margin-bottom: 60px;
+    }
+
+    .section-title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+    font-size: 1.3rem;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    }
+
+    .section-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 200px;
+    }
+
+    .section-decoration span {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--bs-primary), transparent);
+    flex-grow: 1;
+    }
+
+    .section-decoration i {
+    color: var(--bs-primary);
+    font-size: 14px;
+    margin: 0 20px;
+    animation: pulse 2s infinite;
+    }
+
+    .projects-section {
+    padding-top: 140px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    }
+
+    /* Loading State */
+    .loading-text {
+    color: #666;
+    font-size: 1.1rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #666;
+    }
+
+    .empty-state i {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+    margin-bottom: 15px;
+    color: #555;
+    }
+
+    /* Project Grid */
+    .projects-grid .row {
+    margin: 0 -15px;
+    }
+
+    .projects-grid .col-md-6,
+    .projects-grid .col-lg-4 {
+    padding: 0 15px;
+    }
+
+    /* Enhanced Project Card */
+    .project-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    }
+
+    .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    }
+
+    .project-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .project-card:hover::before {
+    opacity: 1;
+    }
+
+    .project-card-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    }
+
+    .project-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    }
+
+    .project-card:hover .project-thumbnail {
+    transform: scale(1.08);
+    }
+
+    .project-thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+    color: #999;
+    }
+
+    .project-thumbnail-placeholder i {
+    font-size: 3.5rem;
+    }
+
+    .project-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    }
+
+    .project-card:hover .project-overlay {
+    opacity: 1;
+    }
+
+    /* Status Badge */
+    .project-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    }
+
+    .project-status .badge {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 600;
+    }
+
+    .project-status .badge i {
+    margin-left: 5px;
+    font-size: 0.9em;
+    }
+
+    /* Card Body */
+    .project-card-body {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    }
+
+    .project-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    line-height: 1.3;
+    position: relative;
+    }
+
+    .project-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+    transition: width 0.3s ease;
+    border-radius: 2px;
+    }
+
+    .project-card:hover .project-title::after {
+    width: 60px;
+    }
+
+    .project-description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    }
+
+    .project-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .project-budget, .project-date {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    }
+
+    .project-budget {
+    color: var(--bs-primary);
+    font-weight: 700;
+    background: rgba(67, 147, 111, 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
+    }
+
+    .project-date {
+    color: #888;
+    font-weight: 500;
+    }
+
+    .project-progress {
+    margin-top: auto;
+    }
+
+    .project-progress .progress-label {
+    color: #666;
+    margin-bottom: 8px;
+    }
+
+    /* Card Footer */
+    .project-card-footer {
+    padding: 20px 24px;
+    background: rgba(248, 249, 250, 0.5);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .btn-project {
+    width: 100%;
+    color: white;
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #3a805f 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    }
+
+    .btn-project::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+    }
+
+    .btn-project:hover::before {
+    left: 100%;
+    }
+
+    .btn-project:hover {
+    background: linear-gradient(135deg, #3a805f 0%, var(--bs-primary) 100%);
+    box-shadow: 0 8px 25px rgba(67, 147, 111, 0.3);
+    transform: translateY(-2px);
+    color: white;
+    }
+
+    .btn-project i {
+    transition: transform 0.3s ease;
+    font-size: 1.2em;
+    }
+
+    .btn-project:hover i {
+    transform: translateX(-4px);
+    }
+
+    /* Status Badge Classes */
+    .bg-status-planned {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+    color: white;
+    }
+
+    .bg-status-inprogress {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    color: white;
+    }
+
+    .bg-status-completed {
+    background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+    color: white;
+    }
+
+    /* Animations */
+    @@keyframes pulse {
+    0%, 100%
+
+    {
+    transform: scale(1);
+    }
+
+    50% {
+    transform: scale(1.1);
+    }
+
+    }
+
+    @@keyframes fadeInUp {
+    from
+
+    {
+    opacity: 0;
+    transform: translateY(30px);
+    }
+
+    to {
+    opacity: 1;
+    transform: translateY(0);
+    }
+
+    }
+
+    [data-aos="fade-up"] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    [data-aos="fade-up"].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+    .section-title
+
+    {
+    font-size: 2.2rem;
+    }
+
+    .section-subtitle {
+    font-size: 1.1rem;
+    }
+
+    .projects-section {
+    padding-top: 120px;
+    }
+
+    .project-card-image {
+    height: 180px;
+    }
+
+    .project-card-body {
+    padding: 20px;
+    }
+
+    .project-card-footer {
+    padding: 16px 20px;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+    .section-title
+
+    {
+    font-size: 1.8rem;
+    }
+
+    .project-title {
+    font-size: 1.2rem;
+    }
+
+    .project-meta {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    }
+
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // AOS Animation
+    const animatedElements = document.querySelectorAll('[data-aos]');
+
+    const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+    setTimeout(() => {
+    entry.target.classList.add('aos-animate');
+    }, index * 100);
+    }
+    });
+    }, {
+    threshold: 0.1
+    });
+
+    animatedElements.forEach(el => {
+    observer.observe(el);
+    });
+    });
+</script>
+
 @code {
     private List<ProjectDTO> allProjects = new List<ProjectDTO>();
     private bool loading = true;
-
+ 
+    protected override async Task OnParametersSetAsync()
+    {
+ 
+        await LoadProjects();
+    }
     protected override async Task OnInitializedAsync()
     {
         await LoadProjects();
@@ -191,28 +603,40 @@
         finally
         {
             loading = false;
+            StateHasChanged();
         }
     }
 
     private string GetStatusBadgeClass(string status)
     {
-        return status switch
+        return status?.ToLower() switch
         {
-            "Planned" => "bg-info",
-            "InProgress" => "bg-primary",
-            "Completed" => "bg-success",
+            "planned" => "bg-status-planned",
+            "inprogress" => "bg-status-inprogress",
+            "completed" => "bg-status-completed",
             _ => "bg-secondary"
         };
     }
 
-    private string GetStatusArabic(string status)
+    private string GetStatusText(string status)
     {
-        return status switch
+        return status?.ToLower() switch
         {
-            "Planned" => "مخطط",
-            "InProgress" => "قيد التنفيذ",
-            "Completed" => "مكتمل",
-            _ => status
+            "planned" => "مخطط",
+            "inprogress" => "قيد التنفيذ",
+            "completed" => "مكتمل",
+            _ => status ?? "غير محدد"
+        };
+    }
+
+    private string GetStatusIcon(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "planned" => "bi-calendar-check",
+            "inprogress" => "bi-gear-fill",
+            "completed" => "bi-check-circle-fill",
+            _ => "bi-question-circle"
         };
     }
 
