@@ -14,7 +14,7 @@ namespace Dashboard.Core.ProjectAggregate
     {
         private Project() { }
 
-        public Project(string name, string description, string additionalText, DateTime createdDate, DateTime completedDate, ProjectType projectType = ProjectType.Donation)
+        public Project(string name, string description, string additionalText, DateTime createdDate, DateTime completedDate, ProjectType projectType = ProjectType.Donation,ProjectStatus projectStatus=ProjectStatus.Completed)
         {
             Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
             Description = description;
@@ -22,6 +22,7 @@ namespace Dashboard.Core.ProjectAggregate
             CreatedDate = createdDate;
             CompletedDate = completedDate;
             ProjectType = projectType;
+            Status = projectStatus;
             _images = new List<string>();
             _videos = new List<string>();
         }
@@ -33,7 +34,7 @@ namespace Dashboard.Core.ProjectAggregate
         public DateTime CreatedDate { get; private set; }
         public DateTime? CompletedDate { get; private set; }
         public ProjectType ProjectType { get; private set; } = ProjectType.Donation;
-        public string Status { get; private set; } = "Completed"; // Planned, InProgress, Completed
+        public ProjectStatus Status { get; private set; } = ProjectStatus.Planned;
 
         [JsonIgnore]
         private readonly List<Expense> _expenses = new List<Expense>();
@@ -61,7 +62,7 @@ namespace Dashboard.Core.ProjectAggregate
             // If completed date is set, update status to Completed
             if (completedDate.HasValue)
             {
-                Status = "Completed";
+                Status = ProjectStatus.Completed;
             }
         }
         public void AddExpense(Expense expense)
@@ -109,17 +110,22 @@ namespace Dashboard.Core.ProjectAggregate
             _videos.Remove(videoUrl);
         }
 
-        public void UpdateStatus(string status)
+        public void UpdateStatus(ProjectStatus status)
         {
-            Guard.Against.NullOrWhiteSpace(status, nameof(status));
             Status = status;
 
-            if (status == "Completed" && !CompletedDate.HasValue)
+            if (status == ProjectStatus.Completed && !CompletedDate.HasValue)
             {
                 CompletedDate = DateTime.UtcNow;
             }
         }
-
+ 
+        public void UpdateBasicInfo(string name, string description, string additionalText)
+        {
+            Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Description = description ?? Description;
+            AdditionalText = additionalText ?? AdditionalText;
+        }
         public ProjectDTO ToDto()
         {
             return new ProjectDTO

@@ -27,6 +27,13 @@ namespace Dashboard.Api.Controllers
             var wallets = await _walletRepository.ListAsync(new WalletsWithTransactionsSpec());
             return Ok(wallets.Select(w=>w.ToDto()).ToList());
         }
+
+        [HttpGet("Deposit")]
+        public async Task<ActionResult<IEnumerable<WalletDTO>>> GetAllDepositAsync()
+        {
+            var wallets = await _walletRepository.ListAsync(new WalletsDepositOnlySpec());
+            return Ok(wallets.Select(w => w.ToDto()).ToList());
+        }
         [HttpGet("by-name")]
         public async Task<ActionResult<IEnumerable<WalletDTO>>> GetWalletByName([FromQuery] string walletName)
         {

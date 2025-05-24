@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: "BoutrosAsma";
   src: url("./fonts/BoutrosAsma.eot");
   src: url("./fonts/BoutrosAsma.eot?#iefix") format("embedded-opentype"), url("./fonts/BoutrosAsma.woff2") format("woff2"), url("./fonts/BoutrosAsma.woff") format("woff");
@@ -71,7 +71,7 @@ body .input-mata {
   display: block;
 }
 .main-section .centerized-box .action-container {
-  margin-bottom: 100px;
+  margin-bottom: 25px;
 }
 .main-section .centerized-box p {
   font-size: 18px;
@@ -409,4 +409,93 @@ body .input-mata {
   .form-section .send-form h2 {
     font-size: 18px;
   }
+}
+
+
+/* Add this to your main CSS file or style.css */
+
+/* Adjust body padding for fixed navbar */
+body {
+    padding-top: 100px; /* Adjust based on your navbar height */
+}
+
+/* Specific adjustments for main sections */
+.main-section {
+    padding-top: 120px !important; /* Override existing padding-top */
+}
+
+    .main-section .centerized-box {
+        padding-top: 60px; /* Reduce the original padding since we have body padding */
+    }
+
+/* Mobile adjustments */
+@media (max-width: 991.98px) {
+    body {
+        padding-top: 80px;
+    }
+
+    .main-section {
+        padding-top: 100px !important;
+    }
+
+        .main-section .centerized-box {
+            padding-top: 40px;
+        }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding-top: 70px;
+    }
+
+    .main-section {
+        padding-top: 80px !important;
+    }
+
+        .main-section .centerized-box {
+            padding-top: 30px;
+        }
+}
+
+/* Ensure smooth scroll anchors account for fixed navbar */
+html {
+    scroll-padding-top: 120px;
+}
+
+/* Override Bootstrap Icons if not loaded */
+.bi::before {
+    font-family: 'bootstrap-icons' !important;
+}
+
+/* Fallback for missing icons */
+.bi-search::before {
+    content: "🔍";
+}
+
+.bi-info-circle::before {
+    content: "ℹ️";
+}
+
+.bi-journal-text::before {
+    content: "📋";
+}
+
+.bi-diagram-3::before {
+    content: "📊";
+}
+
+.bi-grid-3x3-gap::before {
+    content: "⚏";
+}
+
+.bi-heart::before {
+    content: "❤️";
+}
+
+.bi-plus-circle::before {
+    content: "➕";
+}
+
+.bi-building::before {
+    content: "🏢";
 }

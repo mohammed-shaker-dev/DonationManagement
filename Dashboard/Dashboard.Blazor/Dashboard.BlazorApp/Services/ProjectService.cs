@@ -36,7 +36,7 @@ namespace Dashboard.BlazorApp.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<ProjectDTO>>($"projects/type/{(int)projectType}");
+                return await _httpClient.GetFromJsonAsync<List<ProjectDTO>>($"projects/type/{GetProjectTypeId(projectType)}");
             }
             catch (HttpRequestException ex)
             {
@@ -112,6 +112,15 @@ namespace Dashboard.BlazorApp.Services
                 Console.WriteLine($"HTTP Request failed: {ex.Message}");
                 return false;
             }
+        }
+
+        private int GetProjectTypeId(ProjectType projectType)
+        {
+            return projectType switch
+            {
+                ProjectType.Organization => 1,
+                ProjectType.Donation => 2,
+            };
         }
     }
 }

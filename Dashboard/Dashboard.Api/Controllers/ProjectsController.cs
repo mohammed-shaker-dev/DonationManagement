@@ -5,6 +5,7 @@ using Dashboard.Core.ProjectAggregate.Specifications;
 using Dashboard.Core.ValueObjects;
 using Dashboard.Core.WalletAggregate;
 using Dashboard.Core.WalletAggregate.Specifications;
+using Dashboard.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Blazor.Shared;
@@ -53,11 +54,12 @@ namespace Dashboard.Api.Controllers
             }
         }
 
-        [HttpGet("type/{projectType}")]
-        public async Task<ActionResult<List<ProjectDTO>>> GetByType(ProjectType projectType)
+        [HttpGet("type/{projectTypeNumber}")]
+        public async Task<ActionResult<List<ProjectDTO>>> GetByType(int projectTypeNumber)
         {
             try
             {
+                var projectType = (ProjectType)projectTypeNumber;
                 var spec = new ProjectsByTypeSpec(projectType);
                 var projects = await _projectRepository.ListAsync(spec);
 
@@ -70,7 +72,7 @@ namespace Dashboard.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while retrieving projects of type {projectType}");
+                return StatusCode(500, $"An error occurred while retrieving projects of type {projectTypeNumber}");
             }
         }
 
@@ -180,17 +182,28 @@ namespace Dashboard.Api.Controllers
             }
 
             // Update basic properties
-
-            // Update status if provided
-            if (!string.IsNullOrEmpty(request.Status))
+            if (!string.IsNullOrEmpty(request.Name) || !string.IsNullOrEmpty(request.Description) || !string.IsNullOrEmpty(request.AdditionalText))
             {
-                project.UpdateStatus(request.Status);
+                project.UpdateBasicInfo(
+                    request.Name ?? project.Name,
+                    request.Description ?? project.Description,
+                    request.AdditionalText ?? project.AdditionalText
+                );
             }
 
-            // Update project type if different from current value
-            if (request.ProjectType != project.ProjectType)
+            // Update dates if provided
+            if (request.StartedDate.HasValue || request.CompletedDate.HasValue)
             {
-                project.UpdateProjectType(request.ProjectType??ProjectType.Donation);
+                project.UpdateDates(request.StartedDate, request.CompletedDate);
+            }
+
+            // Update status
+            project.UpdateStatus(request.Status);
+
+            // Update project type if different from current value
+            if (request.ProjectType.HasValue && request.ProjectType != project.ProjectType)
+            {
+                project.UpdateProjectType(request.ProjectType.Value);
             }
 
             // Handle images update
@@ -240,7 +253,6 @@ namespace Dashboard.Api.Controllers
             await _projectRepository.UpdateAsync(project);
             return NoContent();
         }
-
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(long id)
         {

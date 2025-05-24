@@ -1,5 +1,4 @@
-﻿
-@page "/projects"
+﻿@page "/projects"
 @using Dashboard.Core.ProjectAggregate
 @using Dashboard.BlazorApp.Services
 @using Microsoft.AspNetCore.Authorization 
@@ -26,7 +25,7 @@
                     <p>جاري تحميل المشاريع...</p>
                 </div>
         }
-        else if (projects == null || !projects.Any())
+        else if (projectList == null || !projectList.Any())
         {
                 <div class="alert alert-info mt-4">
                     لا توجد مشاريع حالية. قم بإضافة مشروع جديد.
@@ -35,7 +34,7 @@
         else
         {
                 <div class="row">
-                @foreach (var project in projects)
+                @foreach (var project in projectList)
                 {
                     var Currency="";
                     @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
@@ -63,7 +62,7 @@
                                         <p class="card-text text-truncate">@project.Description</p>
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge @GetStatusBadgeClass(project.Status)">@project.Status</span>
+                                            <span class="badge @GetStatusBadgeClass(project.StatusText)">@project.Status</span>
                                             <span class="text-muted small">@FormatDate(project.CreatedDate)</span>
                                         </div>
 
@@ -75,7 +74,7 @@
                                         <div class="d-flex justify-content-between mt-3">
                                             <a href="/project-details/@project.Id" class="btn btn-sm btn-primary">تفاصيل</a>
                                             <div>
-                                @*                 <a href="/edit-project/@project.Id" class="btn btn-sm btn-secondary me-1">تعديل</a> *@
+                                        <a href="/edit-project/@project.Id" class="btn btn-sm btn-secondary me-1">تعديل</a> 
                                                 <button @onclick="() => DeleteProject(project.Id)" class="btn btn-sm btn-danger">حذف</button>
                                             </div>
                                         </div>
@@ -109,7 +108,7 @@
 </style>
 
 @code {
-    private List<ProjectDTO> projects;
+    private List<ProjectDTO> projectList;
     private bool loading = true;
 
     protected override async Task OnInitializedAsync()
@@ -117,7 +116,7 @@
         loading = true;
         try
         {
-            projects = await ProjectService.GetProjectsAsync();
+            projectList = await ProjectService.GetProjectsAsync();
         }
         catch (Exception ex)
         {
@@ -138,7 +137,7 @@
             if (result)
             {
                 // Remove from the local list
-                projects = projects.Where(p => p.Id != projectId).ToList();
+                projectList = projectList.Where(p => p.Id != projectId).ToList();
                 StateHasChanged();
             }
             else

@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using SharedKernel.Enums
+@using SharedKernel.Blazor.Shared
 @inject ProjectService ProjectService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -29,151 +30,229 @@
             <div class="alert alert-danger">
                 لم يتم العثور على المشروع. يرجى التحقق من الرابط.
             </div>
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-secondary" @onclick="GoToProjects">العودة إلى المشاريع</button>
+            </div>
         }
         else
         {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3>@project.Name</h3>
                 <div>
-                    <span class="badge @GetStatusBadgeClass(project.Status)">@GetStatusArabic(project.Status)</span>
+                    <span class="badge @GetStatusBadgeClass(project.Status)">@project.StatusText</span>
                 </div>
             </div>
 
             <EditForm Model="@updateRequest" OnValidSubmit="@HandleValidSubmit" class="project-form">
                 <DataAnnotationsValidator />
-                <ValidationSummary />
+                <ValidationSummary class="text-danger" />
 
-                <div class="mb-4">
-                    <label for="projectType" class="form-label">نوع المشروع</label>
-                    <InputSelect id="projectType" class="form-control" @bind-Value="updateRequest.ProjectType">
-                        <option value="@ProjectType.Donation">مشروع مساهمات</option>
-                        <option value="@ProjectType.Organization">مشروع منظمة</option>
-                    </InputSelect>
-                </div>
-
-                <div class="mb-4">
-                    <label for="status" class="form-label">الحالة</label>
-                    <InputSelect id="status" class="form-control" @bind-Value="updateRequest.Status">
-                        <option value="Planned">مخطط</option>
-                        <option value="InProgress">قيد التنفيذ</option>
-                        <option value="Completed">مكتمل</option>
-                    </InputSelect>
-                </div>
-
-                <div class="mb-4">
-                    <h4>الصور</h4>
-                    <div class="d-flex mb-2">
-                        <InputText class="form-control me-2" @bind-Value="newImage" placeholder="أدخل رابط الصورة" />
-                        <button type="button" class="btn btn-secondary" @onclick="AddImage">إضافة</button>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="projectType" class="form-label">نوع المشروع</label>
+                        <InputSelect id="projectType" class="form-control" @bind-Value="updateRequest.ProjectType">
+                            <option value="@ProjectType.Donation">مشروع مساهمات</option>
+                            <option value="@ProjectType.Organization">مشروع منظمة</option>
+                        </InputSelect>
                     </div>
 
-                    @if (updateRequest.Images.Any())
-                    {
-                        <div class="row mt-3">
-                            @foreach (var image in updateRequest.Images)
+                    <div class="col-md-6 mb-4">
+                        <label for="status" class="form-label">حالة المشروع</label>
+                        <InputSelect id="status" class="form-control" @bind-Value="updateRequest.Status">
+                            <option value="@ProjectStatus.Planned">مخطط</option>
+                            <option value="@ProjectStatus.InProgress">قيد التنفيذ</option>
+                            <option value="@ProjectStatus.Completed">مكتمل</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="startedDate" class="form-label">تاريخ البدء</label>
+                        <InputDate id="startedDate" class="form-control" @bind-Value="updateRequest.StartedDate" />
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label for="completedDate" class="form-label">تاريخ الإنجاز</label>
+                        <InputDate id="completedDate" class="form-control" @bind-Value="updateRequest.CompletedDate" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="name" class="form-label">اسم المشروع <span class="text-danger">*</span></label>
+                    <InputText id="name" class="form-control" @bind-Value="updateRequest.Name" placeholder="أدخل اسم المشروع" />
+                    <ValidationMessage For="@(() => updateRequest.Name)" class="text-danger" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label">الوصف</label>
+                    <InputTextArea id="description" class="form-control" @bind-Value="updateRequest.Description" rows="4" placeholder="أدخل وصف المشروع" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="additionalText" class="form-label">نص إضافي</label>
+                    <InputTextArea id="additionalText" class="form-control" @bind-Value="updateRequest.AdditionalText" rows="3" placeholder="أدخل أي معلومات إضافية" />
+                </div>
+
+                <div class="mb-4">
+                    <h4>إدارة الصور</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <InputText class="form-control me-2" @bind-Value="newImage" placeholder="أدخل رابط الصورة" />
+                                <button type="button" class="btn btn-secondary" @onclick="AddImage" disabled="@string.IsNullOrWhiteSpace(newImage)">
+                                    <i class="bi bi-plus"></i> إضافة
+                                </button>
+                            </div>
+
+                            @if (updateRequest.Images.Any())
                             {
-                                <div class="col-md-4 mb-3 position-relative">
-                                    <img src="@image" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
-                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
-                                            @onclick="() => RemoveImage(image)">
-                                        <i class="bi bi-x"></i>
-                                    </button>
+                                <div class="row">
+                                    @foreach (var image in updateRequest.Images)
+                                    {
+                                        <div class="col-md-4 col-sm-6 mb-3">
+                                            <div class="position-relative image-container">
+                                                <img src="@image" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" alt="صورة المشروع" />
+                                                <button type="button" class="btn btn-sm btn-danger position-absolute image-delete-btn"
+                                                        @onclick="() => RemoveImage(image)" title="حذف الصورة">
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted">
+                                    <i class="bi bi-image fs-1"></i>
+                                    <p>لا توجد صور مضافة</p>
                                 </div>
                             }
                         </div>
-                    }
+                    </div>
                 </div>
 
                 <div class="mb-4">
-                    <h4>الفيديوهات</h4>
-                    <div class="d-flex mb-2">
-                        <InputText class="form-control me-2" @bind-Value="newVideo" placeholder="أدخل رابط الفيديو" />
-                        <button type="button" class="btn btn-secondary" @onclick="AddVideo">إضافة</button>
-                    </div>
+                    <h4>إدارة الفيديوهات</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <InputText class="form-control me-2" @bind-Value="newVideo" placeholder="أدخل رابط الفيديو (YouTube, Vimeo, etc.)" />
+                                <button type="button" class="btn btn-secondary" @onclick="AddVideo" disabled="@string.IsNullOrWhiteSpace(newVideo)">
+                                    <i class="bi bi-plus"></i> إضافة
+                                </button>
+                            </div>
 
-                    @if (updateRequest.Videos.Any())
-                    {
-                        <div class="list-group mt-3">
-                            @foreach (var video in updateRequest.Videos)
+                            @if (updateRequest.Videos.Any())
                             {
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span class="text-truncate" style="max-width: 80%;">@video</span>
-                                    <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemoveVideo(video)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                <div class="list-group">
+                                    @foreach (var video in updateRequest.Videos)
+                                    {
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-play-circle text-primary me-2"></i>
+                                                <span class="text-truncate" style="max-width: 300px;" title="@video">@video</span>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoveVideo(video)" title="حذف الفيديو">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted">
+                                    <i class="bi bi-camera-video fs-1"></i>
+                                    <p>لا توجد فيديوهات مضافة</p>
                                 </div>
                             }
                         </div>
-                    }
+                    </div>
                 </div>
 
                 <div class="mb-4">
-                    <h4>المصاريف</h4>
-                    <button type="button" class="btn btn-secondary mb-3" @onclick="AddNewExpense">إضافة مصروف جديد</button>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>المصاريف الحالية</h4>
+                        <button type="button" class="btn btn-success" @onclick="AddNewExpense">
+                            <i class="bi bi-plus-circle"></i> إضافة مصروف جديد
+                        </button>
+                    </div>
 
                     @if (project.Expenses.Any())
                     {
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>الاسم</th>
-                                        <th>القيمة</th>
-                                        <th>التاريخ</th>
-                                        <th>الكود</th>
-                                        <th>إجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var expense in project.Expenses)
-                                    {
-                                        <tr>
-                                            <td>@expense.Name</td>
-                                            <td>@expense.Value.ToString("N0")</td>
-                                            <td>@expense.Date.ToString("yyyy-MM-dd")</td>
-                                            <td>@expense.Code</td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                        @onclick="() => ConfirmDeleteExpense(expense.Id)">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="1">الإجمالي:</th>
-                                        <th>@project.TotalBudget.ToString("N0")</th>
-                                        <th colspan="3"></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>الاسم</th>
+                                                <th>القيمة</th>
+                                                <th>التاريخ</th>
+                                                <th>الكود</th>
+                                                <th>العملة</th>
+                                                <th>إجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var expense in project.Expenses)
+                                            {
+                                                <tr>
+                                                    <td>@expense.Name</td>
+                                                    <td>@expense.Value.ToString("N0")</td>
+                                                    <td>@expense.Date.ToString("yyyy-MM-dd")</td>
+                                                    <td><code>@expense.Code</code></td>
+                                                    <td>@expense.CurrencyCode</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                                @onclick="() => ConfirmDeleteExpense(expense.Id)" title="حذف المصروف">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot class="table-secondary">
+                                            <tr>
+                                                <th>الإجمالي:</th>
+                                                <th>@project.TotalBudget.ToString("N0")</th>
+                                                <th colspan="4"></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     }
                     else
                     {
-                        <div class="alert alert-info">
+                        <div class="alert alert-info text-center">
+                            <i class="bi bi-info-circle me-2"></i>
                             لا توجد مصاريف لهذا المشروع بعد.
                         </div>
                     }
 
                     @if (showExpenseForm)
                     {
-                        <div class="card mt-3 mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">إضافة مصروف جديد</h5>
-                                <button type="button" class="btn-close" @onclick="() => showExpenseForm = false"></button>
+                        <div class="card mt-4 border-success">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    إضافة مصروف جديد
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" @onclick="() => showExpenseForm = false"></button>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">الاسم</label>
-                                        <InputText class="form-control" @bind-Value="newExpense.Name" />
+                                        <label class="form-label">اسم المصروف <span class="text-danger">*</span></label>
+                                        <InputText class="form-control" @bind-Value="newExpense.Name" placeholder="مثال: مواد بناء" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">القيمة</label>
-                                        <InputNumber class="form-control" @bind-Value="newExpense.Value" />
+                                        <label class="form-label">القيمة <span class="text-danger">*</span></label>
+                                        <InputNumber class="form-control" @bind-Value="newExpense.Value" placeholder="0" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">التاريخ</label>
@@ -181,13 +260,13 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">الكود</label>
-                                        <InputText class="form-control" @bind-Value="newExpense.Code" />
+                                        <InputText class="form-control" @bind-Value="newExpense.Code" placeholder="سيتم توليده تلقائياً" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">المحفظة</label>
                                         <InputSelect class="form-control" @bind-Value="newExpense.WalletName">
-                                            <option value="SYP">SYP Wallet</option>
-                                            <option value="USD">USD Wallet</option>
+                                            <option value="SYP">محفظة الليرة السورية (SYP)</option>
+                                            <option value="USD">محفظة الدولار (USD)</option>
                                         </InputSelect>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -200,28 +279,46 @@
                                     </div>
                                 </div>
                                 <div class="text-end mt-3">
-                                    <button type="button" class="btn btn-primary" @onclick="SaveExpense">حفظ المصروف</button>
+                                    <button type="button" class="btn btn-secondary me-2" @onclick="() => showExpenseForm = false">إلغاء</button>
+                                    <button type="button" class="btn btn-success" @onclick="SaveExpense" disabled="@isAddingExpense">
+                                        @if (isAddingExpense)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        }
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        حفظ المصروف
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
 
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary" @onclick="GoToProjects">إلغاء</button>
-                    @if (isSubmitting)
-                    {
-                        <button type="button" class="btn btn-primary" disabled>
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            جاري الحفظ...
+                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                    <button type="button" class="btn btn-secondary" @onclick="GoToProjects" disabled="@isSubmitting">
+                        <i class="bi bi-arrow-right me-2"></i>
+                        إلغاء
+                    </button>
+                    <div>
+                        <button type="button" class="btn btn-outline-primary me-2" @onclick="ResetForm" disabled="@isSubmitting">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            إعادة تعيين
                         </button>
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-primary" @onclick="HandleValidSubmit">
-                            حفظ
-                        </button>
-                    }
+                        @if (isSubmitting)
+                        {
+                            <button type="button" class="btn btn-primary" disabled>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                جاري الحفظ...
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>
+                                حفظ التغييرات
+                            </button>
+                        }
+                    </div>
                 </div>
             </EditForm>
         }
@@ -229,18 +326,112 @@
 </section>
 
 <style>
+    html, body, .main-section, .form-section, .modal, .modal-content, .container {
+        direction: rtl !important;
+        text-align: right !important;
+    }
+
     .project-form {
         background-color: #f9f9f9;
         padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .image-container {
+        transition: transform 0.2s ease;
+    }
+
+        .image-container:hover {
+            transform: scale(1.02);
+        }
+
+    .image-delete-btn {
+        top: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .card {
+        border: 1px solid #e0e0e0;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 8px 12px;
+    }
+
+    .text-danger {
+        font-size: 0.875em;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .list-group-item {
+        border-radius: 8px !important;
+        margin-bottom: 5px;
+        border: 1px solid #e0e0e0 !important;
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .project-form
+
+    {
+        padding: 1rem;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .d-flex.justify-content-between .btn {
+            width: 100%;
+        }
+
     }
 </style>
 
 @code {
     [Parameter] public long Id { get; set; }
 
-    private ProjectDTO project;
+    private ProjectDTO? project;
     private UpdateProjectRequest updateRequest = new UpdateProjectRequest();
     private CreateExpenseRequest newExpense = new CreateExpenseRequest();
 
@@ -249,6 +440,7 @@
     private bool loading = true;
     private bool isSubmitting = false;
     private bool showExpenseForm = false;
+    private bool isAddingExpense = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -266,25 +458,24 @@
             {
                 updateRequest = new UpdateProjectRequest
                     {
+                        Name = project.Name,
+                        Description = project.Description,
+                        AdditionalText = project.AdditionalText,
                         Status = project.Status,
+                        ProjectType = project.ProjectType,
+                        StartedDate = project.CreatedDate,
+                        CompletedDate = project.CompletedDate,
                         Images = project.Images.ToList(),
-                        Videos = project.Videos.ToList(),
-                        ProjectType = project.ProjectType
+                        Videos = project.Videos.ToList()
                     };
 
-                // Initialize a new expense with defaults
-                newExpense = new CreateExpenseRequest
-                    {
-                        Date = DateTime.Now,
-                        Code = $"EXP-{DateTime.Now.ToString("yyyyMMdd")}-{(project.Expenses.Count + 1).ToString("D3")}",
-                        CreateTransaction = true,
-                        WalletName = "SYP" // Default
-                    };
+                // Initialize new expense with defaults
+                ResetNewExpense();
             }
         }
         catch (Exception ex)
         {
-            await JSRuntime.InvokeVoidAsync("alert", $"Error loading project: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"حدث خطأ أثناء تحميل بيانات المشروع: {ex.Message}");
         }
         finally
         {
@@ -294,8 +485,13 @@
 
     private async Task HandleValidSubmit()
     {
-        isSubmitting = true;
+        if (string.IsNullOrWhiteSpace(updateRequest.Name))
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "يرجى إدخال اسم المشروع");
+            return;
+        }
 
+        isSubmitting = true;
         try
         {
             var result = await ProjectService.UpdateProjectAsync(Id, updateRequest);
@@ -316,7 +512,7 @@
             }
             else
             {
-                await JSRuntime.InvokeVoidAsync("alert", "حدث خطأ أثناء تحديث المشروع");
+                await JSRuntime.InvokeVoidAsync("alert", "حدث خطأ أثناء تحديث المشروع. يرجى المحاولة مرة أخرى.");
             }
         }
         catch (Exception ex)
@@ -331,12 +527,19 @@
 
     private async Task SaveExpense()
     {
-        if (string.IsNullOrWhiteSpace(newExpense.Name) || newExpense.Value <= 0)
+        if (string.IsNullOrWhiteSpace(newExpense.Name))
         {
-            await JSRuntime.InvokeVoidAsync("alert", "يرجى ملء جميع الحقول المطلوبة");
+            await JSRuntime.InvokeVoidAsync("alert", "يرجى إدخال اسم المصروف");
             return;
         }
 
+        if (newExpense.Value <= 0)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "يرجى إدخال قيمة صحيحة للمصروف");
+            return;
+        }
+
+        isAddingExpense = true;
         try
         {
             var result = await ProjectService.AddExpenseAsync(Id, newExpense);
@@ -345,17 +548,8 @@
             {
                 await JSRuntime.InvokeVoidAsync("alert", "تمت إضافة المصروف بنجاح!");
                 showExpenseForm = false;
-
-                // Reset form and reload project
-                newExpense = new CreateExpenseRequest
-                    {
-                        Date = DateTime.Now,
-                        Code = $"EXP-{DateTime.Now.ToString("yyyyMMdd")}-{(project.Expenses.Count + 1).ToString("D3")}",
-                        CreateTransaction = true,
-                        WalletName = "SYP"
-                    };
-
-                await LoadProject();
+                ResetNewExpense();
+                await LoadProject(); // Reload to show the new expense
             }
             else
             {
@@ -366,6 +560,10 @@
         {
             await JSRuntime.InvokeVoidAsync("alert", $"خطأ: {ex.Message}");
         }
+        finally
+        {
+            isAddingExpense = false;
+        }
     }
 
     private async Task ConfirmDeleteExpense(long expenseId)
@@ -373,8 +571,8 @@
         if (await JSRuntime.InvokeAsync<bool>("confirm", "هل أنت متأكد من رغبتك في حذف هذا المصروف؟"))
         {
             // In a real implementation, you would add an API endpoint to delete expenses
-            // For now, we'll just reload the project
-            await LoadProject();
+            // For now, we'll just show a message
+            await JSRuntime.InvokeVoidAsync("alert", "سيتم إضافة وظيفة حذف المصاريف في التحديث القادم");
         }
     }
 
@@ -382,7 +580,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newImage))
         {
-            updateRequest.Images.Add(newImage);
+            updateRequest.Images.Add(newImage.Trim());
             newImage = string.Empty;
         }
     }
@@ -396,7 +594,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newVideo))
         {
-            updateRequest.Videos.Add(newVideo);
+            updateRequest.Videos.Add(newVideo.Trim());
             newVideo = string.Empty;
         }
     }
@@ -408,34 +606,48 @@
 
     private void AddNewExpense()
     {
+        ResetNewExpense();
         showExpenseForm = true;
     }
 
-    private string GetStatusBadgeClass(string status)
+    private void ResetNewExpense()
     {
-        return status switch
-        {
-            "Planned" => "bg-info",
-            "InProgress" => "bg-primary",
-            "Completed" => "bg-success",
-            _ => "bg-secondary"
-        };
+        newExpense = new CreateExpenseRequest
+            {
+                Name = "",
+                Date = DateTime.Now,
+                Value = 0,
+                Code = $"EXP-{DateTime.Now:yyyyMMdd}-{(project?.Expenses?.Count() + 1).ToString().PadLeft(3, '0')}",
+                CreateTransaction = true,
+                WalletName = "SYP"
+            };
     }
 
-    private string GetStatusArabic(string status)
+    private async Task ResetForm()
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "هل أنت متأكد من إعادة تعيين النموذج؟ ستفقد جميع التغييرات غير المحفوظة."))
+        {
+            await LoadProject();
+            showExpenseForm = false;
+            newImage = string.Empty;
+            newVideo = string.Empty;
+        }
+    }
+
+    private string GetStatusBadgeClass(ProjectStatus status)
     {
         return status switch
         {
-            "Planned" => "مخطط",
-            "InProgress" => "قيد التنفيذ",
-            "Completed" => "مكتمل",
-            _ => status
+            ProjectStatus.Planned => "bg-info text-dark",
+            ProjectStatus.InProgress => "bg-warning text-dark",
+            ProjectStatus.Completed => "bg-success",
+            _ => "bg-secondary"
         };
     }
 
     private void GoToProjects()
     {
-        if (project.ProjectType == ProjectType.Organization)
+        if (project?.ProjectType == ProjectType.Organization)
         {
             NavigationManager.NavigateTo("/organization-projects");
         }

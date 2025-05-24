@@ -107,19 +107,28 @@ namespace Donation.Web.Services
         public async Task<List<ProjectDTO>> GetCompletedProjectsAsync()
         {
             var allProjects = await GetProjectsAsync();
-            return allProjects.Where(p => p.Status == "Completed").ToList();
+            return allProjects.Where(p => p.Status == ProjectStatus.Completed).ToList();
         }
 
         public async Task<List<ProjectDTO>> GetInProgressProjectsAsync()
         {
             var allProjects = await GetProjectsAsync();
-            return allProjects.Where(p => p.Status == "InProgress").ToList();
+            return allProjects.Where(p => p.Status == ProjectStatus.InProgress).ToList();
         }
 
         public async Task<List<ProjectDTO>> GetPlannedProjectsAsync()
         {
             var allProjects = await GetProjectsAsync();
-            return allProjects.Where(p => p.Status == "Planned").ToList();
+            return allProjects.Where(p => p.Status == ProjectStatus.Planned).ToList();
+        }
+        private int GetProjectTypeId(ProjectType projectType)
+        {
+            return projectType switch
+            {
+                ProjectType.Organization => 1,
+                ProjectType.Donation => 2,
+            };
         }
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿@page "/"
-  @rendermode InteractiveServer
+@rendermode InteractiveServer
 @using Dashboard.Core.DTOs
 @using Dashboard.Core.ProjectAggregate
 @using Donation.Web.Services
@@ -7,375 +7,528 @@
 @using SharedKernel.Enums
 
 @inject DonationService DonationService
+@inject IJSRuntime JS
 @inject ProjectServicePublic ProjectService
 
-
 <LoadingComponent IsLoading="isLoading" LoadingMessage="جاري تحميل البيانات..." />
+
 @if (!isLoading)
 {
-    <section class="main-section">
-        <div class="floating-start-box">
-            <div class="circle-img c1">
-                <img src="./images/thumbs/11.jpg" />
-            </div>
-
-            <div class="circle-img c2">
-                <img src="./images/thumbs/22.jpg" />
-            </div>
+    <!-- Enhanced Hero Section -->
+    <section class="enhanced-hero-section">
+        <!-- Animated Background Elements -->
+        <div class="hero-background-elements">
+            <div class="floating-element element-1"></div>
+            <div class="floating-element element-2"></div>
+            <div class="floating-element element-3"></div>
+            <div class="floating-element element-4"></div>
         </div>
 
-        <div class="centerized-box">
-            <span class="hashtag">#اللاذقية_نحن_أهلها</span>
-            <h1>
-                <span class="r"><span class="text-primary">اللاذقية </span> <span class="text-secondary"> نحن أهلها </span></span>
-                <span class="r"> راجع سجلاتك بسهولة</span>
-            </h1>
-            <div class="action-container">
-                <a class="btn btn-mata" href="#search">ابدأ البحث</a>
+        <!-- Floating Images with Enhanced Animation -->
+@*         <div class="floating-start-box">
+            <div class="enhanced-circle-img c1" data-aos="fade-left" data-aos-delay="200">
+                <img src="./images/thumbs/11.jpg" alt="صورة المدينة" />
+                <div class="image-glow"></div>
             </div>
-            <div class="action-container">
-                <a class="btn btn-mata" href="/projects">تصفح المشاريع</a>
-            </div>
-            <div class="action-container">
-                <a class="btn btn-mata" href="/donations">سجل التبرعات</a>
-            </div>
-            <p>
-                لأن الوطن بحاجة الجميع,<br />
-                <span class="text-primary"> لأن اللاذقية  </span><span class="text-secondary"> نحن أهلها </span><br />
-                و معا سويا سنعيد إعمارها <br />
-                و نجعلها أجمل
-            </p>
-        </div>
-
-
-        <!-- SHAKKER - DO NOT CHANGE THESE IMAGES BELOW: -->
-        <div class="floating-back-box">
-            <div class="circle-img c1">
-                <img src="./images/blr1.jpg" />
-            </div>
-
-            <div class="circle-img c2">
-                <img src="./images/blr2.jpg" />
-            </div>
-
-            <div class="circle-img c3">
-                <img src="./images/blr3.jpg" />
+            <div class="enhanced-circle-img c2" data-aos="fade-left" data-aos-delay="400">
+                <img src="./images/thumbs/22.jpg" alt="صورة المدينة" />
+                <div class="image-glow"></div>
             </div>
         </div>
-        <!-- SHAKKER - DO NOT CHANGE THESE IMAGES ABOVE : -->
 
         <div class="floating-end-box">
-            <div class="circle-img c1">
-                <img src="./images/thumbs/33.jpg" />
+            <div class="enhanced-circle-img c1" data-aos="fade-right" data-aos-delay="300">
+                <img src="./images/thumbs/33.jpg" alt="صورة المدينة" />
+                <div class="image-glow"></div>
             </div>
-
-            <div class="circle-img c2">
-                <img src="./images/thumbs/44.jpg" />
+            <div class="enhanced-circle-img c2" data-aos="fade-right" data-aos-delay="500">
+                <img src="./images/thumbs/44.jpg" alt="صورة المدينة" />
+                <div class="image-glow"></div>
             </div>
-            <div class="circle-img c2">
-                <img src="./images/thumbs/55.jpg" />
-            </div>
-
-        </div>
-
-        <div class="container mb-4 d-md-none d-block">
-            <div class="row">
-                <div class="col-4">
-                    <img src="./images/thumbs/11.jpg" class="w-100 rounded-xl" />
-                </div>
-                <div class="col-4">
-                    <img src="./images/thumbs/33.jpg" class="w-100 rounded-xl" />
-                </div>
-                <div class="col-4">
-                    <img src="./images/thumbs/44.jpg" class="w-100 rounded-xl" />
-                </div>
-
+            <div class="enhanced-circle-img c3" data-aos="fade-right" data-aos-delay="600">
+                <img src="./images/thumbs/55.jpg" alt="صورة المدينة" />
+                <div class="image-glow"></div>
             </div>
         </div>
+ *@
+        <!-- Enhanced Content -->
+        <div class="enhanced-centerized-box">
+            <div class="hero-badge" data-aos="zoom-in">
+                <i class="bi bi-heart-fill"></i>
+                <span>#اللاذقية_نحن_أهلها</span>
+            </div>
 
+            <h1 class="enhanced-hero-title" data-aos="fade-up" data-aos-delay="100">
+                <span class="title-line primary-text">اللاذقية</span>
+                <span class="title-line secondary-text">نحن أهلها</span>
+                <span class="title-line subtitle-text">راجع سجلاتك بسهولة</span>
+            </h1>
+
+            <p class="hero-description" data-aos="fade-up" data-aos-delay="200">
+                لأن الوطن بحاجة الجميع، و لأن <span class="highlight-text">اللاذقية نحن أهلها</span><br />
+                معاً سوياً سنعيد إعمارها ونجعلها أجمل
+            </p>
+
+            <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
+                <a class="enhanced-btn primary-btn" href="#search">
+                    <i class="bi bi-search"></i>
+                    <span>ابدأ البحث</span>
+                    <div class="btn-ripple"></div>
+                </a>
+                <a class="enhanced-btn secondary-btn" href="/projects">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span>تصفح المشاريع</span>
+                    <div class="btn-ripple"></div>
+                </a>
+                <a class="enhanced-btn tertiary-btn" href="/donations">
+                    <i class="bi bi-clipboard-data"></i>
+                    <span>سجل التبرعات</span>
+                    <div class="btn-ripple"></div>
+                </a>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                @if (wallets != null && wallets.Any())
+                {
+                    <div class="stat-item">
+                        <div class="stat-number">@wallets.Sum(w => w.Transactions?.Count ?? 0)</div>
+                        <div class="stat-label">إجمالي التبرعات</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number">@wallets.Sum(w => w.DepositAmount?.Amount ?? 0).ToString("N0")</div>
+                        <div class="stat-label">إجمالي المبلغ المودع</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number">@wallets.Count(w => (w.DepositAmount?.Amount ?? 0) > 0)</div>
+                        <div class="stat-label">حملات نشطة</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Mobile Images Grid -->
+@*         <div class="container mb-4 d-md-none d-block" data-aos="fade-up">
+            <div class="row mobile-images-grid">
+                <div class="col-4">
+                    <div class="mobile-image-card">
+                        <img src="./images/thumbs/11.jpg" class="w-100" alt="صورة المدينة" />
+                        <div class="mobile-image-overlay"></div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mobile-image-card">
+                        <img src="./images/thumbs/33.jpg" class="w-100" alt="صورة المدينة" />
+                        <div class="mobile-image-overlay"></div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mobile-image-card">
+                        <img src="./images/thumbs/44.jpg" class="w-100" alt="صورة المدينة" />
+                        <div class="mobile-image-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+
+        <!-- Scroll Indicator -->
+ 
     </section>
 
-    <!-- Enhanced Projects Section -->
-    <section class="projects-types-section">
+    <!-- Enhanced Projects Types Section -->
+    <section class="enhanced-projects-section">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2>
-                    <span class="text-primary">مشاريع</span> <span class="text-secondary">تم تنفيذها</span>
+            <div class="section-header text-center" data-aos="fade-up">
+                <div class="section-badge">
+                    <i class="bi bi-stars"></i>
+                    <span>مشاريعنا</span>
+                </div>
+                <h2 class="section-title">
+                    <span class="primary-text">مشاريع تم تنفيذها</span>
+                    <span class="secondary-text">بفضل مساهماتكم</span>
                 </h2>
-                <p class="lead">تصفح مشاريعنا حسب النوع</p>
+                <p class="section-description">
+                    تصفح مشاريعنا المختلفة واكتشف كيف ساهمت تبرعاتكم في تطوير مدينتنا الحبيبة
+                </p>
+                <div class="section-divider">
+                    <span></span>
+                    <i class="bi bi-heart-fill"></i>
+                    <span></span>
+                </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="project-type-card donation-card">
-                        <div class="project-type-header">
+            <div class="row projects-grid">
+                <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="enhanced-project-card donation-type">
+                        <div class="card-background">
+                            <div class="bg-pattern pattern-1"></div>
+                            <div class="bg-pattern pattern-2"></div>
+                        </div>
+                        <div class="card-icon donation-icon">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                        <div class="card-content">
                             <h3>مشاريع المساهمات</h3>
-                            <p>مشاريع تم تنفيذها من خلال مساهمات المتبرعين الكرام</p>
+                            <p>مشاريع تم تنفيذها من خلال مساهمات المتبرعين الكرام وأهالي المدينة المحبين لها</p>
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>مشاريع مكتملة</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>بمشاركة المجتمع</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="project-type-footer">
-                            <a href="/donation-projects" class="btn project-btn">تصفح المشاريع</a>
+                        <div class="card-action">
+                            <a href="/donation-projects" class="enhanced-card-btn">
+                                <span>تصفح المشاريع</span>
+                                <i class="bi bi-arrow-left"></i>
+                            </a>
                         </div>
+                        <div class="card-hover-effect"></div>
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-4">
-                    <div class="project-type-card organization-card">
-                        <div class="project-type-header">
+                <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="enhanced-project-card organization-type">
+                        <div class="card-background">
+                            <div class="bg-pattern pattern-1"></div>
+                            <div class="bg-pattern pattern-2"></div>
+                        </div>
+                        <div class="card-icon organization-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div class="card-content">
                             <h3>مشاريع المنظمات</h3>
-                            <p>مشاريع منفذة من قبل المنظمات الخيرية والداعمة</p>
-                        </div>
-                        <div class="project-type-footer">
-                            <a href="/organization-projects" class="btn project-btn">تصفح المشاريع</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="steps-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="step-item">
-                        <span>١. احفظ الكود بعد التبرع في مكان آمن</span>
-                        <img src="./images/step1.png" />
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="step-item">
-                        <span>٢. ادخل الكود في أرشيف البحث</span>
-                        <img src="./images/step2.png" />
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="step-item">
-                        <span>٣. راجع تفاصيل وسجلات تبرعاتك</span>
-                        <img src="./images/step3.png" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 order-2 order-md-1">
-                    <div class="content">
-                        <p>
-                            مبادرة اللاذقية، نحن أهلها
-
-                            جاءت هذه المبادرة من إيماننا العميق بأن مدينة اللاذقية هي لنا، بعد أن تحررت من عصابات الإجرام. وانطلاقًا من هذا الإيمان وما يترتب عليه من مسؤوليات، قررنا إطلاق هذه المبادرة للنهوض بمدينتنا الجميلة، وإعادة إعمارها، لنستعيد ملامحها الحضارية التي سُلبت منها.
-                        </p>
-                        <p>
-                            تهدف المبادرة إلى توحيد الجهود بين أهالي المدينة الكرام لتنفيذ مشاريع خدمية تعود بالنفع على جميع سكانها، وتسهم في تحسين جودة الحياة واستعادة رونق اللاذقية.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 order-1 order-md-2">
-                    <img src="./images/logo-w.svg" class="logo" />
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <section id="search" class="form-section">
-        <div class="container">
-            <div class="row" style="align-items: center">
-                <div class="col-md-5">
-                    <img src="./images/logo.svg" class="logo" />
-                </div>
-
-                <div class="col-md-1"></div>
-                <div class="col-md-6">
-                    <div class="search-form">
-                        <label>ادخل الكود:</label>
-                        <input type="text"
-                               @bind="searchModel.Code"
-                               placeholder="كود التبرع"
-                               class="input-mata"
-                               required />
-                        <button type="button" class="btn btn-mata" @onclick="SearchDonation">بحث</button>
-                    </div>
-                    @if (!string.IsNullOrEmpty(searchError))
-                    {
-                        <div class="alert alert-danger mt-2">@searchError</div>
-                    }
-
-                    @if (showTransactionInfo)
-                    {
-                        <section id="transaction-info" class="search-form">
-                            <div class="container">
-                                <h2>معلومات المعاملة</h2>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>كود المعاملة</th>
-                                            <th>المبلغ</th>
-                                            <th>العملة</th>
-                                            <th>التاريخ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>@trx.Code</td>
-                                            <td>@trx.Amount.ToString("N0")</td>
-                                            <td>@trx.Currency</td>
-                                            <td>@trx.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <p>مشاريع منفذة من قبل المنظمات الخيرية والداعمة للمساهمة في تطوير المدينة</p>
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <i class="bi bi-award-fill"></i>
+                                    <span>جودة عالية</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>موثوقة ومضمونة</span>
+                                </div>
                             </div>
-                        </section>
-                    }
+                        </div>
+                        <div class="card-action">
+                            <a href="/organization-projects" class="enhanced-card-btn">
+                                <span>تصفح المشاريع</span>
+                                <i class="bi bi-arrow-left"></i>
+                            </a>
+                        </div>
+                        <div class="card-hover-effect"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    @if (wallets != null && wallets.Count > 0)
-                    {
+    <!-- Enhanced Steps Section -->
+    <section class="enhanced-steps-section">
+        <div class="container">
+            <div class="section-header text-center" data-aos="fade-up">
+                <div class="section-badge">
+                    <i class="bi bi-list-ol"></i>
+                    <span>كيف تعمل المنصة</span>
+                </div>
+                <h2 class="section-title">خطوات بسيطة للمتابعة</h2>
+                <p class="section-description">
+                    تابع تبرعاتك بسهولة من خلال ثلاث خطوات بسيطة
+                </p>
+            </div>
 
-
-                        <section class="form-section">
-                            <div class="container">
-                                <h2>معلومات الحملة</h2>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>اسم المحفظة</th>
-                                            <th>المبلغ المتبقي</th>
-                                            <th>المبلغ المودع</th>
-                                            <th>المبلغ المسحوب</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var wallet in wallets ?? new List<WalletDTO>())
-                                        {
-                                            if (wallet?.DepositAmount?.Amount > 0)
-                                            {
-                                                <tr>
-                                                    <td>@wallet.Name</td>
-                                                    <td>@wallet.TotalAmount.Amount.ToString("N0") </td>
-                                                    <td>@wallet.DepositAmount.Amount.ToString("N0")  </td>
-                                                    <td>@wallet.WithdrawalAmount.Amount.ToString("N0")  </td>
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
+            <div class="steps-timeline">
+                <div class="row">
+                    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="enhanced-step-card">
+                            <div class="step-number">
+                                <span>1</span>
+                                <div class="step-pulse"></div>
                             </div>
-                        </section>
-                    }
+                            <div class="step-icon">
+                                <img src="./images/step1.png" alt="خطوة 1" />
+                            </div>
+                            <div class="step-content">
+                                <h4>احفظ الكود</h4>
+                                <p>احفظ الكود بعد التبرع في مكان آمن للرجوع إليه لاحقاً</p>
+                            </div>
+                            <div class="step-connector"></div>
+                        </div>
+                    </div>
 
-                    <div id="contribute" class="send-form">
-                        <h2>....شارك معنا للمساهمة</h2>
-                        <div class="row">
-                            <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي .</p>
-                            <h2>  حساب الحملة للتحويل لدى المصرف المركزي</h2>
-                            <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
-                            <h2>  رقم الحساب : 200020600000</h2>
-                            <hr />
-                            <h2>  وللإيداع النقدي لدى البنك المركزي</h2>
-                            <h2>اسم الحساب : اللاذقية نحن أهلها</h2>
-                            <h2>  رقم الحساب : 7826761204128816</h2>
+                    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="enhanced-step-card">
+                            <div class="step-number">
+                                <span>2</span>
+                                <div class="step-pulse"></div>
+                            </div>
+                            <div class="step-icon">
+                                <img src="./images/step2.png" alt="خطوة 2" />
+                            </div>
+                            <div class="step-content">
+                                <h4>ادخل الكود</h4>
+                                <p>ادخل الكود في أرشيف البحث الخاص بالمنصة</p>
+                            </div>
+                            <div class="step-connector"></div>
+                        </div>
+                    </div>
 
-                            <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقا عن طريق منصتنا</p>
-
+                    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="600">
+                        <div class="enhanced-step-card">
+                            <div class="step-number">
+                                <span>3</span>
+                                <div class="step-pulse"></div>
+                            </div>
+                            <div class="step-icon">
+                                <img src="./images/step3.png" alt="خطوة 3" />
+                            </div>
+                            <div class="step-content">
+                                <h4>راجع التفاصيل</h4>
+                                <p>راجع تفاصيل وسجلات تبرعاتك بشكل مفصل</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced About Section -->
+    <section class="enhanced-about-section" data-aos="fade-up">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right" data-aos-delay="200">
+                    <div class="about-content">
+                        <div class="section-badge">
+                            <i class="bi bi-info-circle"></i>
+                            <span>من نحن</span>
+                        </div>
+                        <h2>مبادرة اللاذقية، نحن أهلها</h2>
+                        <div class="content-text">
+                            <p>
+                                جاءت هذه المبادرة من إيماننا العميق بأن مدينة اللاذقية هي لنا، بعد أن تحررت من عصابات الإجرام.
+                                وانطلاقاً من هذا الإيمان وما يترتب عليه من مسؤوليات، قررنا إطلاق هذه المبادرة للنهوض بمدينتنا الجميلة،
+                                وإعادة إعمارها، لنستعيد ملامحها الحضارية التي سُلبت منها.
+                            </p>
+                            <p>
+                                تهدف المبادرة إلى توحيد الجهود بين أهالي المدينة الكرام لتنفيذ مشاريع خدمية تعود بالنفع على جميع سكانها،
+                                وتسهم في تحسين جودة الحياة واستعادة رونق اللاذقية.
+                            </p>
+                        </div>
+                        <div class="about-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>شفافية كاملة</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-people-fill"></i>
+                                <span>مشاركة مجتمعية</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-heart-fill"></i>
+                                <span>عمل خيري</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="300">
+                    <div class="about-image">
+                        <div class="image-container">
+                            <img src="./images/logo-w.svg" class="main-logo" alt="شعار المبادرة" />
+                            <div class="image-decoration">
+                                <div class="decoration-circle circle-1"></div>
+                                <div class="decoration-circle circle-2"></div>
+                                <div class="decoration-circle circle-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Search Section -->
+    <section id="search" class="enhanced-search-section">
+        <div class="container">
+            <div class="section-header text-center" data-aos="fade-up">
+                <div class="section-badge">
+                    <i class="bi bi-search-heart"></i>
+                    <span>البحث عن التبرع</span>
+                </div>
+                <h2 class="section-title">ابحث عن تبرعك</h2>
+                <p class="section-description">
+                    ادخل كود التبرع للاطلاع على تفاصيل مساهمتك
+                </p>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-lg-7" data-aos="fade-left">
+                    <div class="enhanced-search-form">
+                        <div class="search-input-group">
+                            <label class="search-label">
+                                <i class="bi bi-key"></i>
+                                ادخل كود التبرع:
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text"
+                                       @bind="searchModel.Code"
+                                       @onkeypress="@(async (e) => { if (e.Key == "Enter") await SearchDonation(); })"
+                                       placeholder="مثال: DON-2024-001"
+                                       class="enhanced-search-input"
+                                       required />
+                                <button type="button"
+                                        class="search-btn"
+                                        @onclick="SearchDonation"
+                                        disabled="@(string.IsNullOrWhiteSpace(searchModel.Code))">
+                                    <i class="bi bi-search"></i>
+                                    <span>بحث</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(searchError))
+                        {
+                            <div class="search-result error-result" data-aos="fade-in">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>@searchError</span>
+                            </div>
+                        }
+
+                        @if (showTransactionInfo)
+                        {
+                            <div class="search-result success-result" data-aos="fade-in">
+                                <div class="result-header">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <h4>تم العثور على التبرع</h4>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="detail-item">
+                                        <span class="label">كود المعاملة:</span>
+                                        <span class="value">@trx.Code</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">المبلغ:</span>
+                                        <span class="value amount">@trx.Amount.ToString("N0") @trx.Currency</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">التاريخ:</span>
+                                        <span class="value">@trx.CreatedDate.ToString("yyyy-MM-dd")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @if (wallets != null && wallets.Any(w => w?.DepositAmount?.Amount > 0))
+                    {
+                        <div class="campaign-info" data-aos="fade-up">
+                            <h3>معلومات الحملة</h3>
+                            <div class="wallets-grid">
+                                @foreach (var wallet in wallets.Where(w => w?.DepositAmount?.Amount > 0))
+                                {
+                                    <div class="wallet-card">
+                                        <div class="wallet-header">
+                                            <i class="bi bi-wallet2"></i>
+                                            <h4>@wallet.Name</h4>
+                                        </div>
+                                        <div class="wallet-stats">
+                                            <div class="stat-row">
+                                                <span class="stat-label">المبلغ المتبقي:</span>
+                                                <span class="stat-value primary">@wallet.TotalAmount.Amount.ToString("N0")</span>
+                                            </div>
+                                            <div class="stat-row">
+                                                <span class="stat-label">المبلغ المودع:</span>
+                                                <span class="stat-value success">@wallet.DepositAmount.Amount.ToString("N0")</span>
+                                            </div>
+                                            <div class="stat-row">
+                                                <span class="stat-label">المبلغ المسحوب:</span>
+                                                <span class="stat-value danger">@wallet.WithdrawalAmount.Amount.ToString("N0")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="contribute-section" data-aos="fade-up" data-aos-delay="200">
+                        <div class="contribute-card">
+                            <div class="contribute-header">
+                                <i class="bi bi-heart-fill"></i>
+                                <h3>شارك معنا للمساهمة</h3>
+                            </div>
+                            <div class="contribute-content">
+                                <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي</p>
+
+                                <div class="bank-details">
+                                    <div class="bank-section">
+                                        <h4>
+                                            <i class="bi bi-bank"></i>
+                                            حساب التحويل - المصرف المركزي
+                                        </h4>
+                                        <div class="account-info">
+                                            <div class="info-row">
+                                                <span class="label">اسم الحساب:</span>
+                                                <span class="value">اللاذقية نحن أهلها</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="label">رقم الحساب:</span>
+                                                <span class="value account-number">200020600000</span>
+                                                <button class="copy-btn" @onclick="@(() => CopyToClipboard("200020600000"))">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bank-section">
+                                        <h4>
+                                            <i class="bi bi-cash-coin"></i>
+                                            الإيداع النقدي - البنك المركزي
+                                        </h4>
+                                        <div class="account-info">
+                                            <div class="info-row">
+                                                <span class="label">اسم الحساب:</span>
+                                                <span class="value">اللاذقية نحن أهلها</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="label">رقم الحساب:</span>
+                                                <span class="value account-number">7826761204128816</span>
+                                                <button class="copy-btn" @onclick="@(() => CopyToClipboard("7826761204128816"))">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="important-note">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقاً عن طريق منصتنا</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5" data-aos="fade-right">
+                    <div class="search-logo">
+                        <img src="./images/logo.svg" class="logo" alt="شعار المبادرة" />
+                        <div class="logo-glow"></div>
+                    </div>
+                </div>
+
+    
             </div>
         </div>
     </section>
 }
-
-<!-- Add simplified custom CSS for the project types section -->
-<style>
-    /* Projects section styling */
-    .projects-types-section {
-        padding: 80px 0;
-        background-color: #f8f9fa;
-    }
-
-    .project-type-card {
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-        .project-type-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-    .project-type-header {
-        padding: 30px 25px;
-        flex-grow: 1;
-    }
-
-    .project-type-footer {
-        padding: 20px 25px;
-        background-color: rgba(255,255,255,0.1);
-        text-align: center;
-    }
-
-    .donation-card {
-        background: linear-gradient(135deg, #43936f 0%, #2a5c46 100%);
-        color: white;
-    }
-
-    .organization-card {
-        background: linear-gradient(135deg, #3f51b5 0%, #303f9f 100%);
-        color: white;
-    }
-
-    .project-type-card h3 {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-    }
-
-    .project-type-card p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
-
-    .project-btn {
-        background-color: white;
-        color: #333;
-        font-weight: bold;
-        padding: 10px 20px;
-        border-radius: 30px;
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-    .donation-card .project-btn:hover {
-        background-color: #f8f9fa;
-        color: #43936f;
-    }
-
-    .organization-card .project-btn:hover {
-        background-color: #f8f9fa;
-        color: #3f51b5;
-    }
-
-    /* Responsive adjustments */
-    @@media (max-width: 768px) {
-        .projects-types-section
-
-    {
-        padding: 40px 0;
-    }
-
-    .project-type-card {
-        margin-bottom: 20px;
-    }
-
-    }
-</style>
 
 @code {
     private bool isLoading = true;
@@ -385,6 +538,7 @@
     private WalletDTO wallet;
     private List<WalletDTO> wallets = new();
     private string searchError = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -393,16 +547,16 @@
         }
         catch (Exception ex)
         {
-            // Log exception
             wallets = new List<WalletDTO>();
         }
         finally
         {
             isLoading = false;
-            showTransactionInfo = false; // Ensure the transaction info is hidden on page refresh
+            showTransactionInfo = false;
             StateHasChanged();
         }
     }
+
     private async Task SearchDonation()
     {
         if (string.IsNullOrWhiteSpace(searchModel.Code))
@@ -417,30 +571,28 @@
             trx = wallet?.Transactions?.FirstOrDefault();
             if (trx != null)
             {
-                ToggleTransactionInfo();
+                showTransactionInfo = true;
             }
             else
             {
-                searchError = "لم يتم العثور على معاملة بهذا الكود.";
+                searchError = "لم يتم العثور على معاملة بهذا الكود. تأكد من صحة الكود المدخل.";
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error searching for donation: {ex.Message}");
-            searchError = "حدث خطأ أثناء البحث. يرجى المحاولة لاحقاً.";
+            searchError = "حدث خطأ أثناء البحث. يرجى المحاولة لاحقاً أو التواصل مع فريق الدعم.";
         }
+    }
+
+    private async Task CopyToClipboard(string text)
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        // Optionally, show a visual feedback here if needed
     }
 
     public class DonationSearchModel
     {
-        public string Code { get; set; }
-    }
-
-    private void ToggleTransactionInfo()
-    {
-        if (trx != null)
-            showTransactionInfo = true;
-        else
-            showTransactionInfo = !showTransactionInfo;
+        public string Code { get; set; } = "";
     }
 }

@@ -1,0 +1,68 @@
+﻿ @inject IJSRuntime JS
+
+<div class="contribute-section" data-aos="fade-up" data-aos-delay="200">
+                        <div class="contribute-card">
+                            <div class="contribute-header">
+                                <i class="bi bi-heart-fill"></i>
+                                <h3>شارك معنا للمساهمة</h3>
+                            </div>
+                            <div class="contribute-content">
+                                <p>للمساهمة، يرجى تحويل المبلغ المراد دعم مدينتا الحبيبة به عن طريق البنك المركزي</p>
+
+                                <div class="bank-details">
+                                    <div class="bank-section">
+                                        <h4>
+                                            <i class="bi bi-bank"></i>
+                                            حساب التحويل - المصرف المركزي
+                                        </h4>
+                                        <div class="account-info">
+                                            <div class="info-row">
+                                                <span class="label">اسم الحساب:</span>
+                                                <span class="value">اللاذقية نحن أهلها</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="label">رقم الحساب:</span>
+                                                <span class="value account-number">200020600000</span>
+                                                <button class="copy-btn" @onclick="@(() => CopyToClipboard("200020600000"))">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bank-section">
+                                        <h4>
+                                            <i class="bi bi-cash-coin"></i>
+                                            الإيداع النقدي - البنك المركزي
+                                        </h4>
+                                        <div class="account-info">
+                                            <div class="info-row">
+                                                <span class="label">اسم الحساب:</span>
+                                                <span class="value">اللاذقية نحن أهلها</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="label">رقم الحساب:</span>
+                                                <span class="value account-number">7826761204128816</span>
+                                                <button class="copy-btn" @onclick="@(() => CopyToClipboard("7826761204128816"))">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="important-note">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <p>يرجى التأكد من حصولك على رقم تسلسلي للحوالة بحيث يمكنك تفقد معلومات تبرعك لاحقاً عن طريق منصتنا</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+       
+@code {
+    private async Task CopyToClipboard(string text)
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        // Optionally, show a visual feedback here if needed
+    }
+}

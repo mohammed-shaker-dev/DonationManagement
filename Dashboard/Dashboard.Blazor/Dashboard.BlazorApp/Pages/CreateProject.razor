@@ -59,7 +59,14 @@
                     <option value="USD">USD Wallet</option>
                 </InputSelect>
             </div>
-
+            <div class="mb-4">
+                <label for="status" class="form-label">حالة المشروع</label>
+                <InputSelect id="status" class="form-control" @bind-Value="projectRequest.Status">
+                    <option value="@ProjectStatus.Planned">مخطط</option>
+                    <option value="@ProjectStatus.InProgress">قيد التنفيذ</option>
+                    <option value="@ProjectStatus.Completed">مكتمل</option>
+                </InputSelect>
+            </div>
             <div class="mb-4">
                 <h4>صور المشروع</h4>
                 <ImageUpload UploadedUrls="@projectRequest.Images"
@@ -187,8 +194,9 @@
             Images = new List<string>(),
             Videos = new List<string>(),
             Expenses = new List<CreateExpenseRequest>(),
-            WalletName = "SYP", // Default value
-            ProjectType = ProjectType.Donation // Default value
+            WalletName = "SYP",
+            ProjectType = ProjectType.Donation,
+            Status = ProjectStatus.Planned // Add this line
         };
     private List<DocumentUpload.DocumentInfo> documents = new List<DocumentUpload.DocumentInfo>();
 

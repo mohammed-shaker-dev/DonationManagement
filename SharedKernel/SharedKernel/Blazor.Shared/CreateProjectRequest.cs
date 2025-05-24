@@ -4,7 +4,7 @@ namespace SharedKernel.Blazor.Shared
 {
     public class CreateProjectRequest
     {
-        public DateTime StartedDate { get; set; }=DateTime.Now;
+        public DateTime StartedDate { get; set; } = DateTime.Now;
         public DateTime CompletedDate { get; set; } = DateTime.Now;
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
@@ -14,6 +14,6 @@ namespace SharedKernel.Blazor.Shared
         public List<CreateExpenseRequest> Expenses { get; set; } = new List<CreateExpenseRequest>();
         public string WalletName { get; set; } = "SYP";
         public ProjectType ProjectType { get; set; } = ProjectType.Donation;
-
+        public ProjectStatus Status { get; set; } = ProjectStatus.Planned;
     }
 }

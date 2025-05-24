@@ -2,6 +2,7 @@
 using Dashboard.Infrastructure.Data.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SharedKernel.Enums;
 using System.Text.Json;
 
 namespace Dashboard.Infrastructure.Data.Config
@@ -24,14 +25,22 @@ namespace Dashboard.Infrastructure.Data.Config
 
             builder.Property(p => p.AdditionalText)
                 .HasMaxLength(1000);
-
-            builder.Property(p => p.Status)
-                .HasMaxLength(50)
-                .HasDefaultValue("Planned");
+ 
 
             builder.Property(p => p.CreatedDate)
                 .IsRequired();
 
+            builder.Property(p => p.Status)
+               .HasConversion(
+                   v => ConvertProjectStatusToString(v),
+                   v => ConvertStringToProjectStatus(v))
+               .HasMaxLength(20);
+
+            builder.Property(p => p.ProjectType)
+                .HasConversion(
+                    v => ConvertProjectTypeToString(v),
+                    v => ConvertStringToProjectType(v))
+                .HasMaxLength(20);
             // Store images as JSON array
             builder.Property<List<string>>("_images")
                 .HasColumnName("Images")
@@ -50,6 +59,52 @@ namespace Dashboard.Infrastructure.Data.Config
             builder.HasMany(p => p.Expenses)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+        private static string ConvertProjectStatusToString(ProjectStatus status)
+        {
+            return status switch
+            {
+                ProjectStatus.Planned => "Planned",
+                ProjectStatus.InProgress => "InProgress",
+                ProjectStatus.Completed => "Completed",
+                _ => "Planned"
+            };
+        }
+
+        private static ProjectStatus ConvertStringToProjectStatus(string status)
+        {
+            return status switch
+            {
+                "Planned" => ProjectStatus.Planned,
+                "InProgress" => ProjectStatus.InProgress,
+                "Completed" => ProjectStatus.Completed,
+                "1" => ProjectStatus.Planned,
+                "2" => ProjectStatus.InProgress,
+                "3" => ProjectStatus.Completed,
+                _ => ProjectStatus.Planned
+            };
+        }
+
+        private static string ConvertProjectTypeToString(ProjectType type)
+        {
+            return type switch
+            {
+                ProjectType.Donation => "Donation",
+                ProjectType.Organization => "Organization",
+                _ => "Donation"
+            };
+        }
+
+        private static ProjectType ConvertStringToProjectType(string type)
+        {
+            return type switch
+            {
+                "Donation" => ProjectType.Donation,
+                "Organization" => ProjectType.Organization,
+                "1" => ProjectType.Donation,
+                "2" => ProjectType.Organization,
+                _ => ProjectType.Donation
+            };
         }
     }
 

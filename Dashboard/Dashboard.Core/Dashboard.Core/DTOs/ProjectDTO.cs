@@ -7,11 +7,25 @@ namespace Dashboard.Core.ProjectAggregate
 {
     public class ProjectDTO
     {
+ 
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string AdditionalText { get; set; }
-        public string Status { get; set; }
+        public ProjectStatus Status { get; set; }
+        public string StatusText
+        {
+            get
+            {
+                return Status switch
+                {
+                    ProjectStatus.Planned => "مخطط",
+                    ProjectStatus.InProgress => "قيد التنفيذ",
+                    ProjectStatus.Completed => "مكتمل",
+                    _ => Status.ToString()
+                };
+            }
+        }
         public DateTime CreatedDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         public decimal TotalBudget { get; set; }

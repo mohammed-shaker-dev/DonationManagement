@@ -59,6 +59,38 @@ namespace Donation.Web.Services
                 return null;
             }
         }
+        public async Task<List<WalletDTO>> GetAllDepositAsync()
+        {
+            string cacheKey = "all_wallets_Deposit";
+
+            if (_cache.TryGetValue(cacheKey, out List<WalletDTO> cachedData))
+            {
+                _logger.LogInformation($"Cache hit: {cacheKey}");
+                return cachedData;
+            }
+
+            try
+            {
+                var result = await _httpService.HttpGetAsync<List<WalletDTO>>("wallets/Deposit");
+
+                if (result != null)
+                {
+                    _cache.Set(cacheKey, result, TimeSpan.FromMinutes(10)); // Cache for 10 minutes
+                }
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError($"HTTP Request failed: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"General error: {ex.Message}");
+                return null;
+            }
+        }
         public async Task<List<WalletDTO>> GetAllAsync()
         {
             string cacheKey = "all_wallets";

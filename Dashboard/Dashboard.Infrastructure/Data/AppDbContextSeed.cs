@@ -48,7 +48,7 @@ namespace Dashboard.Infrastructure.Data
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
