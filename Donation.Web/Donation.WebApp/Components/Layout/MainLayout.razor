@@ -12,5 +12,96 @@
         <p class="mb-0 text-white">&copy; 2023 DonationApp. All rights reserved.</p>
     </footer> *@
 </div>
- 
+<script>
+    // Enhanced navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.enhanced-navbar');
+        if (navbar && window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else if (navbar) {
+            navbar.classList.remove('scrolled');
+        }
+    });
 
+    // Close mobile menu when clicking on navigation links (but not dropdown toggles)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only close menu for actual navigation links, not dropdown toggles
+        document.querySelectorAll('.mobile-project-link, .whatsapp-link, .nav-search-highlight').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbarCollapse = document.querySelector('.navbar-collapse');
+                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) {
+                        bsCollapse.hide();
+                    }
+                }
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+        
+            });
+        });
+
+        // Prevent dropdown from closing navbar on mobile
+        document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                if (window.innerWidth < 992) {
+                    e.stopPropagation();
+                }
+            });
+        });
+    });
+</script>
+<script>
+    // Simple solution - handles all internal navigation links
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to scroll to top instantly
+        function scrollToTop() {
+            window.scrollTo(0, 0);
+        }
+
+        // Handle all clicks on the document
+        document.addEventListener('click', function(event) {
+            // Check if the clicked element is a link or inside a link
+            let link = event.target.closest('a');
+
+            if (link && link.href) {
+                let href = link.getAttribute('href');
+
+                // Check if it's an internal navigation link (not anchor, not external)
+                if (href &&
+                    href.startsWith('/') &&
+                    !href.startsWith('#') &&
+                    !href.includes('wa.me') &&
+                    !href.startsWith('http://') &&
+                    !href.startsWith('https://')) {
+
+                    // It's an internal navigation link, scroll to top after navigation
+                    setTimeout(scrollToTop, 100);
+                }
+            }
+        });
+
+        // Also handle browser back/forward navigation
+        window.addEventListener('popstate', function() {
+            setTimeout(scrollToTop, 100);
+        });
+
+        // Handle page refresh
+        setTimeout(scrollToTop, 50);
+    });
+</script>

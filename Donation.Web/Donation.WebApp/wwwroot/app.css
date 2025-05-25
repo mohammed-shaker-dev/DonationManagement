@@ -3778,27 +3778,7 @@ code {
         }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .enhanced-hero-section {
-        background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.98) 50%, rgba(17, 24, 39, 0.95) 100%);
-    }
-
-    .enhanced-centerized-box .hero-description,
-    .section-description {
-        color: #d1d5db;
-    }
-
-    .enhanced-project-card,
-    .enhanced-step-card,
-    .enhanced-search-form,
-    .wallet-card {
-        background: #1f2937;
-        border-color: #374151;
-        color: #f9fafb;
-    }
-}
-
+ 
 /* High contrast mode */
 @media (prefers-contrast: high) {
     .enhanced-btn,
