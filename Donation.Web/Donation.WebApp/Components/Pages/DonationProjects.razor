@@ -5,7 +5,7 @@
 @inject ProjectServicePublic ProjectService
 @inject NavigationManager NavigationManager
 
-<section class="main-section organization-projects-page">
+<section class="main-section organization-projects-page" style="padding-top: 0 !important;">
     <div class="centerized-box">
         <div class="section-header text-center">
             <div class="header-decoration">
@@ -59,7 +59,7 @@
                     {
                         var Currency = project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD" ? "$" : "ل.س";
 
-                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="@(index * 100)">
+                        <div class="col-md-6 col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="@(index * 100)">
                             <div class="project-card organization-card">
                                 <!-- Organization Badge -->
                                 <div class="organization-badge">

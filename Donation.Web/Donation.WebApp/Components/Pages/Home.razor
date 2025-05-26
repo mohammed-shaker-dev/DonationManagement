@@ -16,6 +16,17 @@
 {
     <!-- Enhanced Hero Section -->
     <section class="enhanced-hero-section">
+        <div class="syrian-flag-background">
+            <div class="flag-stripe flag-green"></div>
+            <div class="flag-stripe flag-white">
+                <div class="flag-stars">
+                    <div class="flag-star"></div>
+                    <div class="flag-star"></div>
+                    <div class="flag-star"></div>
+                </div>
+            </div>
+            <div class="flag-stripe flag-black"></div>
+        </div>
         <!-- Animated Background Elements -->
         <div class="hero-background-elements">
             <div class="floating-element element-1"></div>
@@ -92,15 +103,17 @@
                 @if (wallets != null && wallets.Any())
                 {
                     <div class="stat-item">
-                        <div class="stat-number">@wallets.Sum(w => w.Transactions?.Count ?? 0)</div>
+                        <div class="stat-number">
+                            @wallets.Sum(w => w.Transactions?.Count(t => t.TransactionType == TransactionType.IN) ?? 0)
+                        </div>
                         <div class="stat-label">إجمالي التبرعات</div>
                     </div>
                     <div class="stat-divider"></div>
-                    <div class="stat-item">
+  @*                   <div class="stat-item">
                         <div class="stat-number">@wallets.Sum(w => w.DepositAmount?.Amount ?? 0).ToString("N0")</div>
                         <div class="stat-label">إجمالي المبلغ المودع</div>
-                    </div>
-                    <div class="stat-divider"></div>
+                    </div> *@
+          @*           <div class="stat-divider"></div> *@
                     <div class="stat-item">
                         <div class="stat-number">@wallets.Count(w => (w.DepositAmount?.Amount ?? 0) > 0)</div>
                         <div class="stat-label">حملات نشطة</div>

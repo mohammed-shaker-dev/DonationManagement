@@ -48,6 +48,7 @@
             <table class="table table-striped mt-3">
                 <thead>
                     <tr>
+                        <th>الرقم التسلسلي</th>
                         <th>الرمز</th>
                         <th>الاسم الكامل</th>
                         <th>البريد الإلكتروني</th>
@@ -62,9 +63,11 @@
                 <tbody>
                     @if (FilteredTransactions?.Count() > 0)
                     {
+                        var rowIndex = 1;
                         @foreach (var transaction in FilteredTransactions)
                         {
                             <tr>
+                                <td>@rowIndex </td>
                                 <td>@transaction.Code</td>
                                 <td>@transaction.FullName</td>
                                 <td>@transaction.Email</td>
@@ -78,6 +81,7 @@
                                     <button class="btn btn-danger btn-sm" @onclick="() => ConfirmDeleteTransaction(transaction.Id)">حذف</button>
                                 </td>
                             </tr>
+                            rowIndex++;
                         }
                     }
                     else

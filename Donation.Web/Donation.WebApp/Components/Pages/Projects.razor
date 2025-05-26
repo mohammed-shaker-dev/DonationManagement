@@ -4,7 +4,7 @@
 @inject ProjectServicePublic ProjectService
 @inject NavigationManager NavigationManager
 
-<section class="main-section projects-section">
+<section class="main-section projects-section" style="padding-top: 0 !important;">
     <div class="centerized-box">
         <div class="section-header text-center">
             <h1 class="section-title">
@@ -41,7 +41,7 @@
                 <div class="row">
                     @foreach (var project in allProjects)
                     {
-                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="col-md-6 col-lg-6 mb-4" data-aos="fade-up">
                             <div class="project-card">
                                 <!-- Card Image -->
                                 <div class="project-card-image">

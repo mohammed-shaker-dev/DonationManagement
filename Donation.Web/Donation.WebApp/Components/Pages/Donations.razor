@@ -98,7 +98,7 @@
                                             <tr>
                                                 <th>كود التبرع</th>
                                                 <th>المبلغ</th>
-                                                <th>التاريخ</th>
+                                       @*          <th>التاريخ</th> *@
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -116,12 +116,12 @@
                                                             @donation.Amount.ToString("N0") @wallet.Currency.Code
                                                         </div>
                                                     </td>
-                                                    <td>
+                                          @*           <td>
                                                         <div class="donation-date">
                                                             <i class="bi bi-calendar3"></i>
                                                             <span>@donation.CreatedDate.ToString("yyyy/MM/dd")</span>
                                                         </div>
-                                                    </td>
+                                                    </td> *@
                                                 </tr>
                                             }
                                         </tbody>
