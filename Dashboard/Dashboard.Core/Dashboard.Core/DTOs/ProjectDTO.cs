@@ -28,7 +28,7 @@ namespace Dashboard.Core.ProjectAggregate
         }
         public DateTime CreatedDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-        public decimal TotalBudget { get; set; }
+        public Dictionary<string, decimal> CurrencyTotals { get; set; } = new Dictionary<string, decimal>();
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Videos { get; set; } = new List<string>();
         public List<ExpenseDTO> Expenses { get; set; } = new List<ExpenseDTO>();

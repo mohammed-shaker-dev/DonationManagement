@@ -12,7 +12,6 @@ namespace SharedKernel.Blazor.Shared
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Videos { get; set; } = new List<string>();
         public List<CreateExpenseRequest> Expenses { get; set; } = new List<CreateExpenseRequest>();
-        public string WalletName { get; set; } = "SYP";
         public ProjectType ProjectType { get; set; } = ProjectType.Donation;
         public ProjectStatus Status { get; set; } = ProjectStatus.Planned;
     }

@@ -1,5 +1,6 @@
 ﻿@page "/projects"
 @using Dashboard.Core.ProjectAggregate
+@using SharedKernel.Enums
 @using Dashboard.BlazorApp.Services
 @using Microsoft.AspNetCore.Authorization 
 @inject ProjectService ProjectService
@@ -36,15 +37,6 @@
                 <div class="row">
                 @foreach (var project in projectList)
                 {
-                    var Currency="";
-                    @if (project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD")
-                    {
-                        Currency = "$";
-                    }
-                    else
-                    {
-                        Currency = "ل.س";
-                    }
                             <div class="col-md-6 col-lg-4 mb-4">
                                 <div class="project-card card h-100">
                             @if (project.Images != null && project.Images.Any())
@@ -68,7 +60,23 @@
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <strong>الميزانية:</strong>
-                                    <span>@project.TotalBudget.ToString("N0") @Currency</span>
+                                            <span>
+                                                @if (project.CurrencyTotals != null && project.CurrencyTotals.Any())
+                                                {
+                                                    var totals = project.CurrencyTotals.Select(ct => 
+                                                        ct.Key == "USD" ? $"${ct.Value.ToString("N0")}" : $"{ct.Value.ToString("N0")} {ct.Key}"
+                                                    ).ToList();
+                                                    @string.Join(" / ", totals)
+                                                }
+                                                else if (project.ProjectType == ProjectType.Organization)
+                                                {
+                                                    @("تطوع")
+                                                }
+                                                else
+                                                {
+                                                    @("0")
+                                                }
+                                            </span>
                                         </div>
 
                                         <div class="d-flex justify-content-between mt-3">

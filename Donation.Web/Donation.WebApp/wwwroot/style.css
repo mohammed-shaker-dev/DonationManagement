@@ -1044,6 +1044,7 @@ code {
     background: rgba(67, 147, 111, 0.1);
     padding: 4px 8px;
     border-radius: 8px;
+    direction: ltr !important
 }
 
 .project-date {
@@ -1411,6 +1412,7 @@ code {
     background: rgba(67, 147, 111, 0.1);
     padding: 8px 16px;
     border-radius: 10px;
+    direction: ltr !important;
 }
 
 .expenses-list {

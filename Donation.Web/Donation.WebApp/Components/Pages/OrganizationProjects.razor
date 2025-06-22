@@ -1,5 +1,6 @@
 ﻿@page "/organization-projects"
 @using Dashboard.Core.ProjectAggregate
+@using SharedKernel.Enums
 @using Donation.Web.Services
 @inject ProjectServicePublic ProjectService
 @inject NavigationManager NavigationManager
@@ -56,8 +57,6 @@
                 <div class="row">
                     @foreach (var (project, index) in projects.Select((p, i) => (p, i)))
                     {
-                        var Currency = project?.Expenses?.FirstOrDefault()?.CurrencyCode == "USD" ? "$" : "ل.س";
-
                         <div class="col-md-6 col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="@(index * 100)">
                             <div class="project-card organization-card">
                                 <!-- Organization Badge -->
@@ -123,13 +122,20 @@
                                     <div class="project-meta">
                                         <div class="project-budget">
                                             <i class="bi bi-cash-coin"></i>
-                                            @if (project.TotalBudget > 0)
+                                            @if (project.CurrencyTotals != null && project.CurrencyTotals.Any())
                                             {
-                                                @($"{project.TotalBudget.ToString("N0")} {Currency}")
+                                                var totals = project.CurrencyTotals.Select(ct => 
+                                                    ct.Key == "USD" ? $"${ct.Value.ToString("N0")}" : $"{ct.Value.ToString("N0")} {ct.Key}"
+                                                ).ToList();
+                                                @string.Join(" / ", totals)
+                                            }
+                                            else if (project.ProjectType == ProjectType.Organization) // Assuming ProjectType enum exists and is used
+                                            {
+                                                @("تطوع")
                                             }
                                             else
                                             {
-                                                @("تطوع")
+                                                @("0") // Or some other placeholder if no currency totals and not volunteer
                                             }
                                         </div>
                                         <div class="project-date">

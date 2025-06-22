@@ -216,9 +216,24 @@
                                         </tbody>
                                         <tfoot class="table-secondary">
                                             <tr>
-                                                <th>الإجمالي:</th>
-                                                <th>@project.TotalBudget.ToString("N0")</th>
-                                                <th colspan="4"></th>
+                                                <th colspan="2">الإجماليات:</th>
+                                                <td colspan="4">
+                                                    @if (project.CurrencyTotals != null && project.CurrencyTotals.Any())
+                                                    {
+                                                        var totals = project.CurrencyTotals.Select(ct => 
+                                                            ct.Key == "USD" ? $"${ct.Value.ToString("N0")}" : $"{ct.Value.ToString("N0")} {ct.Key}"
+                                                        ).ToList();
+                                                        @string.Join(" / ", totals)
+                                                    }
+                                                    else if (project.ProjectType == ProjectType.Organization)
+                                                    {
+                                                        @("تطوع")
+                                                    }
+                                                    else
+                                                    {
+                                                        @("0")
+                                                    }
+                                                </td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -263,10 +278,10 @@
                                         <InputText class="form-control" @bind-Value="newExpense.Code" placeholder="سيتم توليده تلقائياً" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">المحفظة</label>
-                                        <InputSelect class="form-control" @bind-Value="newExpense.WalletName">
-                                            <option value="SYP">محفظة الليرة السورية (SYP)</option>
-                                            <option value="USD">محفظة الدولار (USD)</option>
+                                        <label class="form-label">العملة</label>
+                                        <InputSelect class="form-control" @bind-Value="newExpense.CurrencyCode">
+                                            <option value="SYP">SYP</option>
+                                            <option value="USD">USD</option>
                                         </InputSelect>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -619,7 +634,7 @@
                 Value = 0,
                 Code = $"EXP-{DateTime.Now:yyyyMMdd}-{(project?.Expenses?.Count() + 1).ToString().PadLeft(3, '0')}",
                 CreateTransaction = true,
-                WalletName = "SYP"
+                CurrencyCode = "SYP" // Default to SYP
             };
     }
 

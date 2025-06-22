@@ -48,7 +48,13 @@ namespace Dashboard.Core.ProjectAggregate
         private readonly List<string> _videos;
         public IEnumerable<string> Videos => _videos.AsReadOnly();
 
-        public decimal TotalBudget => _expenses.Sum(e => e.Amount.Amount);
+        public Dictionary<string, decimal> GetCurrencyTotals()
+        {
+            return _expenses
+                .GroupBy(e => e.Amount.Currency.Code)
+                .ToDictionary(g => g.Key, g => g.Sum(e => e.Amount.Amount));
+        }
+
         // Add method to update dates
         public void UpdateDates(DateTime? startedDate, DateTime? completedDate)
         {
@@ -137,7 +143,7 @@ namespace Dashboard.Core.ProjectAggregate
                 Status = Status,
                 CreatedDate = CreatedDate,
                 CompletedDate = CompletedDate,
-                TotalBudget = TotalBudget,
+                CurrencyTotals = GetCurrencyTotals(),
                 Images = Images.ToList(),
                 Videos = Videos.ToList(),
                 ProjectType = ProjectType,

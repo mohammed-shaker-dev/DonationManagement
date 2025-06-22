@@ -51,14 +51,6 @@
                 <label for="additionalText" class="form-label">نص إضافي</label>
                 <InputTextArea id="additionalText" class="form-control" @bind-Value="projectRequest.AdditionalText" rows="3" />
             </div>
-
-            <div class="mb-4">
-                <label for="walletName" class="form-label">المحفظة</label>
-                <InputSelect id="walletName" class="form-control" @bind-Value="projectRequest.WalletName">
-                    <option value="SYP">SYP Wallet</option>
-                    <option value="USD">USD Wallet</option>
-                </InputSelect>
-            </div>
             <div class="mb-4">
                 <label for="status" class="form-label">حالة المشروع</label>
                 <InputSelect id="status" class="form-control" @bind-Value="projectRequest.Status">
@@ -114,6 +106,7 @@
                                 <tr>
                                     <th>الاسم</th>
                                     <th>القيمة</th>
+                                    <th>العملة</th>
                                     <th>التاريخ</th>
                                     <th>الكود</th>
                                     <th>إجراءات</th>
@@ -131,6 +124,12 @@
                                             <InputNumber class="form-control" @bind-Value="projectRequest.Expenses[index].Value" />
                                         </td>
                                         <td>
+                                            <InputSelect class="form-control" @bind-Value="projectRequest.Expenses[index].CurrencyCode">
+                                                <option value="SYP">SYP</option>
+                                                <option value="USD">USD</option>
+                                            </InputSelect>
+                                        </td>
+                                        <td>
                                             <InputDate class="form-control" @bind-Value="projectRequest.Expenses[index].Date" />
                                         </td>
                                         <td>
@@ -145,13 +144,7 @@
                                     </tr>
                                 }
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="1">الإجمالي:</th>
-                                    <th>@projectRequest.Expenses.Sum(e => e.Value).ToString("N0")</th>
-                                    <th colspan="3"></th>
-                                </tr>
-                            </tfoot>
+                            @* Removing tfoot sum as currencies can be mixed *@
                         </table>
                     </div>
                 }
@@ -194,7 +187,6 @@
             Images = new List<string>(),
             Videos = new List<string>(),
             Expenses = new List<CreateExpenseRequest>(),
-            WalletName = "SYP",
             ProjectType = ProjectType.Donation,
             Status = ProjectStatus.Planned // Add this line
         };
@@ -292,7 +284,7 @@
                 Value = 0,
                 Code = $"EXP-{DateTime.Now.ToString("yyyyMMdd")}-{(projectRequest.Expenses.Count + 1).ToString("D3")}",
                 CreateTransaction = true,
-                WalletName = projectRequest.WalletName
+                CurrencyCode = "SYP" // Default to SYP, user can change
             });
     }
 

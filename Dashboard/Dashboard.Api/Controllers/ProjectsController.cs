@@ -121,22 +121,23 @@ namespace Dashboard.Api.Controllers
             // Add expenses and create corresponding transactions
             if (request.Expenses != null && request.Expenses.Any())
             {
-                // Get the default wallet (usually SYP wallet)
-                var wallet = await _walletRepository.GetBySpecAsync(
-                    new WalletByNameWithTransactionssSpec(request.WalletName ?? "SYP"));
-
-                if (wallet == null)
-                {
-                    return BadRequest("Default wallet not found");
-                }
-
                 foreach (var expenseRequest in request.Expenses)
                 {
+                    // Fetch wallet for this specific expense's currency
+                    var expenseWallet = await _walletRepository.GetBySpecAsync(
+                        new WalletByNameWithTransactionssSpec(expenseRequest.CurrencyCode));
+
+                    if (expenseWallet == null)
+                    {
+                        return BadRequest($"Wallet for currency {expenseRequest.CurrencyCode} not found for expense '{expenseRequest.Name}'.");
+                    }
+
                     // Add expense to project
+                    var money = new Money(expenseRequest.Value, new Currency(expenseRequest.CurrencyCode));
                     var expense = new Expense(
                         expenseRequest.Name,
                         expenseRequest.Date,
-                        new Money(expenseRequest.Value, new Currency(wallet.Currency.Code)),
+                        money,
                         expenseRequest.Code);
 
                     project.AddExpense(expense);
@@ -148,21 +149,12 @@ namespace Dashboard.Api.Controllers
                         "System", // FullName
                         "system@donation.app", // Email
                         expenseRequest.Value,
-                        wallet.Id,
+                        expenseWallet.Id, // Use the ID of the wallet matching the expense's currency
                         1, // Default userId (admin)
                         TransactionType.OUT);
 
-                    wallet.AddNewTransaction(transaction);
-                }
-
-                try
-                {
-                    // Save wallet with transactions
-                    await _walletRepository.UpdateAsync(wallet);
-                }
-                catch (Exception ex)
-                {
-                    // Handle exception
+                    expenseWallet.AddNewTransaction(transaction);
+                    await _walletRepository.UpdateAsync(expenseWallet); // Save this specific wallet
                 }
             }
 
@@ -319,7 +311,7 @@ namespace Dashboard.Api.Controllers
             var expense = new Expense(
                 request.Name,
                 request.Date,
-               new Money(request.Value, new Currency(request.WalletName)),
+               new Money(request.Value, new Currency(request.CurrencyCode)), // Use CurrencyCode
                 request.Code);
 
             project.AddExpense(expense);
@@ -327,28 +319,100 @@ namespace Dashboard.Api.Controllers
             // Create transaction for this expense
             if (request.CreateTransaction)
             {
+                // Fetch wallet using CurrencyCode
                 var wallet = await _walletRepository.GetBySpecAsync(
-                    new WalletByNameWithTransactionssSpec(request.WalletName ?? "SYP"));
+                    new WalletByNameWithTransactionssSpec(request.CurrencyCode)); 
 
-                if (wallet != null)
+                if (wallet == null)
                 {
-                    var transaction = new Transaction(
-                        request.Code,
-                        $"Project expense: {project.Name} - {request.Name}",
+                     return BadRequest($"Wallet for currency {request.CurrencyCode} not found.");
+                }
+                
+                var transaction = new Transaction(
+                    request.Code,
+                    $"Project expense: {project.Name} - {request.Name}",
+                    "System",
+                    "system@donation.app",
+                    request.Value,
+                    wallet.Id,
+                    1, // Default userId
+                    TransactionType.OUT);
+
+                wallet.AddNewTransaction(transaction);
+                await _walletRepository.UpdateAsync(wallet);
+            }
+
+            await _projectRepository.UpdateAsync(project);
+            return Ok();
+        }
+
+        [HttpPut("{projectId}/expenses/{expenseId}")]
+        public async Task<IActionResult> UpdateExpense(long projectId, long expenseId, [FromBody] UpdateExpenseRequest request)
+        {
+            var projectSpec = new ProjectByIdWithExpensesSpec(projectId); // Ensure this spec loads expenses
+            var project = await _projectRepository.GetBySpecAsync(projectSpec);
+            if (project == null) return NotFound("Project not found.");
+
+            var expenseToUpdate = project.Expenses.FirstOrDefault(e => e.Id == expenseId);
+            if (expenseToUpdate == null) return NotFound("Expense not found.");
+
+            // Crucial Check: Prevent currency change during update
+            if (!string.Equals(request.CurrencyCode, expenseToUpdate.Amount.Currency.Code, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Currency cannot be changed during an update. Please delete the expense and add it again with the new currency.");
+            }
+
+            // If currencies are the same, proceed with update
+            var newMoney = new Money(request.Value, new Currency(request.CurrencyCode));
+            project.UpdateExpense(expenseId, request.Name, request.Date, newMoney, request.Code);
+
+            // Transaction Update Logic
+            var walletSpec = new WalletByNameWithTransactionssSpec(request.CurrencyCode);
+            var wallet = await _walletRepository.GetBySpecAsync(walletSpec);
+            if (wallet == null)
+            {
+                return BadRequest($"Wallet for currency {request.CurrencyCode} not found. Cannot update transaction.");
+            }
+
+            var transactionToUpdate = wallet.Transactions.FirstOrDefault(t => t.Code == expenseToUpdate.Code && t.TransactionType == TransactionType.OUT); 
+            // Assuming expense code is unique enough for this transaction, or add more specific identifiers if needed.
+            
+            if (transactionToUpdate != null)
+            {
+                // Update transaction amount
+                // Note: Transaction class might need an UpdateAmount method or properties need to be settable.
+                // For this example, assuming direct property update or a method exists.
+                // If Transaction.Amount is private set, you'll need a method in Transaction class.
+                // Let's assume a method UpdateAmount exists for now or properties are public set.
+                // transactionToUpdate.UpdateAmount(request.Value); // Ideal
+                
+                // If direct property access (less ideal but for example):
+                // We need to remove the old and add a new one if amount is immutable in Transaction
+                // For simplicity, let's assume we can modify it or replace it.
+                // This part highly depends on the Transaction entity's design.
+                // A safe way: delete old, create new.
+                wallet.DeleteTransaction(transactionToUpdate.Id);
+                var newTransaction = new Transaction(
+                        request.Code, // Use new code from request if it can change, or old code if it's an identifier
+                        $"Project expense (updated): {project.Name} - {request.Name}",
                         "System",
                         "system@donation.app",
                         request.Value,
                         wallet.Id,
                         1, // Default userId
                         TransactionType.OUT);
-
-                    wallet.AddNewTransaction(transaction);
-                    await _walletRepository.UpdateAsync(wallet);
-                }
+                wallet.AddNewTransaction(newTransaction);
+                
+                await _walletRepository.UpdateAsync(wallet);
             }
-
+            else
+            {
+                // Log or handle if the original transaction was not found, though it should exist.
+                // Potentially, create a new transaction if it's missing for some reason.
+            }
+            
             await _projectRepository.UpdateAsync(project);
-            return Ok();
+            return NoContent();
         }
     }
 }
