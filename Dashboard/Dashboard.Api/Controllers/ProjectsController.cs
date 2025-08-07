@@ -414,5 +414,45 @@ namespace Dashboard.Api.Controllers
             await _projectRepository.UpdateAsync(project);
             return NoContent();
         }
+
+        [HttpDelete("{projectId}/expenses/{expenseId}")]
+        public async Task<ActionResult> DeleteExpense(long projectId, long expenseId)
+        {
+            try
+            {
+                var projectSpec = new ProjectByIdWithExpensesSpec(projectId);
+                var project = await _projectRepository.GetBySpecAsync(projectSpec);
+                if (project == null) return NotFound("Project not found.");
+
+                // Find the expense
+                var expenseToDelete = project.Expenses.FirstOrDefault(e => e.Id == expenseId);
+                if (expenseToDelete == null) return NotFound("Expense not found.");
+                var wallet = await _walletRepository.GetBySpecAsync(
+                    new WalletByNameWithTransactionssSpec(expenseToDelete.Amount.Currency.Code));
+
+                if (wallet != null)
+                {
+                    var transactionToDelete = wallet.Transactions
+                        .FirstOrDefault(t => t.Code == expenseToDelete.Code && t.TransactionType == TransactionType.OUT);
+
+                    if (transactionToDelete != null)
+                    {
+                        wallet.DeleteTransaction(transactionToDelete.Id);
+                        await _walletRepository.UpdateAsync(wallet);
+                    }
+                }
+
+                // Remove the expense from the project
+                project.DeleteExpense(expenseId);
+                await _projectRepository.UpdateAsync(project);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the expense.");
+            }
+        }
+
     }
 }

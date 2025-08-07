@@ -113,7 +113,19 @@ namespace Dashboard.BlazorApp.Services
                 return false;
             }
         }
-
+        public async Task<bool> DeleteExpenseAsync(long projectId, long expenseId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"projects/{projectId}/expenses/{expenseId}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request failed: {ex.Message}");
+                return false;
+            }
+        }
         private int GetProjectTypeId(ProjectType projectType)
         {
             return projectType switch

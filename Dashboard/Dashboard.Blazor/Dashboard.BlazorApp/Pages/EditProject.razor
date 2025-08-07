@@ -93,12 +93,26 @@
                     <label for="additionalText" class="form-label">نص إضافي</label>
                     <InputTextArea id="additionalText" class="form-control" @bind-Value="updateRequest.AdditionalText" rows="3" placeholder="أدخل أي معلومات إضافية" />
                 </div>
-
                 <div class="mb-4">
+                    <h4>صور المشروع</h4>
+                    <ImageUpload UploadedUrls="@updateRequest.Images"
+                    UploadedUrlsChanged="@(async (urls) => { updateRequest.Images = urls; StateHasChanged(); })"
+                    Multiple="true" />
+                    <h4>الصور</h4>
+                    <div class="d-flex mb-2">
+                        <InputText class="form-control me-2" @bind-Value="newImage" placeholder="أدخل رابط الصورة" />
+                        <button type="button" class="btn btn-secondary" @onclick="AddImage">إضافة</button>
+                    </div>
+                </div>
+                @*                <div class="mb-4">
                     <h4>إدارة الصور</h4>
                     <div class="card">
                         <div class="card-body">
+                            <ImageUpload UploadedUrls="@updateRequest.Images"
+                                         UploadedUrlsChanged="@(async (urls) => { updateRequest.Images = urls; StateHasChanged(); })"
+                                         Multiple="true" />
                             <div class="d-flex mb-3">
+
                                 <InputText class="form-control me-2" @bind-Value="newImage" placeholder="أدخل رابط الصورة" />
                                 <button type="button" class="btn btn-secondary" @onclick="AddImage" disabled="@string.IsNullOrWhiteSpace(newImage)">
                                     <i class="bi bi-plus"></i> إضافة
@@ -131,7 +145,7 @@
                             }
                         </div>
                     </div>
-                </div>
+                </div> *@
 
                 <div class="mb-4">
                     <h4>إدارة الفيديوهات</h4>
@@ -207,7 +221,7 @@
                                                     <td>@expense.CurrencyCode</td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                @onclick="() => ConfirmDeleteExpense(expense.Id)" title="حذف المصروف">
+                                                        @onclick="() => ConfirmDeleteExpense(expense.Id)" title="حذف المصروف">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </td>
@@ -342,109 +356,109 @@
 
 <style>
     html, body, .main-section, .form-section, .modal, .modal-content, .container {
-        direction: rtl !important;
-        text-align: right !important;
+    direction: rtl !important;
+    text-align: right !important;
     }
 
     .project-form {
-        background-color: #f9f9f9;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
 
     .image-container {
-        transition: transform 0.2s ease;
+    transition: transform 0.2s ease;
     }
 
-        .image-container:hover {
-            transform: scale(1.02);
-        }
+    .image-container:hover {
+    transform: scale(1.02);
+    }
 
     .image-delete-btn {
-        top: 5px;
-        right: 5px;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
     }
 
     .form-label {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
     }
 
     .card {
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     .card-header {
-        border-radius: 10px 10px 0 0 !important;
+    border-radius: 10px 10px 0 0 !important;
     }
 
     .table th {
-        border-top: none;
-        font-weight: 600;
+    border-top: none;
+    font-weight: 600;
     }
 
     .btn {
-        border-radius: 8px;
-        font-weight: 500;
+    border-radius: 8px;
+    font-weight: 500;
     }
 
     .badge {
-        font-size: 0.9em;
-        padding: 8px 12px;
+    font-size: 0.9em;
+    padding: 8px 12px;
     }
 
     .text-danger {
-        font-size: 0.875em;
+    font-size: 0.875em;
     }
 
     .alert {
-        border-radius: 10px;
-        border: none;
+    border-radius: 10px;
+    border: none;
     }
 
     .list-group-item {
-        border-radius: 8px !important;
-        margin-bottom: 5px;
-        border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    margin-bottom: 5px;
+    border: 1px solid #e0e0e0 !important;
     }
 
     .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
+    width: 1rem;
+    height: 1rem;
     }
 
     @@media (max-width: 768px) {
-        .project-form
+    .project-form
 
     {
-        padding: 1rem;
+    padding: 1rem;
     }
 
     .d-flex.justify-content-between {
-        flex-direction: column;
-        gap: 10px;
+    flex-direction: column;
+    gap: 10px;
     }
 
-        .d-flex.justify-content-between .btn {
-            width: 100%;
-        }
+    .d-flex.justify-content-between .btn {
+    width: 100%;
+    }
 
     }
 </style>
 
 @code {
-    [Parameter] public long Id { get; set; }
+        [Parameter] public long Id { get; set; }
 
     private ProjectDTO? project;
     private UpdateProjectRequest updateRequest = new UpdateProjectRequest();
@@ -585,9 +599,18 @@
     {
         if (await JSRuntime.InvokeAsync<bool>("confirm", "هل أنت متأكد من رغبتك في حذف هذا المصروف؟"))
         {
-            // In a real implementation, you would add an API endpoint to delete expenses
-            // For now, we'll just show a message
-            await JSRuntime.InvokeVoidAsync("alert", "سيتم إضافة وظيفة حذف المصاريف في التحديث القادم");
+            var result = await ProjectService.DeleteExpenseAsync(Id, expenseId);
+            if (result)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", " تم التعديل بنجاح!");
+                showExpenseForm = false;
+                ResetNewExpense();
+                await LoadProject(); // Reload to show the new expense
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "حدث خطأ أثناء تعديل المصروف");
+            }
         }
     }
 
