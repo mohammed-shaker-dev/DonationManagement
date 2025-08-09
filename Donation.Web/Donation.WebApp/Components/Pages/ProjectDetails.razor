@@ -1,4 +1,5 @@
 ﻿@page "/project-details/{id:long}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using Dashboard.Core.ProjectAggregate
 @using SharedKernel.Enums
 @using Donation.Web.Services
@@ -324,8 +325,7 @@
 
                 <!-- Back Button -->
                 <div class="section-card action-card">
-   
-              <ContributeComponent />
+                    <ContributeComponent />
                 </div>
                 <div class="back-section text-center">
                     <a href="/projects" class="btn btn-back">

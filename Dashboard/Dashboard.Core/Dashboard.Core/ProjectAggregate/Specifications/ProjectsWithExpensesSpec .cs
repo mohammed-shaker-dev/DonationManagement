@@ -17,7 +17,8 @@ namespace Dashboard.Core.ProjectAggregate.Specifications
         {
             Query
                 .Where(p => p.Id == projectId)
-                .Include(p => p.Expenses);
+                .Include(p => p.Expenses)
+                .OrderByDescending(p => p.CreatedDate);
         }
     }
 }
